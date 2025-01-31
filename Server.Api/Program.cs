@@ -1,9 +1,12 @@
+using Server.Api;
 using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 {
+    builder.Host.AddLogging();
+
     builder.Services
         .AddInfrastructure(builder.Configuration);
 }
@@ -21,6 +24,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.AddSerilog();
 
 app.UseHttpsRedirection();
 
