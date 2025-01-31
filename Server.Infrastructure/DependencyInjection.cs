@@ -2,10 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Common.Interfaces.Authentication;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authorization;
+using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Services;
 
 namespace Server.Infrastructure;
@@ -14,6 +16,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+
         services
             .AddDatabase(configuration)
             .AddDbIdentity()
@@ -35,7 +42,6 @@ public static class DependencyInjection
     {
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SelectionName));
 
-        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
         return services;

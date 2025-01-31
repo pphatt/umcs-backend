@@ -20,7 +20,6 @@
 
   <ItemGroup>
 	<Folder Include="Common\Dtos\" />
-	<Folder Include="Common\Interfaces\Persistence\" />
 	<Folder Include="Common\Interfaces\Services\" />
   </ItemGroup>
 
