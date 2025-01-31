@@ -6,7 +6,7 @@ using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure;
 
-public class AppDbContext : IdentityDbContext<AppUsers, AppRoles, Guid>
+public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -25,6 +25,9 @@ public class AppDbContext : IdentityDbContext<AppUsers, AppRoles, Guid>
         base.OnModelCreating(modelBuilder);
 
         #region Identity Configuration
+
+        modelBuilder.Entity<AppUser>().ToTable("AppUsers");
+        modelBuilder.Entity<AppRole>().ToTable("AppRoles");
 
         modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims").HasKey(x => x.Id);
 

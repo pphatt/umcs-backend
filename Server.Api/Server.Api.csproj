@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -17,10 +17,6 @@
     <ProjectReference Include="..\Server.Application\Server.Application.csproj" />
     <ProjectReference Include="..\Server.Contracts\Server.Contracts.csproj" />
     <ProjectReference Include="..\Server.Infrastructure\Server.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Mapper\" />
   </ItemGroup>
 
 </Project>

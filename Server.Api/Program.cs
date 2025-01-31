@@ -1,4 +1,5 @@
 using Server.Api;
+using Server.Application;
 using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,13 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Host.AddLogging();
 
     builder.Services
+        .AddPresentation()
+        .AddApplication()
         .AddInfrastructure(builder.Configuration);
 }
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -23,14 +21,21 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.AddMigration();
 }
 
-app.AddSerilog();
+// Add web application to the container.
+{
+    app.AddSerilog();
 
-app.UseHttpsRedirection();
+    app.AddAutoMapperValidation();
+}
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+{
+    app.UseHttpsRedirection();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
+}

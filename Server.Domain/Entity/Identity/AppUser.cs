@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Server.Domain.Entity.Identity;
 
 [Table("AppUsers")]
-public class AppUsers : IdentityUser<Guid>
+public class AppUser : IdentityUser<Guid>
 {
     [MaxLength(100)]
     public string? FirstName { get; set; } = default!;
