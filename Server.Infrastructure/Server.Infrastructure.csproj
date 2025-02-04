@@ -26,10 +26,4 @@
     <ProjectReference Include="..\Server.Application\Server.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Authorization\" />
-    <Folder Include="Persistence\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

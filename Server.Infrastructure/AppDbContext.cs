@@ -3,15 +3,17 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+using Server.Domain.Entity.Token;
 
 namespace Server.Infrastructure;
 
-public class AppDbContext : IdentityDbContext<AppUsers, AppRoles, Guid>
+public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
+    internal DbSet<RefreshToken> RefreshTokens { get; set; }
     internal DbSet<AcademicYear> AcademicYears { get; set; }
     internal DbSet<Contribution> Contributions { get; set; }
     internal DbSet<ContributionComment> ContributionComments { get; set; }
@@ -25,6 +27,9 @@ public class AppDbContext : IdentityDbContext<AppUsers, AppRoles, Guid>
         base.OnModelCreating(modelBuilder);
 
         #region Identity Configuration
+
+        modelBuilder.Entity<AppUser>().ToTable("AppUsers");
+        modelBuilder.Entity<AppRole>().ToTable("AppRoles");
 
         modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims").HasKey(x => x.Id);
 
@@ -41,6 +46,12 @@ public class AppDbContext : IdentityDbContext<AppUsers, AppRoles, Guid>
         #endregion Identity Configuration
 
         #region Table Relationship Configuration
+
+        modelBuilder.Entity<RefreshToken>()
+            .HasOne(r => r.User)
+            .WithOne(r => r.RefreshToken)
+            .HasForeignKey<RefreshToken>(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Contribution>()
             .HasOne(c => c.Faculty)

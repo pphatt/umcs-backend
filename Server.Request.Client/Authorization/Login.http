@@ -1,0 +1,10 @@
+@port = 7103
+@Server.API_HostAddress=https://localhost:{{port}}
+
+POST {{Server.API_HostAddress}}/authentication/login
+Content-Type: application/json
+
+{
+    "email": "phatvtgcs21@gmail.com",
+    "password": "Admin@123"
+}

@@ -12,10 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Dtos\" />
-    <Folder Include="Common\Interfaces\Persistence\" />
-    <Folder Include="Common\Interfaces\Services\" />
-    <Folder Include="Features\" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Folder Include="Common\Dtos\" />
   </ItemGroup>
 
 </Project>

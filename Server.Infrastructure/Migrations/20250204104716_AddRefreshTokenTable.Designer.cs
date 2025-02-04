@@ -12,8 +12,8 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250130174238_InitDatabase")]
-    partial class InitDatabase
+    [Migration("20250204104716_AddRefreshTokenTable")]
+    partial class AddRefreshTokenTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -356,7 +356,7 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Identity.AppRoles", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Identity.AppRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -385,10 +385,10 @@ namespace Server.Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AppRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Identity.AppUsers", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Identity.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -449,12 +449,6 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -475,12 +469,45 @@ namespace Server.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AppUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Token.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Token");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Identity.AppRoles", null)
+                    b.HasOne("Server.Domain.Entity.Identity.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -489,7 +516,7 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Identity.AppUsers", null)
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -498,7 +525,7 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Identity.AppUsers", null)
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -507,13 +534,13 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Identity.AppRoles", null)
+                    b.HasOne("Server.Domain.Entity.Identity.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Domain.Entity.Identity.AppUsers", null)
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -522,7 +549,7 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Identity.AppUsers", null)
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -567,6 +594,17 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entity.Token.RefreshToken", b =>
+                {
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", "User")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("Server.Domain.Entity.Token.RefreshToken", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Server.Domain.Entity.Content.AcademicYear", b =>
                 {
                     b.Navigation("Contributions");
@@ -585,6 +623,12 @@ namespace Server.Infrastructure.Migrations
             modelBuilder.Entity("Server.Domain.Entity.Content.Tag", b =>
                 {
                     b.Navigation("ContributionTags");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Identity.AppUser", b =>
+                {
+                    b.Navigation("RefreshToken")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
