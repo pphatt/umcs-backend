@@ -1,6 +1,6 @@
 ﻿using Server.Domain.Entity.Identity;
 
-namespace Server.Domain.Common.Interfaces.Authentication;
+namespace Server.Application.Common.Interfaces.Authentication;
 
 public interface IJwtTokenGenerator
 {

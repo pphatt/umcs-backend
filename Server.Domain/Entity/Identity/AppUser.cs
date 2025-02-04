@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Server.Domain.Entity.Token;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,7 +21,5 @@ public class AppUser : IdentityUser<Guid>
 
     public DateTime? Dob { get; set; }
 
-    public string? RefreshToken { get; set; }
-
-    public DateTime? RefreshTokenExpiryTime { get; set; }
+    public RefreshToken RefreshToken { get; set; } = default!;
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+using Server.Domain.Entity.Token;
 
 namespace Server.Infrastructure;
 
@@ -12,6 +13,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
     }
 
+    internal DbSet<RefreshToken> RefreshTokens { get; set; }
     internal DbSet<AcademicYear> AcademicYears { get; set; }
     internal DbSet<Contribution> Contributions { get; set; }
     internal DbSet<ContributionComment> ContributionComments { get; set; }
@@ -44,6 +46,12 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         #endregion Identity Configuration
 
         #region Table Relationship Configuration
+
+        modelBuilder.Entity<RefreshToken>()
+            .HasOne(r => r.User)
+            .WithOne(r => r.RefreshToken)
+            .HasForeignKey<RefreshToken>(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Contribution>()
             .HasOne(c => c.Faculty)
