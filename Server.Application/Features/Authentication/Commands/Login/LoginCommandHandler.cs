@@ -16,17 +16,13 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
     UserManager<AppUser> _userManager;
     ITokenService _tokenService;
     IJwtTokenGenerator _jwtTokenGenerator;
-    IUnitOfWork _unitOfWork;
-    IDateTimeProvider _dateTimeProvider;
 
-    public LoginCommandHandler(ILogger<LoginCommandHandler> logger, UserManager<AppUser> userManager, ITokenService tokenService, IJwtTokenGenerator jwtTokenGenerator, IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider)
+    public LoginCommandHandler(ILogger<LoginCommandHandler> logger, UserManager<AppUser> userManager, ITokenService tokenService, IJwtTokenGenerator jwtTokenGenerator)
     {
         _logger = logger;
         _userManager = userManager;
         _tokenService = tokenService;
         _jwtTokenGenerator = jwtTokenGenerator;
-        _unitOfWork = unitOfWork;
-        _dateTimeProvider = dateTimeProvider;
     }
 
     public async Task<LoginResult> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -55,14 +51,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
         var accessToken = _jwtTokenGenerator.GenerateToken(user);
         var refreshToken = _tokenService.GenerateRefreshToken();
 
-        _unitOfWork.TokenRepository.Add(new RefreshToken() 
-        {
-            UserId = user.Id,
-            Token = refreshToken,
-            RefreshTokenExpiryTime = _dateTimeProvider.UtcNow().AddMinutes(60),
-        });
-
-        await _unitOfWork.CompleteAsync();
+        await _tokenService.StoreRefreshTokenAsync(user.Id, refreshToken);
 
         return new LoginResult(accessToken, refreshToken);
     }
