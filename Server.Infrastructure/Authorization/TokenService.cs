@@ -35,10 +35,32 @@ public class TokenService : ITokenService
         {
             UserId = userId,
             Token = refreshToken,
-            RefreshTokenExpiryTime = _dateTimeProvider.UtcNow().AddMinutes(60),
+            RefreshTokenExpiryTime = _dateTimeProvider.UtcNow.AddMinutes(60),
         };
 
-        _unitOfWork.TokenRepository.Add(tokenEntity);
+        RefreshToken? refreshTokenFromDb = _unitOfWork.TokenRepository.FindByCondition(x => x.UserId == userId).FirstOrDefault();
+
+        if (refreshTokenFromDb is not null)
+        {
+            refreshTokenFromDb.Token = refreshToken;
+            refreshTokenFromDb.RefreshTokenExpiryTime = _dateTimeProvider.UtcNow.AddMinutes(60);
+        }
+        else
+        {
+            _unitOfWork.TokenRepository.Add(tokenEntity);
+        }
+
+        await _unitOfWork.CompleteAsync();
+    }
+
+    public RefreshToken? GetByTokenAsync(string token)
+    {
+        return _unitOfWork.TokenRepository.FindByCondition(x => x.Token == token).FirstOrDefault();
+    }
+
+    public async Task UpdateRefreshTokenAsync(RefreshToken newRefreshToken)
+    {
+        _unitOfWork.TokenRepository.Update(newRefreshToken);
 
         await _unitOfWork.CompleteAsync();
     }

@@ -3,7 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.Authentication.Commands.Login;
+using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Contracts.Authentication;
+using Server.Contracts.Authentication.RefreshToken;
 
 namespace Server.Api.Controllers;
 
@@ -24,7 +26,7 @@ public class AuthenticationController : ControllerBase
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var mapper = _mapper.Map<LoginCommand>(request); 
+        var mapper = _mapper.Map<LoginCommand>(request);
 
         var response = await _mediator.Send(mapper);
 
@@ -32,9 +34,13 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost]
-    [Route("register")]
-    public IActionResult Register()
+    [Route("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
-        return Ok();
+        var mapper = _mapper.Map<RefreshTokenCommand>(request);
+
+        var response = await _mediator.Send(mapper);
+
+        return Ok(new AuthenticationResponse(response.AccessToken, response.RefreshToken));
     }
 }
