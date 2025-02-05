@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Contracts.Authentication;
+using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 
 namespace Server.Api.Controllers;
 
 [ApiController]
-[Route("/authentication")]
+[Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
     IMediator _mediator;
