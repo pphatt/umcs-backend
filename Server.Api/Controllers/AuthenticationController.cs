@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Contracts.Authentication;
@@ -42,5 +44,13 @@ public class AuthenticationController : ControllerBase
         var response = await _mediator.Send(mapper);
 
         return Ok(new AuthenticationResponse(response.AccessToken, response.RefreshToken));
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("test-auth")]
+    public IActionResult TestAuthRoute()
+    {
+        return Ok("Access auth route successfully.");
     }
 }

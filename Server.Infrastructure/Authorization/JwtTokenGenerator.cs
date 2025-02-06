@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Services;
+using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -40,8 +41,14 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(UserClaims.Id, user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.UserName ?? string.Empty),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+            new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName ?? string.Empty),
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName ?? string.Empty),
+            // Jwt ID
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
         return claims;

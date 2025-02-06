@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
@@ -15,7 +16,45 @@ public static class DependencyInjection
         services.AddControllers();
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            c.EnableAnnotations();
+
+            c.SwaggerDoc("AdminAPI", new OpenApiInfo 
+            {
+                Version = "v1",
+                Title = "School CMS API",
+                Description = "This API focuses on the core CMS functionality, handling campaign management, campaign rules, and campaign execution.",
+            });
+
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                Description = "To access this API, provide your Bearer token in the following format: Bearer {your token here}."
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme,
+                        },
+                        Scheme = "Bearer",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    []
+                }
+            });
+        });
 
         // auto-mapper service.
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
