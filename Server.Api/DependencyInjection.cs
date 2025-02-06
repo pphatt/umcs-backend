@@ -31,10 +31,10 @@ public static class DependencyInjection
             {
                 Name = "Authorization",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
-                Description = "To access this API, provide your Bearer token in the following format: Bearer {your token here}."
+                Description = "To access this API, provide your access token."
             });
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
