@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Server.Application.Common.Behaviors;
 using System.Reflection;
 
 namespace Server.Application;
@@ -16,6 +18,8 @@ public static class DependencyInjection
         // services.AddMediatR(typeof(DependencyInjection).Assembly); -> MediatR v11.1.0
         // https://stackoverflow.com/a/72263414
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
+
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         services.AddValidatorsFromAssembly(applicationAssembly)
             .AddFluentValidationAutoValidation();
