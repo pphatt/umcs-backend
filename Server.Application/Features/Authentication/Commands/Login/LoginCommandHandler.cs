@@ -1,16 +1,15 @@
-﻿using MediatR;
+﻿using ErrorOr;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Server.Application.Common.Interfaces.Authentication;
-using Server.Application.Common.Interfaces.Persistence;
-using Server.Application.Common.Interfaces.Services;
 using Server.Contracts.Authentication.Login;
+using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
-using Server.Domain.Entity.Token;
 
 namespace Server.Application.Features.Authentication.Commands.Login;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<LoginResult>>
 {
     ILogger<LoginCommandHandler> _logger;
     UserManager<AppUser> _userManager;
@@ -25,19 +24,19 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<LoginResult> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<LoginResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
         if (user is null)
         {
             _logger.LogInformation("User not found.");
-            throw new Exception("Email or password is incorrect.");
+            return Errors.User.CannotFound;
         }
 
         if (user.LockoutEnabled)
         {
-            throw new Exception("User is locked out.");
+            return Errors.User.InactiveOrLockedOut;
         }
 
         var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
@@ -45,7 +44,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
         if (!isPasswordValid)
         {
             _logger.LogInformation("Password is incorrect.");
-            throw new Exception("Email or password is incorrect.");
+            return Errors.Authentication.InvalidCredentials;
         }
 
         var accessToken = _jwtTokenGenerator.GenerateToken(user);

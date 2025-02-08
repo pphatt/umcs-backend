@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Server.Api.Common.Errors;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
 using System.Reflection;
@@ -58,6 +60,11 @@ public static class DependencyInjection
 
         // auto-mapper service.
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+        // add default error format.
+        services.AddSingleton<ProblemDetailsFactory, ServerProblemDetailsFactory>();
+
+        services.AddAuthorization();
 
         return services;
     }

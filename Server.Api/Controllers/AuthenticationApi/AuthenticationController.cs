@@ -2,25 +2,22 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 
-namespace Server.Api.Controllers;
+namespace Server.Api.Controllers.Authentication;
 
-[ApiController]
+[AllowAnonymous]
 [Route("[controller]")]
-public class AuthenticationController : ControllerBase
+public class AuthenticationController : ApiController
 {
-    IMediator _mediator;
     IMapper _mapper;
 
-    public AuthenticationController(IMediator mediator, IMapper mapper)
+    public AuthenticationController(ISender mediatorSender, IMapper mapper) : base(mediatorSender)
     {
-        _mediator = mediator;
         _mapper = mapper;
     }
 
@@ -30,9 +27,12 @@ public class AuthenticationController : ControllerBase
     {
         var mapper = _mapper.Map<LoginCommand>(request);
 
-        var response = await _mediator.Send(mapper);
+        var response = await _mediatorSender.Send(mapper);
 
-        return Ok(new AuthenticationResponse(response.AccessToken, response.RefreshToken));
+        return response.Match(
+            loginResult => Ok(new AuthenticationResponse(loginResult.AccessToken, loginResult.RefreshToken)),
+            errors => Problem(errors)
+        );
     }
 
     [HttpPost]
@@ -41,9 +41,12 @@ public class AuthenticationController : ControllerBase
     {
         var mapper = _mapper.Map<RefreshTokenCommand>(request);
 
-        var response = await _mediator.Send(mapper);
+        var response = await _mediatorSender.Send(mapper);
 
-        return Ok(new AuthenticationResponse(response.AccessToken, response.RefreshToken));
+        return response.Match(
+            refreshTokenResult => Ok(new AuthenticationResponse(refreshTokenResult.AccessToken, refreshTokenResult.RefreshToken)),
+            errors => Problem(errors)
+        );
     }
 
     [HttpGet]

@@ -1,13 +1,15 @@
-﻿using MediatR;
+﻿using ErrorOr;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Services;
 using Server.Contracts.Authentication.RefreshToken;
+using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Authentication.Commands.RefreshToken;
 
-public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, RefreshTokenResult>
+public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, ErrorOr<RefreshTokenResult>>
 {
     ITokenService _tokenService;
     IJwtTokenGenerator _jwtTokenGenerator;
@@ -22,25 +24,25 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<RefreshTokenResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<RefreshTokenResult>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
         var token = _tokenService.GetByTokenAsync(request.RefreshToken);
 
         if (token is null)
         {
-            throw new Exception("Invalid token.");
+            return Errors.RefreshToken.Invalid;
         }
 
         if (token.RefreshTokenExpiryTime <= _dateTimeProvider.UtcNow) 
         {
-            throw new Exception("Refresh token expired.");
+            return Errors.RefreshToken.Expired;
         }
 
         var userOfToken = await _userManager.FindByIdAsync(token.UserId.ToString());
 
         if (userOfToken is null)
         {
-            throw new Exception("User not found.");
+            return Errors.User.CannotFound;
         }
 
         var newAccessToken = _jwtTokenGenerator.GenerateToken(userOfToken);

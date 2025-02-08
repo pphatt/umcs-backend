@@ -6,9 +6,9 @@ using Server.Contracts.Authentication.RefreshToken;
 
 namespace Server.Api.Common.Mapper;
 
-public class MapperProfile : Profile
+public class MapperProfiles : Profile
 {
-    public MapperProfile() 
+    public MapperProfiles() 
     {
         // Authentication.
         CreateMap<LoginRequest, LoginCommand>();
