@@ -11,7 +11,7 @@ using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Identity;
-using Server.Infrastructure.Authorization;
+using Server.Infrastructure.Authentication;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Authentication;
 using Server.Infrastructure.Services;

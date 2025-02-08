@@ -10,7 +10,6 @@ using Server.Contracts.Authentication.RefreshToken;
 
 namespace Server.Api.Controllers.Authentication;
 
-[AllowAnonymous]
 [Route("[controller]")]
 public class AuthenticationController : ApiController
 {

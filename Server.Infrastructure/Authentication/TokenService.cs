@@ -5,7 +5,7 @@ using Server.Domain.Entity.Token;
 using Server.Infrastructure.Persistence;
 using System.Security.Cryptography;
 
-namespace Server.Infrastructure.Authorization;
+namespace Server.Infrastructure.Authentication;
 
 public class TokenService : ITokenService
 {
