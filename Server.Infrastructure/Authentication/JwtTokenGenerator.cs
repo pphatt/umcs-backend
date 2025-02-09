@@ -1,29 +1,37 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Server.Application.Common.Dtos.Authorization;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Services;
-using Server.Domain.Common.Constants;
+using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Entity.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Server.Infrastructure.Authentication;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
     IDateTimeProvider _dateTimeProvider;
+    UserManager<AppUser> _userManager;
+    RoleManager<AppRole> _roleManager;
     JwtSettings _jwtSettings;
 
-    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider, IOptions<JwtSettings> jwtSettings)
+    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IOptions<JwtSettings> jwtSettings)
     {
         _dateTimeProvider = dateTimeProvider;
+        _userManager = userManager;
+        _roleManager = roleManager;
         _jwtSettings = jwtSettings.Value;
     }
 
-    public string GenerateToken(AppUser user)
+    public async Task<string> GenerateToken(AppUser user)
     {
-        var token = GetEncryptedToken(GetSigningCredentials(), GetClaims(user));
+        var token = GetEncryptedToken(GetSigningCredentials(), await GetClaims(user));
 
         return token;
     }
@@ -36,8 +44,12 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         return signingCredentials;
     }
 
-    private Claim[] GetClaims(AppUser user)
+    private async Task<Claim[]> GetClaims(AppUser user)
     {
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var permissions = await GetPermissions(roles.ToList());
+
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -47,11 +59,49 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName ?? string.Empty),
+            new Claim(UserClaims.Roles, string.Join(",", roles)),
+            new Claim(UserClaims.Permissions, JsonSerializer.Serialize(permissions)),
             // Jwt ID
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
         return claims;
+    }
+
+    private async Task<List<string>> GetPermissions(List<string> roles)
+    {
+        var permissions = new List<string>();
+
+        if (roles.Contains(Roles.Admin))
+        {
+            var rolePermissions = new List<RoleClaimsDto>();
+
+            var types = typeof(Permissions).GetNestedTypes().ToList();
+
+            types.ForEach(rolePermissions.GetPermissionByType);
+
+            if (rolePermissions.Any())
+            {
+                permissions = rolePermissions.ConvertAll(permission => permission.Value!);
+            }
+        } else
+        {
+            foreach (var roleName in roles)
+            {
+                var role = await _roleManager.FindByNameAsync(roleName);
+
+                if (role is null)
+                {
+                    continue;
+                }
+
+                var rolePermissions = await _roleManager.GetClaimsAsync(role);
+
+                permissions.AddRange(rolePermissions.Select(p => p.Value!));
+            }
+        }
+
+        return permissions.Distinct().ToList();
     }
 
     private string GetEncryptedToken(SigningCredentials signingCredentials, IEnumerable<Claim> claims)

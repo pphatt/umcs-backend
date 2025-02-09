@@ -1,4 +1,4 @@
-﻿namespace Server.Domain.Common.Constants;
+﻿namespace Server.Domain.Common.Constants.Authorization;
 
 public static class Roles
 {

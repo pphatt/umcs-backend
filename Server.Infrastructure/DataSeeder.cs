@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Server.Domain.Common.Constants;
+using Microsoft.EntityFrameworkCore.Storage;
+using Server.Application.Common.Dtos.Authorization;
+using Server.Application.Common.Extensions;
+using Server.Domain.Common.Constants.Authorization;
+using Server.Domain.Common.Constants.Content;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+using System.Security.Claims;
 
 namespace Server.Infrastructure;
 
@@ -69,6 +74,26 @@ public partial class DataSeeder
             }
 
             await context.SaveChangesAsync();
+        }
+
+        if (!context.RoleClaims.Any())
+        {
+            // seed admin role claims permissions.
+            var adminPermissions = await roleManager.GetClaimsAsync(roles[0]);
+
+            if (!adminPermissions.Any())
+            {
+                var adminPermissionList = new List<RoleClaimsDto>();
+
+                var types = typeof(Permissions).GetNestedTypes().ToList();
+
+                types.ForEach(adminPermissionList.GetPermissionByType);
+
+                foreach (var adminPermission in adminPermissionList)
+                {
+                    await roleManager.AddClaimAsync(roles[0], new Claim(UserClaims.Permissions, adminPermission.Value!));
+                }
+            }
         }
     }
 
