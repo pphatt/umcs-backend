@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Server.Api.Authorization;
 using Server.Api.Common.Errors;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
@@ -65,6 +67,14 @@ public static class DependencyInjection
         services.AddSingleton<ProblemDetailsFactory, ServerProblemDetailsFactory>();
 
         services.AddAuthorization();
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuthorization(this IServiceCollection services)
+    {
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+        services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
         return services;
     }

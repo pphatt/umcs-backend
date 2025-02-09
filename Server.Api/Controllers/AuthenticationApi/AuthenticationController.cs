@@ -7,6 +7,7 @@ using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
+using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.Authentication;
 
@@ -49,7 +50,7 @@ public class AuthenticationController : ApiController
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Permissions.Roles.View)]
     [Route("test-auth")]
     public IActionResult TestAuthRoute()
     {

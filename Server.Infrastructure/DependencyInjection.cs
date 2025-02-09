@@ -29,6 +29,10 @@ public static class DependencyInjection
 
         services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
 
+        services.AddScoped<IUserService, UserService>();
+
+        services.AddHttpContextAccessor();
+
         services.AddRepositories();
 
         services
@@ -124,6 +128,11 @@ public static class DependencyInjection
                     {
                         var result = string.Empty;
 
+                        if (context.Response.HasStarted)
+                        {
+                            return Task.CompletedTask;
+                        }
+
                         context.Response.ContentType = MediaTypeNames.Application.Json;
 
                         // is it token expired.
@@ -156,17 +165,17 @@ public static class DependencyInjection
                         // Have to check this because when authorized access api failed,
                         // asp.net core web api will redirect to the 401 page and also we send the 401 message too.
                         // This will make the asp.net throw error.
-                        if (!context.Response.HasStarted)
+                        if (context.Response.HasStarted)
                         {
-                            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                            context.Response.ContentType = MediaTypeNames.Application.Json;
-
-                            var result = JsonConvert.SerializeObject(new { message = "You are not authorized." });
-
-                            return context.Response.WriteAsync(result);
+                            return Task.CompletedTask;
                         }
 
-                        return Task.CompletedTask;
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        context.Response.ContentType = MediaTypeNames.Application.Json;
+
+                        var result = JsonConvert.SerializeObject(new { message = "You are not authorized." });
+
+                        return context.Response.WriteAsync(result);
                     },
 
                     OnForbidden = context =>

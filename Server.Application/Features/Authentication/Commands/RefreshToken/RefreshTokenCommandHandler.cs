@@ -45,7 +45,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, E
             return Errors.User.CannotFound;
         }
 
-        var newAccessToken = _jwtTokenGenerator.GenerateToken(userOfToken);
+        var newAccessToken = await _jwtTokenGenerator.GenerateToken(userOfToken);
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         token.Token = newRefreshToken;
