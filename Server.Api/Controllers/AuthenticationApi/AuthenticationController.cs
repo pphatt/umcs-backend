@@ -11,10 +11,10 @@ using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.Authentication;
 
-[Route("[controller]")]
+[Route("api/auth/[controller]")]
 public class AuthenticationController : ApiController
 {
-    IMapper _mapper;
+    private readonly IMapper _mapper;
 
     public AuthenticationController(ISender mediatorSender, IMapper mapper) : base(mediatorSender)
     {

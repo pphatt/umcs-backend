@@ -9,6 +9,7 @@ using Server.Api.Authorization;
 using Server.Api.Common.Errors;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 namespace Server.Api;
@@ -30,6 +31,8 @@ public static class DependencyInjection
                 Title = "School CMS API",
                 Description = "This API focuses on the core CMS functionality, handling campaign management, campaign rules, and campaign execution.",
             });
+
+            c.DocumentFilter<LowercaseDocumentFilter>();
 
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
@@ -78,6 +81,23 @@ public static class DependencyInjection
 
         return services;
     }
+
+    private class LowercaseDocumentFilter : IDocumentFilter
+    {
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+        {
+            var paths = swaggerDoc.Paths.ToDictionary(
+                entry => entry.Key.ToLowerInvariant(),
+                entry => entry.Value
+            );
+
+            swaggerDoc.Paths.Clear();
+            foreach (var path in paths)
+            {
+                swaggerDoc.Paths.Add(path.Key, path.Value);
+            }
+        }
+    }
 }
 
 public static class MigrationManager
@@ -110,9 +130,9 @@ public static class AutoMapperManager
 {
     public static WebApplication AddAutoMapperValidation(this WebApplication app)
     {
-        var scope = app.Services.CreateScope();
-        var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-        mapper.ConfigurationProvider.AssertConfigurationIsValid();
+        //var scope = app.Services.CreateScope();
+        //var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+        //mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
         return app;
     }

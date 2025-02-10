@@ -17,6 +17,8 @@ public class AppUser : IdentityUser<Guid>
     [Required]
     public Guid? FacultyId { get; set; }
 
+    public bool IsActive { get; set; }
+
     public DateTime DateCreated { get; set; }
 
     public DateTime? Dob { get; set; }

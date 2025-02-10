@@ -34,7 +34,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<LoginRe
             return Errors.User.CannotFound;
         }
 
-        if (user.LockoutEnabled)
+        if (!user.IsActive)
         {
             return Errors.User.InactiveOrLockedOut;
         }
