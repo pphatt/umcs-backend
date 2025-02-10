@@ -21,6 +21,7 @@
 
   <ItemGroup>
 	<Folder Include="Common\Dtos\Content\" />
+	<Folder Include="Features\Identity\Commands\DeleteUser\" />
   </ItemGroup>
 
 </Project>
