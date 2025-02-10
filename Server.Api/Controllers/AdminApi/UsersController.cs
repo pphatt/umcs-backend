@@ -2,8 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.Identity.CreateUser;
+using Server.Contracts.Identity.UpdateUser;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.AdminApi;
@@ -27,6 +29,20 @@ public class UsersController : AdminApiController
 
         return result.Match(
             createResult => Ok(createResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("update")]
+    [Authorize(Permissions.Users.Edit)]
+    public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequest request)
+    {
+        var mapper = _mapper.Map<UpdateUserCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            updateResult => Ok(updateResult),
             errors => Problem(errors)
         );
     }

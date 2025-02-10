@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 using MediatR;
 using Server.Contracts.Identity.CreateUser;
-using System.ComponentModel.DataAnnotations;
 
 namespace Server.Application.Features.Users.Commands.CreateUser;
 
