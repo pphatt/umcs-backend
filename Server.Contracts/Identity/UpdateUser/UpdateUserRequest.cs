@@ -1,18 +1,11 @@
 ﻿namespace Server.Contracts.Identity.UpdateUser;
 
-public class UpdateUserRequest 
-{
-    public Guid Id { get; set; }
-
-    public string? FirstName { get; set; }
-
-    public string? LastName { get; set; }
-
-    public Guid FacultyId { get; set; }
-
-    public Guid RoleId { get; set; }
-
-    public DateTime? Dob { get; set; }
-
-    public bool IsActive { get; set; }
-};
+public record UpdateUserRequest(
+    Guid Id,
+    string? FirstName,
+    string? LastName,
+    Guid FacultyId,
+    Guid RoleId,
+    DateTime? Dob,
+    bool IsActive
+);

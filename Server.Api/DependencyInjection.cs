@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Server.Api.Authorization;
 using Server.Api.Common.Errors;
+using Server.Api.Common.Filters;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -58,9 +59,11 @@ public static class DependencyInjection
                         Name = "Bearer",
                         In = ParameterLocation.Header,
                     },
-                    []
+                    new List<string>()
                 }
             });
+
+            c.ParameterFilter<SwaggerNullableParameterFilter>();
         });
 
         // auto-mapper service.
