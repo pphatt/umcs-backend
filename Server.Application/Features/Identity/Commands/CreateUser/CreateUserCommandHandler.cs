@@ -39,7 +39,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
 
         if (role is null)
         {
-            return Errors.Roles.NotFound;
+            return Errors.Roles.CannotFound;
         }
 
         var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.FacultyId);
@@ -48,7 +48,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
         {
             if (faculty is null)
             {
-                return Errors.Faculty.NotFound;
+                return Errors.Faculty.CannotFound;
             }
         }
 

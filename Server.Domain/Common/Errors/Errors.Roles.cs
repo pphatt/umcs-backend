@@ -6,7 +6,7 @@ public static partial class Errors
 {
     public static class Roles
     {
-        public static Error NotFound => Error.NotFound(
+        public static Error CannotFound => Error.NotFound(
             code: "Roles.NotFound",
             description: "Role cannot found."
         );

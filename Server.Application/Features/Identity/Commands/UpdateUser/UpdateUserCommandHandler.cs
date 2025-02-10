@@ -39,14 +39,14 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Error
 
         if (newRole is null) 
         {
-            return Errors.Roles.NotFound;
+            return Errors.Roles.CannotFound;
         }
 
         var newFaculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.FacultyId);
 
         if (newFaculty is null)
         {
-            return Errors.Faculty.NotFound;
+            return Errors.Faculty.CannotFound;
         }
 
         // remove current role.
