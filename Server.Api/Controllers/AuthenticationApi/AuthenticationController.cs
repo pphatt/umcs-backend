@@ -48,12 +48,4 @@ public class AuthenticationController : ApiController
             errors => Problem(errors)
         );
     }
-
-    [HttpGet]
-    [Authorize(Permissions.Roles.View)]
-    [Route("test-auth")]
-    public IActionResult TestAuthRoute()
-    {
-        return Ok("Access auth route successfully.");
-    }
 }
