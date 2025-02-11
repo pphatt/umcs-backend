@@ -3,13 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Server.Application.Common.Interfaces.Authentication;
+using Server.Application.Wrapper;
 using Server.Contracts.Authentication.Login;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Authentication.Commands.Login;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<LoginResult>>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<ResponseWrapper<LoginResult>>>
 {
     ILogger<LoginCommandHandler> _logger;
     UserManager<AppUser> _userManager;
@@ -24,7 +25,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<LoginRe
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<ErrorOr<LoginResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<LoginResult>>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
@@ -34,7 +35,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<LoginRe
             return Errors.User.CannotFound;
         }
 
-        if (user.LockoutEnabled)
+        if (!user.IsActive)
         {
             return Errors.User.InactiveOrLockedOut;
         }
@@ -52,6 +53,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ErrorOr<LoginRe
 
         await _tokenService.StoreRefreshTokenAsync(user.Id, refreshToken);
 
-        return new LoginResult(accessToken, refreshToken);
+        return new ResponseWrapper<LoginResult>
+        {
+            IsSuccessful = true,
+            ResponseData = new LoginResult(accessToken, refreshToken)
+        };
     }
 }

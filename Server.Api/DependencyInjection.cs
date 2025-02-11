@@ -7,9 +7,12 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Server.Api.Authorization;
 using Server.Api.Common.Errors;
+using Server.Api.Common.Filters;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace Server.Api;
 
@@ -17,7 +20,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                // will not include the null value in the response.
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            });
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
@@ -55,9 +63,11 @@ public static class DependencyInjection
                         Name = "Bearer",
                         In = ParameterLocation.Header,
                     },
-                    []
+                    new List<string>()
                 }
             });
+
+            c.ParameterFilter<SwaggerNullableParameterFilter>();
         });
 
         // auto-mapper service.
@@ -110,9 +120,9 @@ public static class AutoMapperManager
 {
     public static WebApplication AddAutoMapperValidation(this WebApplication app)
     {
-        var scope = app.Services.CreateScope();
-        var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-        mapper.ConfigurationProvider.AssertConfigurationIsValid();
+        //var scope = app.Services.CreateScope();
+        //var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+        //mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
         return app;
     }

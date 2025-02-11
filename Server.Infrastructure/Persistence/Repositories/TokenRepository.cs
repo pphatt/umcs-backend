@@ -1,8 +1,8 @@
 ﻿using Server.Application.Common.Interfaces.Persistence;
-using Server.Application.Common.Interfaces.Persistence.Authentication;
+using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Domain.Entity.Token;
 
-namespace Server.Infrastructure.Persistence.Authentication;
+namespace Server.Infrastructure.Persistence.Repositories;
 
 public class TokenRepository : RepositoryBase<RefreshToken, Guid>, ITokenRepository
 {

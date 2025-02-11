@@ -13,7 +13,7 @@ using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
 using Server.Infrastructure.Persistence;
-using Server.Infrastructure.Persistence.Authentication;
+using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
 using System.Net;
 using System.Net.Mime;

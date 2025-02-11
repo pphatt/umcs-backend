@@ -1,6 +1,6 @@
 ﻿using Server.Application.Common.Interfaces.Persistence;
-using Server.Application.Common.Interfaces.Persistence.Authentication;
-using Server.Infrastructure.Persistence.Authentication;
+using Server.Application.Common.Interfaces.Persistence.Repositories;
+using Server.Infrastructure.Persistence.Repositories;
 
 namespace Server.Infrastructure.Persistence;
 
@@ -14,6 +14,8 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public ITokenRepository TokenRepository => new TokenRepository(_context);
+
+    public IFacultyRepository FacultyRepository => new FacultyRepository(_context);
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
