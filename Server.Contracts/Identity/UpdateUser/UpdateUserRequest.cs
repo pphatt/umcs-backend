@@ -1,13 +1,18 @@
-﻿using System.ComponentModel;
+﻿namespace Server.Contracts.Identity.UpdateUser;
 
-namespace Server.Contracts.Identity.UpdateUser;
+public class UpdateUserRequest
+{
+    public Guid Id { get; set; }
 
-public record UpdateUserRequest(
-    [property: DefaultValue("")] Guid Id,
-    [property: DefaultValue("")] string? FirstName,
-    [property: DefaultValue("")] string? LastName,
-    [property: DefaultValue("")] Guid FacultyId,
-    [property: DefaultValue("")] Guid RoleId,
-    [property: DefaultValue("")] DateTime? Dob,
-    [property: DefaultValue("")] bool IsActive
-);
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
+
+    public Guid FacultyId { get; set; }
+
+    public Guid RoleId { get; set; }
+
+    DateTime? Dob { get; set; }
+
+    bool IsActive { get; set; }
+};

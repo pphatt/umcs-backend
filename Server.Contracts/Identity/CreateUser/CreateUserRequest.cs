@@ -1,14 +1,20 @@
-﻿using System.ComponentModel;
+﻿namespace Server.Contracts.Identity.CreateUser;
 
-namespace Server.Contracts.Identity.CreateUser;
+public class CreateUserRequest
+{
+    public string Email { get; set; } = default!;
 
-public record CreateUserRequest(
-    [property: DefaultValue("")] string Email,
-    [property: DefaultValue("")] string UserName,
-    //string Password,
-    [property: DefaultValue("")] string? FirstName,
-    [property: DefaultValue("")] string? LastName,
-    [property: DefaultValue("")] Guid FacultyId,
-    [property: DefaultValue("")] Guid RoleId,
-    [property: DefaultValue("")] bool IsActive
-);
+    public string UserName { get; set; } = default!;
+
+    //public string Password { get; set; } = default!;
+
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
+
+    public Guid FacultyId { get; set; }
+
+    public Guid RoleId { get; set; }
+
+    public bool IsActive { get; set; }
+};

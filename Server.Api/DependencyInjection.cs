@@ -33,8 +33,6 @@ public static class DependencyInjection
                 Description = "This API focuses on the core CMS functionality, handling campaign management, campaign rules, and campaign execution.",
             });
 
-            c.DocumentFilter<LowercaseDocumentFilter>();
-
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -83,23 +81,6 @@ public static class DependencyInjection
         services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
         return services;
-    }
-
-    private class LowercaseDocumentFilter : IDocumentFilter
-    {
-        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
-        {
-            var paths = swaggerDoc.Paths.ToDictionary(
-                entry => entry.Key.ToLowerInvariant(),
-                entry => entry.Value
-            );
-
-            swaggerDoc.Paths.Clear();
-            foreach (var path in paths)
-            {
-                swaggerDoc.Paths.Add(path.Key, path.Value);
-            }
-        }
     }
 }
 
