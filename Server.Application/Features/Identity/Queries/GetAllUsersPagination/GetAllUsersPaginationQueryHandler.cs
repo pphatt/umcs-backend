@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Wrapper.Pagination;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 
-public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPaginationQuery, ErrorOr<List<UserDto>>>
+public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPaginationQuery, ErrorOr<PaginationResult<UserDto>>>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IUnitOfWork _unitOfWork;
@@ -22,7 +23,7 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
         _mapper = mapper;
     }
 
-    public async Task<ErrorOr<List<UserDto>>> Handle(GetAllUsersPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<PaginationResult<UserDto>>> Handle(GetAllUsersPaginationQuery request, CancellationToken cancellationToken)
     {
         var allUserQuery = _userManager.Users;
 
@@ -58,6 +59,12 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
             }
         }
 
-        return result;
+        return new PaginationResult<UserDto>
+        {
+            CurrentPage = request.PageIndex,
+            PageSize = request.PageSize,
+            Results = result,
+            RowCount = count
+        };
     }
 }
