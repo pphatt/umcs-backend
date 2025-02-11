@@ -28,6 +28,17 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
     {
         var allUserQuery = _userManager.Users;
 
+        if (!string.IsNullOrWhiteSpace(request.Keyword))
+        {
+            allUserQuery = allUserQuery.Where(
+                user => user.Email!.Contains(request.Keyword) ||
+                        user.UserName!.Contains(request.Keyword) ||
+                        user.FirstName!.Contains(request.Keyword) ||
+                        user.LastName!.Contains(request.Keyword) || 
+                        user.PhoneNumber!.Contains(request.Keyword)
+            );
+        }
+
         var count = await allUserQuery.CountAsync();
 
         var skipPages = (request.PageIndex - 1) * request.PageSize;
