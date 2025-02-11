@@ -2,15 +2,15 @@
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Wrapper;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Identity.Commands.UpdateUser;
 
-public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, ErrorOr<UpdateUserResult>>
+public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<AppRole> _roleManager;
@@ -25,7 +25,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Error
         _mapper = mapper;
     }
 
-    public async Task<ErrorOr<UpdateUserResult>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
         // find user.
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
@@ -79,6 +79,10 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Error
             return result.Errors.Select(error => Error.Validation(code: error.Code, description: error.Description)).ToArray();
         }
 
-        return new UpdateUserResult(Message: "Update user successfully.");
+        return new ResponseWrapper
+        {
+            IsSuccessful = true,
+            Message = "Update user successfully."
+        };
     }
 }

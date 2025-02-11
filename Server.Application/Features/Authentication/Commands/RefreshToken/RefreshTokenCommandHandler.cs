@@ -3,13 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Services;
+using Server.Application.Wrapper;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Authentication.Commands.RefreshToken;
 
-public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, ErrorOr<RefreshTokenResult>>
+public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, ErrorOr<ResponseWrapper<RefreshTokenResult>>>
 {
     ITokenService _tokenService;
     IJwtTokenGenerator _jwtTokenGenerator;
@@ -24,7 +25,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, E
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<ErrorOr<RefreshTokenResult>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<RefreshTokenResult>>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
         var token = _tokenService.GetByTokenAsync(request.RefreshToken);
 
@@ -53,6 +54,11 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, E
 
         await _tokenService.UpdateRefreshTokenAsync(token);
 
-        return new RefreshTokenResult(newAccessToken, newRefreshToken);
+        return new ResponseWrapper<RefreshTokenResult> 
+        {
+            IsSuccessful = true,
+            Message = "Refresh token successfully.",
+            ResponseData = new RefreshTokenResult(newAccessToken, newRefreshToken)
+        };
     }
 }

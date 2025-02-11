@@ -1,10 +1,10 @@
 ﻿using ErrorOr;
 using MediatR;
-using Server.Contracts.Identity.CreateUser;
+using Server.Application.Wrapper;
 
 namespace Server.Application.Features.Users.Commands.CreateUser;
 
-public class CreateUserCommand : IRequest<ErrorOr<CreateUserResult>>
+public class CreateUserCommand : IRequest<ErrorOr<ResponseWrapper>>
 {
     public string Email { get; set; } = default!;
 

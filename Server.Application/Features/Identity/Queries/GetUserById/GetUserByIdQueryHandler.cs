@@ -4,12 +4,13 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Identity.Queries.GetUserById;
 
-public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, ErrorOr<UserDto>>
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, ErrorOr<ResponseWrapper<UserDto>>>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IMapper _mapper;
@@ -22,7 +23,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, ErrorOr
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<UserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<UserDto>>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
 
@@ -51,6 +52,10 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, ErrorOr
             result.Roles = roles;
         }
 
-        return result;
+        return new ResponseWrapper<UserDto>
+        {
+            IsSuccessful = true,
+            ResponseData = result
+        };
     }
 }

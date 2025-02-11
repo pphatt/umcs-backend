@@ -3,15 +3,14 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
-using Server.Contracts.Identity.CreateUser;
+using Server.Application.Wrapper;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
-using Server.Domain.Entity.Token;
 
 namespace Server.Application.Features.Users.Commands.CreateUser;
 
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ErrorOr<CreateUserResult>>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<AppRole> _roleManager;
@@ -26,7 +25,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
         _mapper = mapper;
     }
 
-    public async Task<ErrorOr<CreateUserResult>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var IsEmailExisted = await _userManager.FindByEmailAsync(request.Email);
 
@@ -80,7 +79,11 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
 
         Console.WriteLine(password);
 
-        return new CreateUserResult(Message: "Create new use successfully.");
+        return new ResponseWrapper
+        {
+            IsSuccessful = true,
+            Message = "Create new use successfully."
+        };
     }
 
     private static Random random = new Random();

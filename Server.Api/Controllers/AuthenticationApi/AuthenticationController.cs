@@ -30,7 +30,7 @@ public class AuthenticationController : ApiController
         var response = await _mediatorSender.Send(mapper);
 
         return response.Match(
-            loginResult => Ok(new AuthenticationResponse(loginResult.AccessToken, loginResult.RefreshToken)),
+            loginResult => Ok(loginResult),
             errors => Problem(errors)
         );
     }
@@ -44,7 +44,7 @@ public class AuthenticationController : ApiController
         var response = await _mediatorSender.Send(mapper);
 
         return response.Match(
-            refreshTokenResult => Ok(new AuthenticationResponse(refreshTokenResult.AccessToken, refreshTokenResult.RefreshToken)),
+            refreshTokenResult => Ok(refreshTokenResult),
             errors => Problem(errors)
         );
     }

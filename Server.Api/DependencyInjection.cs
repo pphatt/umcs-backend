@@ -12,6 +12,7 @@ using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace Server.Api;
 
@@ -19,7 +20,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                // will not include the null value in the response.
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            });
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>

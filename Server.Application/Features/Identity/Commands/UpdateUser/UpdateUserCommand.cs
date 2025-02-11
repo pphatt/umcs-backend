@@ -1,10 +1,10 @@
 ﻿using ErrorOr;
 using MediatR;
-using Server.Contracts.Identity.UpdateUser;
+using Server.Application.Wrapper;
 
 namespace Server.Application.Features.Identity.Commands.UpdateUser;
 
-public class UpdateUserCommand : IRequest<ErrorOr<UpdateUserResult>>
+public class UpdateUserCommand : IRequest<ErrorOr<ResponseWrapper>>
 {
     public Guid Id { get; set; }
 

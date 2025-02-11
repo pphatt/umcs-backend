@@ -2,26 +2,24 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
-using Server.Contracts.Identity.DeleteUser;
+using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Identity.Commands.DeleteUser;
 
-public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, ErrorOr<DeleteUserResult>>
+public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly RoleManager<AppRole> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
 
-    public DeleteUserCommandHandler(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork)
+    public DeleteUserCommandHandler(UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
-        _roleManager = roleManager;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<DeleteUserResult>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
 
@@ -59,6 +57,10 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Error
             return result.Errors.Select(error => Error.Validation(code: error.Code, description: error.Description)).ToArray();
         }
 
-        return new DeleteUserResult(Message: "Delete user successfully.");
+        return new ResponseWrapper
+        {
+            IsSuccessful = true,
+            Message = "Delete user successfully."
+        };
     }
 }
