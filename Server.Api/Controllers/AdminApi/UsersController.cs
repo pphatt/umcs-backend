@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.UpdateUser;
+using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
+using Server.Contracts.Identity.GetAllUsersPagination;
 using Server.Contracts.Identity.GetUserById;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Domain.Common.Constants.Authorization;
@@ -65,8 +67,7 @@ public class UsersController : AdminApiController
         );
     }
 
-    [HttpGet]
-    [Route("{Id}")]
+    [HttpGet("{Id}")]
     [Authorize(Permissions.Users.View)]
     public async Task<IActionResult> GetUserById([FromRoute] GetUserByIdRequest request)
     {
@@ -76,6 +77,20 @@ public class UsersController : AdminApiController
 
         return result.Match(
             getByIdResult => Ok(getByIdResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet]
+    [Authorize(Permissions.Users.View)]
+    public async Task<IActionResult> GetAllUsersPagination([FromQuery] GetAllUsersPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllUsersPaginationQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }
