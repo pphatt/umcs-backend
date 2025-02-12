@@ -159,26 +159,24 @@ public class MediaService : IMediaService
                 continue;
             }
 
-            if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif")
+            using (var stream = file.OpenReadStream())
             {
-                using (var stream = file.OpenReadStream())
+                if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif")
                 {
                     var uploadParams = new ImageUploadParams()
                     {
-                        File = new FileDescription(file.Name, stream),
+                        File = new FileDescription(file.FileName, stream),
                         Folder = folderPath,
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
                 }
-            }
-            else
-            {
-                using (var stream = file.OpenReadStream())
+                else
                 {
+                    Console.WriteLine(file.Name);
                     var rawParams = new RawUploadParams()
                     {
-                        File = new FileDescription(file.Name, stream),
+                        File = new FileDescription(file.FileName, stream),
                         Folder = folderPath,
                     };
 
