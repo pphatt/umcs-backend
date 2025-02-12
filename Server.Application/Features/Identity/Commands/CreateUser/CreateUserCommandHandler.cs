@@ -3,7 +3,9 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Wrapper;
+using Server.Contracts.Common.Email;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
@@ -14,13 +16,15 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<AppRole> _roleManager;
+    private readonly IEmailService _emailService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public CreateUserCommandHandler(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateUserCommandHandler(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _userManager = userManager;
         _roleManager = roleManager;
+        _emailService = emailService;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
@@ -77,7 +81,12 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
             return saveUserRoleResult.Errors.Select(error => Error.Validation(code: error.Code, description: error.Description)).ToArray();
         }
 
-        Console.WriteLine(password);
+        await _emailService.SendEmailAsync(new MailRequest
+        {
+            ToEmail = request.Email,
+            Subject = "Account information",
+            Body = $"Email: <h1>{newUser.Email}</h1> <br> Password: <h1>{password}</h1>."
+        });
 
         return new ResponseWrapper
         {
