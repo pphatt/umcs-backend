@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Server.Application.Common.Dtos.Content.Media;
+using Server.Contracts.Common.Media;
 
 namespace Server.Application.Common.Interfaces.Services.Media;
 
@@ -12,4 +13,6 @@ public interface IMediaService
     Task<(Stream FileStream, string ContentType, string FileName)> DownloadFiles(List<string> path);
 
     Task<List<FileDto>> UploadFilesToCloudinary(List<IFormFile> files, FileRequiredParamsDto dto);
+
+    Task RemoveFilesFromCloudinary(List<DeleteFilesRequest> files);
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Server.Application.Common.Dtos.Content.Media;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Media;
+using Server.Contracts.Common.Media;
 using Server.Domain.Common.Constants.Content;
 using System.IO.Compression;
 
@@ -202,5 +203,52 @@ public class MediaService : IMediaService
         }
 
         return filesDetailsResult;
+    }
+
+    public async Task RemoveFilesFromCloudinary(List<DeleteFilesRequest> files)
+    {
+        if (files.Count() == 0 || files is null)
+        {
+            throw new Exception("Files cannot be empty.");
+        }
+
+        foreach (var file in files)
+        {
+            if (file is null)
+            {
+                continue;
+            }
+
+            ResourceType resourceType = file.Type == FileType.Avatar ? ResourceType.Image : ResourceType.Raw;
+
+            try
+            {
+                DeletionParams deletionParams = new DeletionParams(file.PublicId)
+                {
+                    ResourceType = resourceType,
+                };
+
+                DeletionResult result = await _cloudinary.DestroyAsync(deletionParams);
+
+                if (result.Error is not null)
+                {
+                    throw new Exception($"Cloudinary deletion error for {file.PublicId} of type {file.Type}: {result.Error.Message}");
+                }
+
+                if (result.Result == "not found")
+                {
+                    throw new Exception($"File not found: {file.PublicId} of type {resourceType}");
+                }
+
+                if (result.Result != "ok")
+                {
+                    throw new Exception($"Deletion failed for {file.PublicId} of type {resourceType} - message: {result.Result}");
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new InvalidOperationException($"Deletion error for {file.PublicId} of type {file.Type}. See inner exception for details: {ex.Message}", ex);
+            }
+        }
     }
 }

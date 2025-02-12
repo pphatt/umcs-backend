@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Dtos.Content.Media;
 using Server.Application.Common.Interfaces.Services.Media;
+using Server.Contracts.Common.Media;
+using Server.Contracts.Identity.DeleteUser;
 
 namespace Server.Api.Controllers.TestApi;
 
@@ -25,9 +27,11 @@ public class TestMediaController : TestApiController
     }
 
     [HttpDelete("remove-files")]
-    public async Task<IActionResult> RemoveFiles(List<string> paths)
+    public async Task<IActionResult> RemoveFiles(List<DeleteFilesRequest> request)
     {
-        await _mediaService.RemoveFiles(paths);
+        //await _mediaService.RemoveFiles(paths);
+
+        await _mediaService.RemoveFilesFromCloudinary(request);
 
         return Ok("Delete files successfully.");
     }
