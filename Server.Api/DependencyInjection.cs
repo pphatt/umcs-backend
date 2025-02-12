@@ -88,6 +88,24 @@ public static class DependencyInjection
 
         return services;
     }
+
+    public static IServiceCollection AddCors(this IServiceCollection services,
+        ConfigurationManager configuration,
+        string serverCorsPolicy)
+    {
+        services.AddCors(p => p.AddPolicy(serverCorsPolicy, builderCors => 
+        {
+            var origins = configuration["AllowedOrigins"];
+
+            builderCors
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .WithOrigins(origins!);
+        }));
+
+        return services;
+    }
 }
 
 public static class MigrationManager
