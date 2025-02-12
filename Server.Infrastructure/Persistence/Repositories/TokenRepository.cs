@@ -1,5 +1,4 @@
-﻿using Server.Application.Common.Interfaces.Persistence;
-using Server.Application.Common.Interfaces.Persistence.Repositories;
+﻿using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Domain.Entity.Token;
 
 namespace Server.Infrastructure.Persistence.Repositories;

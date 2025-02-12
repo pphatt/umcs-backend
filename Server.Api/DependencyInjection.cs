@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,6 @@ using Server.Api.Common.Errors;
 using Server.Api.Common.Filters;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -32,7 +30,7 @@ public static class DependencyInjection
         {
             c.EnableAnnotations();
 
-            c.SwaggerDoc("AdminAPI", new OpenApiInfo 
+            c.SwaggerDoc("AdminAPI", new OpenApiInfo
             {
                 Version = "v1",
                 Title = "School CMS API",
@@ -93,7 +91,7 @@ public static class DependencyInjection
         ConfigurationManager configuration,
         string serverCorsPolicy)
     {
-        services.AddCors(p => p.AddPolicy(serverCorsPolicy, builderCors => 
+        services.AddCors(p => p.AddPolicy(serverCorsPolicy, builderCors =>
         {
             var origins = configuration["AllowedOrigins"];
 

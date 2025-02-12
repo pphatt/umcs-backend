@@ -150,8 +150,8 @@ public static class DependencyInjection
                         {
                             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
-                            result = JsonConvert.SerializeObject(new 
-                            { 
+                            result = JsonConvert.SerializeObject(new
+                            {
                                 message = "Token is expired.",
                                 statusCode = (int)HttpStatusCode.Unauthorized,
                                 status = "Unauthorized"

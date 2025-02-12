@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
-using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
-using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.Authentication;
 

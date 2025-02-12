@@ -2,7 +2,6 @@
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Token;
-using Server.Infrastructure.Persistence;
 using System.Security.Cryptography;
 
 namespace Server.Infrastructure.Authentication;

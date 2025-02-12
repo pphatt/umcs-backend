@@ -1,6 +1,5 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using ErrorOr;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -245,10 +244,32 @@ public class MediaService : IMediaService
                     throw new Exception($"Deletion failed for {file.PublicId} of type {resourceType} - message: {result.Result}");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new InvalidOperationException($"Deletion error for {file.PublicId} of type {file.Type}. See inner exception for details: {ex.Message}", ex);
             }
         }
+    }
+
+    public string? GenerateDownloadUrl(List<string> publicIds)
+    {
+        if (publicIds is null || publicIds.Count == 0)
+        {
+            return null;
+        }
+
+        var archiveParams = new ArchiveParams();
+
+        archiveParams.PublicIds(publicIds);
+        archiveParams.ResourceType(FileType.Raw);
+
+        if (publicIds.Count > 1)
+        {
+            return _cloudinary.DownloadArchiveUrl(archiveParams);
+        }
+
+        // some edge cases here:
+        // - Download single image file (checking the FileType and change to image/upload instead raw/upload).
+        return $"http://res.cloudinary.com/dus70fkd3/raw/upload/v1739610592/{publicIds[0]}";
     }
 }

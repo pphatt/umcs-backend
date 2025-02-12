@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
-using ErrorOr;
+﻿using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Server.Api.Common.Http;
+using System.Diagnostics;
 
 namespace Server.Api.Common.Errors;
 

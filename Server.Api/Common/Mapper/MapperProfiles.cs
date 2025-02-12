@@ -20,7 +20,7 @@ namespace Server.Api.Common.Mapper;
 
 public class MapperProfiles : Profile
 {
-    public MapperProfiles() 
+    public MapperProfiles()
     {
         // Authentication.
         CreateMap<LoginRequest, LoginCommand>();

@@ -15,4 +15,6 @@ public interface IMediaService
     Task<List<FileDto>> UploadFilesToCloudinary(List<IFormFile> files, FileRequiredParamsDto dto);
 
     Task RemoveFilesFromCloudinary(List<DeleteFilesRequest> files);
+
+    string? GenerateDownloadUrl(List<string> publicIds);
 }

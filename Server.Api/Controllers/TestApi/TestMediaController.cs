@@ -2,7 +2,6 @@
 using Server.Application.Common.Dtos.Content.Media;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Contracts.Common.Media;
-using Server.Contracts.Identity.DeleteUser;
 
 namespace Server.Api.Controllers.TestApi;
 
@@ -37,26 +36,30 @@ public class TestMediaController : TestApiController
     }
 
     [HttpGet("download-files")]
-    public async Task<IActionResult> DownloadFile([FromQuery] List<string> paths)
+    public async Task<IActionResult> DownloadFile([FromQuery] List<string> request)
     {
-        try
-        {
-            var (fileStream, contentType, fileName) = await _mediaService.DownloadFiles(paths);
+        //try
+        //{
+        //    var (fileStream, contentType, fileName) = await _mediaService.DownloadFiles(paths);
 
-            if (fileStream is MemoryStream memoryStream)
-            {
-                return File(memoryStream.ToArray(), contentType, fileName);
-            }
+        //    if (fileStream is MemoryStream memoryStream)
+        //    {
+        //        return File(memoryStream.ToArray(), contentType, fileName);
+        //    }
 
-            return File(fileStream, contentType, fileName);
-        }
-        catch (FileNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"An error occurred: {ex.Message}");
-        }
+        //    return File(fileStream, contentType, fileName);
+        //}
+        //catch (FileNotFoundException ex)
+        //{
+        //    return NotFound(ex.Message);
+        //}
+        //catch (Exception ex)
+        //{
+        //    return StatusCode(500, $"An error occurred: {ex.Message}");
+        //}
+
+        var url = _mediaService.GenerateDownloadUrl(request);
+
+        return Ok(url);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Server.Application.Common.Dtos.Authorization;
 using Server.Application.Common.Extensions;
 using Server.Domain.Common.Constants.Authorization;
@@ -126,7 +125,7 @@ public partial class DataSeeder
     {
         #region Role List
 
-        var roles = new List<AppRole> 
+        var roles = new List<AppRole>
         {
             new() { Id = Guid.NewGuid(), Name = Roles.Admin, NormalizedName = Roles.Admin.ToUpperInvariant(), DisplayName = "Administrator", },
             new() { Id = Guid.NewGuid(), Name = Roles.Student, NormalizedName = Roles.Student.ToUpperInvariant(), DisplayName = "Student" },
@@ -149,7 +148,7 @@ public partial class DataSeeder
 
         var list = new List<AppUser>()
         {
-            new() 
+            new()
             {
                 Id = Guid.NewGuid(),
                 FirstName = "Tien Phat",

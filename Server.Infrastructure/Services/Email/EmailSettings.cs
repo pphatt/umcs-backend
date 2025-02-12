@@ -1,6 +1,4 @@
-﻿using Microsoft.Identity.Client;
-
-namespace Server.Infrastructure.Services.Email;
+﻿namespace Server.Infrastructure.Services.Email;
 
 public class EmailSettings
 {

@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
-using Server.Contracts.Identity.UpdateUser;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
@@ -37,7 +36,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Error
 
         var newRole = await _roleManager.FindByIdAsync(request.RoleId.ToString());
 
-        if (newRole is null) 
+        if (newRole is null)
         {
             return Errors.Roles.CannotFound;
         }

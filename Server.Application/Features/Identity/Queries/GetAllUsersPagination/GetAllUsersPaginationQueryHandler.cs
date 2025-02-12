@@ -34,7 +34,7 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
                 user => user.Email!.Contains(request.Keyword) ||
                         user.UserName!.Contains(request.Keyword) ||
                         user.FirstName!.Contains(request.Keyword) ||
-                        user.LastName!.Contains(request.Keyword) || 
+                        user.LastName!.Contains(request.Keyword) ||
                         user.PhoneNumber!.Contains(request.Keyword)
             );
         }
@@ -71,7 +71,7 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
             }
         }
 
-        return new ResponseWrapper<PaginationResult<UserDto>> 
+        return new ResponseWrapper<PaginationResult<UserDto>>
         {
             IsSuccessful = true,
             ResponseData = new PaginationResult<UserDto>

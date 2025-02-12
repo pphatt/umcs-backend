@@ -68,8 +68,8 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionReq
         // - check is the require permission for the route is contained in the permissions list.
         var result =
             permissions.Where(
-                x => x.Type == "permissions" && 
-                x.Value == requirement.Permission && 
+                x => x.Type == "permissions" &&
+                x.Value == requirement.Permission &&
                 x.Issuer == "LOCAL AUTHORITY"
             );
 
