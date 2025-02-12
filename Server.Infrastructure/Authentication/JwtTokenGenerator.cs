@@ -84,7 +84,8 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             {
                 permissions = rolePermissions.ConvertAll(permission => permission.Value!);
             }
-        } else
+        }
+        else
         {
             foreach (var roleName in roles)
             {

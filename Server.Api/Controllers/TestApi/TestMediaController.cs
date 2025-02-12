@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Server.Application.Common.Dtos.Content.Media;
 using Server.Application.Common.Interfaces.Services.Media;
 
 namespace Server.Api.Controllers.TestApi;
@@ -14,9 +15,11 @@ public class TestMediaController : TestApiController
     }
 
     [HttpPost("upload-files")]
-    public async Task<IActionResult> UploadFiles(List<IFormFile> files, string type)
+    public async Task<IActionResult> UploadFiles([FromForm] List<IFormFile> files, [FromForm] FileRequiredParamsDto request)
     {
-        await _mediaService.SaveFilesAsync(files, type);
+        //await _mediaService.SaveFilesAsync(files, type);
+
+        await _mediaService.UploadFilesToCloudinary(files, request);
 
         return Ok("Save files successfully.");
     }

@@ -12,7 +12,7 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250212074251_AddAvatarToUserTable")]
+    [Migration("20250215090219_AddAvatarToUserTable")]
     partial class AddAvatarToUserTable
     {
         /// <inheritdoc />
@@ -398,8 +398,12 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("AvatarPublicId")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

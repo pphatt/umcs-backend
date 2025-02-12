@@ -1,9 +1,13 @@
-﻿using ErrorOr;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using ErrorOr;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Server.Application.Common.Dtos.Content.Media;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Media;
+using Server.Domain.Common.Constants.Content;
 using System.IO.Compression;
 
 namespace Server.Infrastructure.Services.Media;
@@ -13,12 +17,19 @@ public class MediaService : IMediaService
     private readonly IWebHostEnvironment _hostEnvironment;
     private readonly MediaSettings _mediaSettings;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private CloudinarySettings _cloudinarySettings;
+    private Cloudinary _cloudinary;
 
-    public MediaService(IWebHostEnvironment environment, IOptions<MediaSettings> mediaSettings, IDateTimeProvider dateTimeProvider)
+    public MediaService(IWebHostEnvironment environment, IOptions<MediaSettings> mediaSettings, IDateTimeProvider dateTimeProvider, IOptions<CloudinarySettings> cloudinarySettings)
     {
         _hostEnvironment = environment;
         _mediaSettings = mediaSettings.Value;
         _dateTimeProvider = dateTimeProvider;
+        _cloudinarySettings = cloudinarySettings.Value;
+
+        Account account = new Account(_cloudinarySettings.CloudName, _cloudinarySettings.ApiKey, _cloudinarySettings.ApiSecret);
+
+        _cloudinary = new Cloudinary(account);
     }
 
     public async Task SaveFilesAsync(List<IFormFile> files, string type)
@@ -125,5 +136,71 @@ public class MediaService : IMediaService
         memoryStream.Seek(0, SeekOrigin.Begin);
 
         return (memoryStream, "application/zip", zipName);
+    }
+
+    public async Task<List<FileDto>> UploadFilesToCloudinary(List<IFormFile> files, FileRequiredParamsDto dto)
+    {
+        var filesDetailsResult = new List<FileDto>();
+
+        if (files is null)
+        {
+            return filesDetailsResult;
+        }
+
+        foreach (var file in files)
+        {
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            var folderPath = dto.type == FileType.Avatar ? $"user-{dto.userId}/avatar" : $"user-{dto.userId}/contributions/contribution-{dto.contributionId}";
+
+            UploadResult uploadResult;
+
+            if (file.Length < 0)
+            {
+                continue;
+            }
+
+            if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif")
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.Name, stream),
+                        Folder = folderPath,
+                    };
+
+                    uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                }
+            }
+            else
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    var rawParams = new RawUploadParams()
+                    {
+                        File = new FileDescription(file.Name, stream),
+                        Folder = folderPath,
+                    };
+
+                    uploadResult = await _cloudinary.UploadAsync(rawParams);
+                }
+            }
+
+            if (uploadResult.Error is null)
+            {
+                var fileDetails = new FileDto
+                {
+                    Path = uploadResult.Url.ToString(),
+                    Name = uploadResult.DisplayName.ToString(),
+                    Extension = extension,
+                    PublicId = uploadResult.PublicId,
+                    Type = dto.type
+                };
+
+                filesDetailsResult.Add(fileDetails);
+            }
+        }
+
+        return filesDetailsResult;
     }
 }

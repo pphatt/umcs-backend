@@ -13,9 +13,16 @@ namespace Server.Infrastructure.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Avatar",
                 table: "AppUsers",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                type: "nvarchar(500)",
+                maxLength: 500,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "AvatarPublicId",
+                table: "AppUsers",
+                type: "nvarchar(500)",
+                maxLength: 500,
+                nullable: true);
         }
 
         /// <inheritdoc />
@@ -23,6 +30,10 @@ namespace Server.Infrastructure.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Avatar",
+                table: "AppUsers");
+
+            migrationBuilder.DropColumn(
+                name: "AvatarPublicId",
                 table: "AppUsers");
         }
     }

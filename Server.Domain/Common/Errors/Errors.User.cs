@@ -8,7 +8,7 @@ public static partial class Errors
     {
         public static Error DuplicateEmail => Error.Validation(
             code: "User.DuplicateEmail",
-            description: "User already exists."
+            description: "User's email already exists."
         );
 
         public static Error CannotFound => Error.NotFound(

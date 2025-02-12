@@ -23,7 +23,11 @@ public class AppUser : IdentityUser<Guid>
 
     public DateTime? Dob { get; set; }
 
-    public string Avatar { get; set; } = default!;
+    [MaxLength(500)]
+    public string? Avatar { get; set; } = default!;
+
+    [MaxLength(500)]
+    public string? AvatarPublicId { get; set; } = default!;
 
     public RefreshToken RefreshToken { get; set; } = default!;
 }

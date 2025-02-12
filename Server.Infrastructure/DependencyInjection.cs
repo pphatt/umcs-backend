@@ -43,6 +43,7 @@ public static class DependencyInjection
 
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
         services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
 
         services
             .AddDatabase(configuration)
