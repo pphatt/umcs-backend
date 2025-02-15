@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Server.Application.Wrapper;
 
 namespace Server.Application.Features.Users.Commands.CreateUser;
@@ -23,4 +24,6 @@ public class CreateUserCommand : IRequest<ErrorOr<ResponseWrapper>>
     public DateTime? Dob { get; set; }
 
     public bool IsActive { get; set; }
+
+    public IFormFile? Avatar { get; set; } = default!;
 }

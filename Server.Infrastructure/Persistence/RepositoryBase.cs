@@ -53,7 +53,7 @@ public class RepositoryBase<T, Key> : IRepository<T, Key> where T : class
         _dbSet.Update(entity);
     }
 
-    public void UpdateRange(IEnumerable<T> entities) 
+    public void UpdateRange(IEnumerable<T> entities)
     {
         _dbSet.UpdateRange(entities);
     }

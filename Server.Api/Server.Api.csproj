@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\ClientApi\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

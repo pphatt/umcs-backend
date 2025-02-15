@@ -23,7 +23,7 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Error
     {
         var user = await _userManager.FindByIdAsync(request.Id.ToString());
 
-        if (user is null) 
+        if (user is null)
         {
             return Errors.User.CannotFound;
         }

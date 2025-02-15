@@ -46,8 +46,8 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, ErrorOr
         }
 
         var roles = await _userManager.GetRolesAsync(user);
-        
-        if (roles is not null) 
+
+        if (roles is not null)
         {
             result.Roles = roles;
         }

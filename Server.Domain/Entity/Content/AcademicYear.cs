@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Domain.Entity.Content;
@@ -26,5 +25,5 @@ public class AcademicYear : BaseEntity
     [Required]
     public required bool IsActive { get; set; } = false;
 
-    public List<Contribution> Contributions { get; set; } = new(); 
+    public List<Contribution> Contributions { get; set; } = new();
 }

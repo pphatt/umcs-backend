@@ -11,12 +11,14 @@ using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
+using Server.Application.Common.Interfaces.Services.Media;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
 using Server.Infrastructure.Services.Email;
+using Server.Infrastructure.Services.Media;
 using System.Net;
 using System.Net.Mime;
 using System.Text;
@@ -33,12 +35,15 @@ public static class DependencyInjection
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IMediaService, MediaService>();
 
         services.AddHttpContextAccessor();
 
         services.AddRepositories();
 
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+        services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
 
         services
             .AddDatabase(configuration)
@@ -145,8 +150,8 @@ public static class DependencyInjection
                         {
                             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
-                            result = JsonConvert.SerializeObject(new 
-                            { 
+                            result = JsonConvert.SerializeObject(new
+                            {
                                 message = "Token is expired.",
                                 statusCode = (int)HttpStatusCode.Unauthorized,
                                 status = "Unauthorized"

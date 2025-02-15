@@ -6,14 +6,14 @@ public class PaginationResultBase
 
     public int PageCount
     {
-        get 
+        get
         {
             _pageCount = (int)Math.Ceiling((double)RowCount / PageSize);
-            return _pageCount; 
+            return _pageCount;
         }
-        private set 
+        private set
         {
-            if (value <= 0) 
+            if (value <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }

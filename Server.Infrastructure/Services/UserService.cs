@@ -12,7 +12,7 @@ public class UserService : IUserService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public bool? IsAuthenticated() 
+    public bool? IsAuthenticated()
         => _httpContextAccessor
             .HttpContext?
             .User

@@ -1,4 +1,6 @@
-﻿namespace Server.Contracts.Identity.CreateUser;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Server.Contracts.Identity.CreateUser;
 
 public class CreateUserRequest
 {
@@ -15,6 +17,8 @@ public class CreateUserRequest
     public Guid FacultyId { get; set; }
 
     public Guid RoleId { get; set; }
+
+    public IFormFile? Avatar { get; set; }
 
     public bool IsActive { get; set; }
 };

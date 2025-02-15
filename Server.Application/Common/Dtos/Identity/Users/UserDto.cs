@@ -27,7 +27,7 @@ public class UserDto
 
     public class AutoMapperProfile : Profile
     {
-        public AutoMapperProfile() 
+        public AutoMapperProfile()
         {
             CreateMap<AppUser, UserDto>();
         }

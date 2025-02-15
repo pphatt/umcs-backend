@@ -4,11 +4,14 @@ using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var serverCorsPolicy = "ServerCorsPolicy";
+
 // Add services to the container.
 {
     builder.Host.AddLogging();
 
     builder.Services
+        .AddCors(builder.Configuration, serverCorsPolicy)
         .AddPresentation()
         .AddApplication()
         .AddInfrastructure(builder.Configuration);
@@ -38,6 +41,10 @@ if (app.Environment.IsDevelopment())
 }
 
 {
+    app.UseStaticFiles();
+
+    app.UseCors(serverCorsPolicy);
+
     app.UseExceptionHandler("/error");
 
     app.UseHttpsRedirection();

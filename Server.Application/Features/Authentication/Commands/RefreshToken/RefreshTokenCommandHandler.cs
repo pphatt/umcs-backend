@@ -34,7 +34,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, E
             return Errors.RefreshToken.Invalid;
         }
 
-        if (token.RefreshTokenExpiryTime <= _dateTimeProvider.UtcNow) 
+        if (token.RefreshTokenExpiryTime <= _dateTimeProvider.UtcNow)
         {
             return Errors.RefreshToken.Expired;
         }
@@ -54,7 +54,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, E
 
         await _tokenService.UpdateRefreshTokenAsync(token);
 
-        return new ResponseWrapper<RefreshTokenResult> 
+        return new ResponseWrapper<RefreshTokenResult>
         {
             IsSuccessful = true,
             Message = "Refresh token successfully.",

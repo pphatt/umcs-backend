@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Server.Application.Common.Dtos.Content.Media;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services.Email;
+using Server.Application.Common.Interfaces.Services.Media;
 using Server.Application.Wrapper;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Constants.Authorization;
+using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
@@ -19,14 +23,16 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
     private readonly IEmailService _emailService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IMediaService _mediaService;
 
-    public CreateUserCommandHandler(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateUserCommandHandler(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IUnitOfWork unitOfWork, IMapper mapper, IMediaService mediaService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _emailService = emailService;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _mediaService = mediaService;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -67,6 +73,25 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
 
         newUser.LockoutEnabled = false;
 
+        // handle user avatar.
+        if (request.Avatar is not null)
+        {
+            var files = new List<IFormFile> { request.Avatar };
+            var required = new FileRequiredParamsDto
+            {
+                type = FileType.Avatar,
+                userId = newUser.Id,
+            };
+
+            var uploadImageResult = await _mediaService.UploadFilesToCloudinary(files, required);
+
+            foreach (var info in uploadImageResult)
+            {
+                newUser.Avatar = info.Path;
+                newUser.AvatarPublicId = info.PublicId;
+            }
+        }
+
         var createNewUserResult = await _userManager.CreateAsync(newUser);
 
         if (!createNewUserResult.Succeeded)
@@ -81,6 +106,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
             return saveUserRoleResult.Errors.Select(error => Error.Validation(code: error.Code, description: error.Description)).ToArray();
         }
 
+        // handle send email.
         await _emailService.SendEmailAsync(new MailRequest
         {
             ToEmail = request.Email,

@@ -5,7 +5,7 @@ public interface IResponseWrapper
     string? Message { get; set; }
 
     List<string>? Messages { get; set; }
-    
+
     bool IsSuccessful { get; set; }
 }
 

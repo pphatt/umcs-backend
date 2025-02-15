@@ -7,7 +7,7 @@ public class ResponseWrapper : IResponseWrapper
 
     public List<string>? Messages
     {
-        get => _messages.Any() ? _messages : null; 
+        get => _messages.Any() ? _messages : null;
         set => _messages = value ?? new();
     }
 
