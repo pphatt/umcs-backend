@@ -10,6 +10,7 @@ using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
 using Server.Application.Features.Role.Commands.UpdateRole;
+using Server.Application.Features.Role.Queries.GetAllRolePermissions;
 using Server.Application.Features.Role.Queries.GetAllRolesPagination;
 using Server.Application.Features.Role.Queries.GetRoleById;
 using Server.Application.Features.Users.Commands.CreateUser;
@@ -22,6 +23,7 @@ using Server.Contracts.Identity.GetUserById;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
+using Server.Contracts.Roles.GetAllRolePermissions;
 using Server.Contracts.Roles.GetAllRolesPagination;
 using Server.Contracts.Roles.GetRoleById;
 using Server.Contracts.Roles.UpdateRole;
@@ -74,5 +76,8 @@ public class MapperProfiles : Profile
 
         // Get All Role Pagination.
         CreateMap<GetAllRolesPaginationRequest, GetAllRolesPaginationQuery>();
+
+        // Get All Role Permissions.
+        CreateMap<GetAllRolePermissionsRequest, GetAllRolePermissionsQuery>();
     }
 }

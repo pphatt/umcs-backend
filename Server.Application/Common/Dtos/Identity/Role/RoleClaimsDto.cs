@@ -1,4 +1,4 @@
-﻿namespace Server.Application.Common.Dtos.Authorization;
+﻿namespace Server.Application.Common.Dtos.Identity.Role;
 
 public class RoleClaimsDto
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Server.Application.Common.Dtos.Authorization;
+using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Services;

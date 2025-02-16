@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Server.Application.Common.Dtos.Authorization;
+using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Extensions;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;

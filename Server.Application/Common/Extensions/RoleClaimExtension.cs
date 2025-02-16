@@ -1,5 +1,6 @@
-﻿using Server.Application.Common.Dtos.Authorization;
+﻿using Server.Application.Common.Dtos.Identity.Role;
 using Server.Domain.Common.Constants.Authorization;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace Server.Application.Common.Extensions;
@@ -15,19 +16,21 @@ public static class RoleClaimExtension
         {
             string value = field.GetValue(null)!.ToString()!;
 
-            //var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), true);
+            var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), true);
 
-            //if (attributes.Any())
-            //{
-            //    var description = (DescriptionAttribute)attributes[0];
-            //    displayName = description.Description;
-            //}
+            var displayName = string.Empty;
+
+            if (attributes.Any())
+            {
+                var description = (DescriptionAttribute)attributes[0];
+                displayName = description.Description;
+            }
 
             allPermissions.Add(new RoleClaimsDto
             {
-                Value = field.GetValue(null)!.ToString(),
+                Value = value,
                 Type = UserClaims.Permissions,
-                //DisplayName = displayName
+                DisplayName = displayName
             });
         }
     }

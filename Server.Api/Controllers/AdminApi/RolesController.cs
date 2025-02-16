@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
 using Server.Application.Features.Role.Commands.UpdateRole;
+using Server.Application.Features.Role.Queries.GetAllRolePermissions;
 using Server.Application.Features.Role.Queries.GetAllRolesPagination;
 using Server.Application.Features.Role.Queries.GetRoleById;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
+using Server.Contracts.Roles.GetAllRolePermissions;
 using Server.Contracts.Roles.GetAllRolesPagination;
 using Server.Contracts.Roles.GetRoleById;
 using Server.Contracts.Roles.UpdateRole;
@@ -86,6 +88,20 @@ public class RolesController : AdminApiController
     public async Task<IActionResult> GetAllRolesPagination([FromQuery] GetAllRolesPaginationRequest request)
     {
         var mapper = _mapper.Map<GetAllRolesPaginationQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("{Id}/permissions")]
+    [Authorize(Permissions.Roles.View)]
+    public async Task<IActionResult> GetAllRolePermissions([FromRoute] GetAllRolePermissionsRequest request)
+    {
+        var mapper = _mapper.Map<GetAllRolePermissionsQuery>(request);
 
         var result = await _mediatorSender.Send(mapper);
 
