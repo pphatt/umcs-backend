@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Server.Api.Common.Filters;
 using Server.Application.Common.Dtos.Content.Media;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Contracts.Common.Media;
@@ -16,6 +17,7 @@ public class TestMediaController : TestApiController
     }
 
     [HttpPost("upload-files")]
+    [FileValidationFilter(5 * 1024 * 1024)]
     public async Task<IActionResult> UploadFiles([FromForm] List<IFormFile> files, [FromForm] FileRequiredParamsDto request)
     {
         //await _mediaService.SaveFilesAsync(files, type);
