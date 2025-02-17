@@ -9,6 +9,7 @@ using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
+using Server.Application.Features.Role.Commands.SavePermissionsToRole;
 using Server.Application.Features.Role.Commands.UpdateRole;
 using Server.Application.Features.Role.Queries.GetAllRolePermissions;
 using Server.Application.Features.Role.Queries.GetAllRolesPagination;
@@ -79,5 +80,8 @@ public class MapperProfiles : Profile
 
         // Get All Role Permissions.
         CreateMap<GetAllRolePermissionsRequest, GetAllRolePermissionsQuery>();
+
+        // Save Role Permissions.
+        CreateMap<PermissionsDto, SavePermissionsToRoleCommand>();
     }
 }

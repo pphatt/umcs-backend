@@ -2,8 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
+using Server.Application.Features.Role.Commands.SavePermissionsToRole;
 using Server.Application.Features.Role.Commands.UpdateRole;
 using Server.Application.Features.Role.Queries.GetAllRolePermissions;
 using Server.Application.Features.Role.Queries.GetAllRolesPagination;
@@ -107,6 +109,20 @@ public class RolesController : AdminApiController
 
         return result.Match(
             queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("/save-permissions")]
+    [Authorize(Permissions.Roles.Edit)]
+    public async Task<IActionResult> SavePermissionsToRole([FromBody] PermissionsDto request)
+    {
+        var mapper = _mapper.Map<SavePermissionsToRoleCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            saveResult => Ok(saveResult),
             errors => Problem(errors)
         );
     }
