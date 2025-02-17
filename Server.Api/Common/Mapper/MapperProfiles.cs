@@ -1,8 +1,14 @@
 ﻿using AutoMapper;
+using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
+using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
+using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
+using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
+using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
+using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
@@ -17,6 +23,11 @@ using Server.Application.Features.Role.Queries.GetRoleById;
 using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
+using Server.Contracts.Faculties.CreateFaculty;
+using Server.Contracts.Faculties.DeleteFaculty;
+using Server.Contracts.Faculties.GetAllFacultiesPagination;
+using Server.Contracts.Faculties.GetFacultyById;
+using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
 using Server.Contracts.Identity.GetAllUsersPagination;
@@ -28,6 +39,7 @@ using Server.Contracts.Roles.GetAllRolePermissions;
 using Server.Contracts.Roles.GetAllRolesPagination;
 using Server.Contracts.Roles.GetRoleById;
 using Server.Contracts.Roles.UpdateRole;
+using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Api.Common.Mapper;
@@ -66,5 +78,17 @@ public class MapperProfiles : Profile
 
         CreateMap<GetAllRolePermissionsRequest, GetAllRolePermissionsQuery>();
         CreateMap<PermissionsDto, SavePermissionsToRoleCommand>();
+
+        // Faculty.
+        CreateMap<Faculty, FacultyDto>().ReverseMap();
+
+        CreateMap<CreateFacultyRequest, CreateFacultyCommand>();
+        CreateMap<UpdateFacultyRequest, UpdateFacultyCommand>();
+        CreateMap<DeleteFacultyRequest, DeleteFacultyCommand>();
+
+        CreateMap<GetFacultyByIdRequest, GetFacultyByIdQuery>();
+        CreateMap<GetAllFacultiesPaginationRequest, GetAllFacultiesPaginationQuery>();
+
+        CreateMap<Faculty, FacultyDto>();
     }
 }

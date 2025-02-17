@@ -1,5 +1,10 @@
-﻿namespace Server.Application.Features.Role.Commands.SavePermissionsToRole;
+﻿using FluentValidation;
 
-public class SavePermissionsToRoleCommandValidator
+namespace Server.Application.Features.Role.Commands.SavePermissionsToRole;
+
+public class SavePermissionsToRoleCommandValidator : AbstractValidator<SavePermissionsToRoleCommand>
 {
+    public SavePermissionsToRoleCommandValidator()
+    {
+    }
 }
