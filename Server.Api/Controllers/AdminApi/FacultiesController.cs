@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
+using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Contracts.Faculties.CreateFaculty;
 using Server.Contracts.Faculties.DeleteFaculty;
+using Server.Contracts.Faculties.GetFacultyById;
 using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Domain.Common.Constants.Authorization;
 
@@ -59,6 +61,20 @@ public class FacultiesController : AdminApiController
 
         return result.Match(
             deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("{Id}")]
+    [Authorize(Permissions.Faculties.View)]
+    public async Task<IActionResult> GetFacultyById([FromRoute] GetFacultyByIdRequest request)
+    {
+        var mapper = _mapper.Map<GetFacultyByIdQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }
