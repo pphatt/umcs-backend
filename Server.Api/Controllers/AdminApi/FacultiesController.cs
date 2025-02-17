@@ -3,7 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
+using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 using Server.Contracts.Faculties.CreateFaculty;
+using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.AdminApi;
@@ -19,7 +21,7 @@ public class FacultiesController : AdminApiController
 
     [HttpPost("create")]
     [Authorize(Permissions.Faculties.Create)]
-    public async Task<IActionResult> CreateFaculties([FromForm] CreateFacultyRequest request)
+    public async Task<IActionResult> CreateFaculty([FromForm] CreateFacultyRequest request)
     {
         var mapper = _mapper.Map<CreateFacultyCommand>(request);
 
@@ -27,6 +29,20 @@ public class FacultiesController : AdminApiController
 
         return result.Match(
             createResult => Ok(createResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("{Id}")]
+    [Authorize(Permissions.Faculties.Edit)]
+    public async Task<IActionResult> UpdateFaculty(UpdateFacultyRequest request)
+    {
+        var mapper = _mapper.Map<UpdateFacultyCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            updateResult => Ok(updateResult),
             errors => Problem(errors)
         );
     }
