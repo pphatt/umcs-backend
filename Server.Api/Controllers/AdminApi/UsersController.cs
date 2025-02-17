@@ -39,9 +39,9 @@ public class UsersController : AdminApiController
         );
     }
 
-    [HttpPut("update")]
+    [HttpPut("{Id}")]
     [Authorize(Permissions.Users.Edit)]
-    public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequest request)
+    public async Task<IActionResult> UpdateUser(UpdateUserRequest request)
     {
         var mapper = _mapper.Map<UpdateUserCommand>(request);
 
