@@ -43,45 +43,28 @@ public class MapperProfiles : Profile
         // User.
         CreateMap<AppUser, UserDto>().ReverseMap();
 
-        // Role.
-        CreateMap<AppRole, RoleDto>().ReverseMap();
-
-        // Create User.
         CreateMap<CreateUserRequest, CreateUserCommand>();
         CreateMap<CreateUserCommand, AppUser>();
 
-        // Update User.
         CreateMap<UpdateUserRequest, UpdateUserCommand>();
         CreateMap<UpdateUserCommand, AppUser>();
 
-        // Delete User.
         CreateMap<DeleteUserRequest, DeleteUserCommand>();
 
-        // Get User By ID.
         CreateMap<GetUserByIdRequest, GetUserByIdQuery>();
-
-        // Get User Pagination.
         CreateMap<GetAllUsersPaginationRequest, GetAllUsersPaginationQuery>();
 
-        // Create Role.
+        // Role.
+        CreateMap<AppRole, RoleDto>().ReverseMap();
+
         CreateMap<CreateRoleRequest, CreateRoleCommand>();
-
-        // Update Role.
         CreateMap<UpdateRoleRequest, UpdateRoleCommand>();
-
-        // Delete Role.
         CreateMap<DeleteRoleRequest, DeleteRoleCommand>();
 
-        // Get Role By ID.
         CreateMap<GetRoleByIdRequest, GetRoleByIdQuery>();
-
-        // Get All Role Pagination.
         CreateMap<GetAllRolesPaginationRequest, GetAllRolesPaginationQuery>();
 
-        // Get All Role Permissions.
         CreateMap<GetAllRolePermissionsRequest, GetAllRolePermissionsQuery>();
-
-        // Save Role Permissions.
         CreateMap<PermissionsDto, SavePermissionsToRoleCommand>();
     }
 }
