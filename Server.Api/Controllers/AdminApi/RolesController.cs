@@ -57,7 +57,7 @@ public class RolesController : AdminApiController
         );
     }
 
-    [HttpDelete("delete/{Id}")]
+    [HttpDelete("{Id}")]
     [Authorize(Permissions.Roles.Delete)]
     public async Task<IActionResult> DeleteRole([FromRoute] DeleteRoleRequest request)
     {
