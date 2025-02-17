@@ -85,7 +85,7 @@ public class RolesController : AdminApiController
         );
     }
 
-    [HttpGet]
+    [HttpGet("pagination")]
     [Authorize(Permissions.Roles.View)]
     public async Task<IActionResult> GetAllRolesPagination([FromQuery] GetAllRolesPaginationRequest request)
     {

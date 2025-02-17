@@ -81,7 +81,7 @@ public class UsersController : AdminApiController
         );
     }
 
-    [HttpGet]
+    [HttpGet("pagination")]
     [Authorize(Permissions.Users.View)]
     public async Task<IActionResult> GetAllUsersPagination([FromQuery] GetAllUsersPaginationRequest request)
     {
