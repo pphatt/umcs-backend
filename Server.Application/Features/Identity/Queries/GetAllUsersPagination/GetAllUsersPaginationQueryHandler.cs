@@ -41,7 +41,8 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
 
         var count = await allUserQuery.CountAsync();
 
-        var skipPages = (request.PageIndex - 1) * request.PageSize;
+        var pageIndex = request.PageIndex < 0 ? 1 : request.PageIndex;
+        var skipPages = (pageIndex - 1) * request.PageSize;
 
         allUserQuery =
             allUserQuery

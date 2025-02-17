@@ -36,7 +36,8 @@ public class GetAllRolesPaginationQueryHandler : IRequestHandler<GetAllRolesPagi
 
         var count = await allRolesQuery.CountAsync();
 
-        var skipPage = (request.PageIndex - 1) * request.PageSize;
+        var pageIndex = request.PageIndex < 0 ? 1 : request.PageIndex;
+        var skipPage = (pageIndex - 1) * request.PageSize;
 
         allRolesQuery = 
             allRolesQuery
