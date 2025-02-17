@@ -117,7 +117,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
         return new ResponseWrapper
         {
             IsSuccessful = true,
-            Message = "Create new use successfully."
+            Message = "Create new user successfully."
         };
     }
 

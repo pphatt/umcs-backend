@@ -1,4 +1,4 @@
-﻿namespace Server.Application.Common.Dtos.Authorization;
+﻿namespace Server.Application.Common.Dtos.Identity.Role;
 
 public class RoleClaimsDto
 {
@@ -8,5 +8,5 @@ public class RoleClaimsDto
 
     public string? DisplayName { get; set; }
 
-    public bool? Selected { get; set; } = false;
+    public bool Selected { get; set; } = false;
 }

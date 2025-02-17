@@ -16,7 +16,7 @@ public static class Permissions
         public const string Edit = "Permissions.Roles.Edit";
 
         [Description("Delete Role")]
-        public const string Delete = "Permission.Roles.Delete";
+        public const string Delete = "Permissions.Roles.Delete";
     }
 
     public static class Users
