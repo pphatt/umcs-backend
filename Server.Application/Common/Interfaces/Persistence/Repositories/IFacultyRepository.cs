@@ -9,4 +9,6 @@ public interface IFacultyRepository : IRepository<Faculty, Guid>
     Task<int> Count();
 
     Task<PaginationResult<FacultyDto>> GetAllFacultiesPagination(string? keyword, int pageIndex = 1, int pageSize = 10);
+
+    Task<Faculty> GetFacultyByNameAsync(string Name);
 }

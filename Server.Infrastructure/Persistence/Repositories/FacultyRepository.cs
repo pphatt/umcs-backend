@@ -56,4 +56,9 @@ public class FacultyRepository : RepositoryBase<Faculty, Guid>, IFacultyReposito
             Results = result
         };
     }
+
+    public async Task<Faculty> GetFacultyByNameAsync(string name)
+    {
+        return await _context.Faculties.FirstOrDefaultAsync(x => x.Name == name);
+    }
 }
