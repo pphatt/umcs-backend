@@ -1,7 +1,10 @@
-﻿namespace Server.Contracts.Identity.UpdateUser;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Server.Contracts.Identity.UpdateUser;
 
 public class UpdateUserRequest
 {
+    [FromRoute]
     public Guid Id { get; set; }
 
     public string? FirstName { get; set; }

@@ -43,9 +43,9 @@ public class RolesController : AdminApiController
         );
     }
 
-    [HttpPut("update")]
+    [HttpPut("{Id}")]
     [Authorize(Permissions.Roles.Edit)]
-    public async Task<IActionResult> EditRole([FromForm] UpdateRoleRequest request)
+    public async Task<IActionResult> EditRole(UpdateRoleRequest request)
     {
         var mapper = _mapper.Map<UpdateRoleCommand>(request);
 
