@@ -4,6 +4,7 @@ using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
+using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.UpdateUser;
@@ -20,6 +21,7 @@ using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Faculties.CreateFaculty;
+using Server.Contracts.Faculties.DeleteFaculty;
 using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
@@ -74,5 +76,6 @@ public class MapperProfiles : Profile
         // Faculty.
         CreateMap<CreateFacultyRequest, CreateFacultyCommand>();
         CreateMap<UpdateFacultyRequest, UpdateFacultyCommand>();
+        CreateMap<DeleteFacultyRequest, DeleteFacultyCommand>();
     }
 }

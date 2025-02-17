@@ -16,6 +16,11 @@ public static partial class Errors
             description: "Faculty cannot found."
         );
 
+        public static Error HasUserIn => Error.Validation(
+            code: "Faculty.HasUserIn",
+            description: "Users are found in the faculty so we cannot delete it."
+        );
+
         public static Error DuplicateName => Error.Validation(
             code: "Faculty.DuplicateName",
             description: "Faculty's name already exists."
