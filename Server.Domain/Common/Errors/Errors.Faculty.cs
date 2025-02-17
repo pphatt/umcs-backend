@@ -6,9 +6,19 @@ public static partial class Errors
 {
     public partial class Faculty
     {
+        public static Error InvalidName => Error.Validation(
+            code: "Faculty.InvalidName",
+            description: "Faculty's name is invalid."
+        );
+
         public static Error CannotFound => Error.NotFound(
             code: "Faculty.NotFound",
             description: "Faculty cannot found."
+        );
+
+        public static Error DuplicateName => Error.Validation(
+            code: "Faculty.DuplicateName",
+            description: "Faculty's name already exists."
         );
     }
 }

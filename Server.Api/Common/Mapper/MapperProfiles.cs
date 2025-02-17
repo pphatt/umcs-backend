@@ -3,6 +3,7 @@ using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
+using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
@@ -17,6 +18,7 @@ using Server.Application.Features.Role.Queries.GetRoleById;
 using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
+using Server.Contracts.Faculties.CreateFaculty;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
 using Server.Contracts.Identity.GetAllUsersPagination;
@@ -66,5 +68,8 @@ public class MapperProfiles : Profile
 
         CreateMap<GetAllRolePermissionsRequest, GetAllRolePermissionsQuery>();
         CreateMap<PermissionsDto, SavePermissionsToRoleCommand>();
+
+        // Faculty.
+        CreateMap<CreateFacultyRequest, CreateFacultyCommand>();
     }
 }
