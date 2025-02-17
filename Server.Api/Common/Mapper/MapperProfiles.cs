@@ -7,6 +7,7 @@ using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
+using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.UpdateUser;
@@ -24,6 +25,7 @@ using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Faculties.CreateFaculty;
 using Server.Contracts.Faculties.DeleteFaculty;
+using Server.Contracts.Faculties.GetAllFacultiesPagination;
 using Server.Contracts.Faculties.GetFacultyById;
 using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.CreateUser;
@@ -85,5 +87,8 @@ public class MapperProfiles : Profile
         CreateMap<DeleteFacultyRequest, DeleteFacultyCommand>();
 
         CreateMap<GetFacultyByIdRequest, GetFacultyByIdQuery>();
+        CreateMap<GetAllFacultiesPaginationRequest, GetAllFacultiesPaginationQuery>();
+
+        CreateMap<Faculty, FacultyDto>();
     }
 }
