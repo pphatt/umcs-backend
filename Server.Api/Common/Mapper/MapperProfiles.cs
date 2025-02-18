@@ -3,6 +3,7 @@ using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
@@ -23,6 +24,7 @@ using Server.Application.Features.Role.Queries.GetAllRolesPagination;
 using Server.Application.Features.Role.Queries.GetRoleById;
 using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.AcademicYears.CreateAcademicYear;
+using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Faculties.CreateFaculty;
@@ -95,5 +97,6 @@ public class MapperProfiles : Profile
 
         // Academic Year.
         CreateMap<CreateAcademicYearRequest, CreateAcademicYearCommand>();
+        CreateMap<UpdateAcademicYearRequest, UpdateAcademicYearCommand>();
     }
 }
