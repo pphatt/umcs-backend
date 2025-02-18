@@ -5,20 +5,20 @@ using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
-namespace Server.Application.Features.AcademicYearsApp.Commands.ActiveAcademicYear;
+namespace Server.Application.Features.AcademicYearsApp.Commands.ActivateAcademicYear;
 
-public class ActiveAcademicYearCommandHandler : IRequestHandler<ActiveAcademicYearCommand, ErrorOr<ResponseWrapper>>
+public class ActivateAcademicYearCommandHandler : IRequestHandler<ActivateAcademicYearCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IDateTimeProvider _dateTimeProvider;
 
-    public ActiveAcademicYearCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTImeProvider)
+    public ActivateAcademicYearCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTImeProvider)
     {
         _unitOfWork = unitOfWork;
         _dateTimeProvider = dateTImeProvider;
     }
 
-    public async Task<ErrorOr<ResponseWrapper>> Handle(ActiveAcademicYearCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper>> Handle(ActivateAcademicYearCommand request, CancellationToken cancellationToken)
     {
         var academicYear = await _unitOfWork.AcademicYearRepository.GetByIdAsync(request.Id);
 

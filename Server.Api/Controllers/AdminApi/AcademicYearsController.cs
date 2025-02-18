@@ -2,14 +2,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.Features.AcademicYearsApp.Commands.ActiveAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.ActivateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
-using Server.Contracts.AcademicYears.ActiveAcademicYear;
+using Server.Contracts.AcademicYears.ActivateAcademicYear;
 using Server.Contracts.AcademicYears.CreateAcademicYear;
 using Server.Contracts.AcademicYears.DeleteAcademicYear;
 using Server.Contracts.AcademicYears.GetAcademicYearById;
@@ -101,21 +101,21 @@ public class AcademicYearsController : AdminApiController
 
     [HttpPost("activate/{Id}")]
     [Authorize(Permissions.AcademicYears.Edit)]
-    public async Task<IActionResult> ActiveAcademicYear([FromRoute] ActiveAcademicYearRequest request)
+    public async Task<IActionResult> ActivateAcademicYear([FromRoute] ActivateAcademicYearRequest request)
     {
-        var mapper = _mapper.Map<ActiveAcademicYearCommand>(request);
+        var mapper = _mapper.Map<ActivateAcademicYearCommand>(request);
 
         var result = await _mediatorSender.Send(mapper);
 
         return result.Match(
-            activeResult => Ok(activeResult),
+            activateResult => Ok(activateResult),
             errors => Problem(errors)
         );
     }
 
     [HttpPost("inactivate/{Id}")]
     [Authorize(Permissions.AcademicYears.Edit)]
-    public async Task<IActionResult> InactiveAcademicYear([FromRoute] InactivateAcademicYearRequest request)
+    public async Task<IActionResult> InactivateAcademicYear([FromRoute] InactivateAcademicYearRequest request)
     {
         var mapper = _mapper.Map<InactivateAcademicYearCommand>(request);
 
