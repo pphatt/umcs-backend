@@ -7,6 +7,7 @@ using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
+using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
@@ -29,6 +30,7 @@ using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.AcademicYears.CreateAcademicYear;
 using Server.Contracts.AcademicYears.DeleteAcademicYear;
 using Server.Contracts.AcademicYears.GetAcademicYearById;
+using Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
@@ -108,5 +110,6 @@ public class MapperProfiles : Profile
         CreateMap<DeleteAcademicYearRequest, DeleteAcademicYearCommand>();
 
         CreateMap<GetAcademicYearByIdRequest, GetAcademicYearByIdQuery>();
+        CreateMap<GetAllAcademicYearsPaginationRequest, GetAllAcademicYearsPaginationQuery>();
     }
 }

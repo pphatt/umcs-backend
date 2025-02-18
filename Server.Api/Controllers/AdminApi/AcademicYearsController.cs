@@ -6,9 +6,11 @@ using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
+using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Contracts.AcademicYears.CreateAcademicYear;
 using Server.Contracts.AcademicYears.DeleteAcademicYear;
 using Server.Contracts.AcademicYears.GetAcademicYearById;
+using Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Domain.Common.Constants.Authorization;
 
@@ -70,6 +72,20 @@ public class AcademicYearsController : AdminApiController
     public async Task<IActionResult> GetAcademicYearById([FromRoute] GetAcademicYearByIdRequest request)
     {
         var mapper = _mapper.Map<GetAcademicYearByIdQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("pagination")]
+    [Authorize(Permissions.AcademicYears.View)]
+    public async Task<IActionResult> GetAllAcademicYearsPagination([FromQuery] GetAllAcademicYearsPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllAcademicYearsPaginationQuery>(request);
 
         var result = await _mediatorSender.Send(mapper);
 
