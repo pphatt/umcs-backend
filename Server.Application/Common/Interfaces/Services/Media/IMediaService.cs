@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Server.Application.Common.Dtos.Content.Media;
+using Server.Application.Common.Dtos.Media;
 using Server.Contracts.Common.Media;
 
 namespace Server.Application.Common.Interfaces.Services.Media;

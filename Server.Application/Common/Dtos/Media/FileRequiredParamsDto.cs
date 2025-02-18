@@ -1,4 +1,4 @@
-﻿namespace Server.Application.Common.Dtos.Content.Media;
+﻿namespace Server.Application.Common.Dtos.Media;
 
 public class FileRequiredParamsDto
 {
