@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.AcademicYearsApp.Commands.ActiveAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
@@ -13,6 +14,7 @@ using Server.Contracts.AcademicYears.CreateAcademicYear;
 using Server.Contracts.AcademicYears.DeleteAcademicYear;
 using Server.Contracts.AcademicYears.GetAcademicYearById;
 using Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
+using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Domain.Common.Constants.Authorization;
 
@@ -97,7 +99,7 @@ public class AcademicYearsController : AdminApiController
         );
     }
 
-    [HttpPost("{Id}/active")]
+    [HttpPost("activate/{Id}")]
     [Authorize(Permissions.AcademicYears.Edit)]
     public async Task<IActionResult> ActiveAcademicYear([FromRoute] ActiveAcademicYearRequest request)
     {
@@ -107,6 +109,20 @@ public class AcademicYearsController : AdminApiController
 
         return result.Match(
             activeResult => Ok(activeResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("inactivate/{Id}")]
+    [Authorize(Permissions.AcademicYears.Edit)]
+    public async Task<IActionResult> InactiveAcademicYear([FromRoute] InactivateAcademicYearRequest request)
+    {
+        var mapper = _mapper.Map<InactivateAcademicYearCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            inactivateResult => Ok(inactivateResult),
             errors => Problem(errors)
         );
     }
