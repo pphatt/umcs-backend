@@ -2,11 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Users.Commands.CreateUser;
+using Server.Contracts.Identity.BulkDeleteUsers;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
 using Server.Contracts.Identity.GetAllUsersPagination;
@@ -58,6 +60,20 @@ public class UsersController : AdminApiController
     public async Task<IActionResult> DeleteUser([FromRoute] DeleteUserRequest request)
     {
         var mapper = _mapper.Map<DeleteUserCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("bulk-delete")]
+    [Authorize(Permissions.Users.Delete)]
+    public async Task<IActionResult> BulkDeleteUsers(BulkDeleteUsersRequest request)
+    {
+        var mapper = _mapper.Map<BulkDeleteUsersCommand>(request);
 
         var result = await _mediatorSender.Send(mapper);
 

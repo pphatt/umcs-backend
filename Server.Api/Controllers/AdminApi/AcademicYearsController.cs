@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.AcademicYearsApp.Commands.ActivateAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.BulkDeleteAcademicYears;
 using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
@@ -10,6 +11,7 @@ using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Contracts.AcademicYears.ActivateAcademicYear;
+using Server.Contracts.AcademicYears.BulkDeleteAcademicYears;
 using Server.Contracts.AcademicYears.CreateAcademicYear;
 using Server.Contracts.AcademicYears.DeleteAcademicYear;
 using Server.Contracts.AcademicYears.GetAcademicYearById;
@@ -62,6 +64,20 @@ public class AcademicYearsController : AdminApiController
     public async Task<IActionResult> DeleteAcademicYear([FromRoute] DeleteAcademicYearRequest request)
     {
         var mapper = _mapper.Map<DeleteAcademicYearCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("bulk-delete")]
+    [Authorize(Permissions.AcademicYears.Delete)]
+    public async Task<IActionResult> BulkDeleteAcademicYears(BulkDeleteAcademicYearsRequest request)
+    {
+        var mapper = _mapper.Map<BulkDeleteAcademicYearsCommand>(request);
 
         var result = await _mediatorSender.Send(mapper);
 

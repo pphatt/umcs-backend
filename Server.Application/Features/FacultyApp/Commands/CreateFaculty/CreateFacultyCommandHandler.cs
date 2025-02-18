@@ -23,7 +23,7 @@ public class CreateFacultyCommandHandler : IRequestHandler<CreateFacultyCommand,
             return Errors.Faculty.InvalidName;
         }
 
-        var nameExists = _unitOfWork.FacultyRepository.GetFacultyByNameAsync(request.Name);
+        var nameExists = await _unitOfWork.FacultyRepository.GetFacultyByNameAsync(request.Name);
 
         if (nameExists is not null)
         {
