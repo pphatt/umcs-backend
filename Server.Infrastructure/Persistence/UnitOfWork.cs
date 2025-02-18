@@ -20,6 +20,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IFacultyRepository FacultyRepository => new FacultyRepository(_context, _mapper);
 
+    public IAcademicYearRepository AcademicYearRepository => new AcademicYearRepository(_context, _mapper);
+
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
     public void Dispose() => _context.Dispose();

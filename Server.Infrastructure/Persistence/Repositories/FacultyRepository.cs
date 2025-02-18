@@ -59,6 +59,6 @@ public class FacultyRepository : RepositoryBase<Faculty, Guid>, IFacultyReposito
 
     public async Task<Faculty> GetFacultyByNameAsync(string name)
     {
-        return await _context.Faculties.FirstOrDefaultAsync(x => x.Name == name);
+        return await _context.Faculties.SingleOrDefaultAsync(x => x.Name == name);
     }
 }

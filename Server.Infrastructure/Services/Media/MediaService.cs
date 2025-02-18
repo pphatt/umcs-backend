@@ -3,7 +3,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Server.Application.Common.Dtos.Content.Media;
+using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Contracts.Common.Media;

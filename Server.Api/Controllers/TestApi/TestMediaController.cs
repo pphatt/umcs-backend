@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Api.Common.Filters;
-using Server.Application.Common.Dtos.Content.Media;
+using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Contracts.Common.Media;
 

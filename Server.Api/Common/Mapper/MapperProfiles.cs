@@ -1,7 +1,15 @@
 ﻿using AutoMapper;
+using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Dtos.Identity.Users;
+using Server.Application.Features.AcademicYearsApp.Commands.ActivateAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
+using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
@@ -21,6 +29,13 @@ using Server.Application.Features.Role.Queries.GetAllRolePermissions;
 using Server.Application.Features.Role.Queries.GetAllRolesPagination;
 using Server.Application.Features.Role.Queries.GetRoleById;
 using Server.Application.Features.Users.Commands.CreateUser;
+using Server.Contracts.AcademicYears.ActivateAcademicYear;
+using Server.Contracts.AcademicYears.CreateAcademicYear;
+using Server.Contracts.AcademicYears.DeleteAcademicYear;
+using Server.Contracts.AcademicYears.GetAcademicYearById;
+using Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
+using Server.Contracts.AcademicYears.InactivateAcademicYear;
+using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Faculties.CreateFaculty;
@@ -90,5 +105,18 @@ public class MapperProfiles : Profile
         CreateMap<GetAllFacultiesPaginationRequest, GetAllFacultiesPaginationQuery>();
 
         CreateMap<Faculty, FacultyDto>();
+
+        // Academic Year.
+        CreateMap<AcademicYear, AcademicYearDto>().ReverseMap();
+
+        CreateMap<CreateAcademicYearRequest, CreateAcademicYearCommand>();
+        CreateMap<UpdateAcademicYearRequest, UpdateAcademicYearCommand>();
+        CreateMap<DeleteAcademicYearRequest, DeleteAcademicYearCommand>();
+
+        CreateMap<GetAcademicYearByIdRequest, GetAcademicYearByIdQuery>();
+        CreateMap<GetAllAcademicYearsPaginationRequest, GetAllAcademicYearsPaginationQuery>();
+
+        CreateMap<ActivateAcademicYearRequest, ActivateAcademicYearCommand>();
+        CreateMap<InactivateAcademicYearRequest, InactivateAcademicYearCommand>();
     }
 }
