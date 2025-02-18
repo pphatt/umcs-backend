@@ -20,5 +20,10 @@ public static partial class Errors
             code: "AcademicYear.DuplicateName",
             description: "Academic year's name already exists."
         );
+
+        public static Error HasContributions => Error.Validation(
+            code: "AcademicYear.HasContributions",
+            description: "Cannot delete due to contributions are still in the academic year."
+        );
     }
 }
