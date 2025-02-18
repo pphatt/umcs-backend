@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Dtos.Identity.Role;
+using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
 using Server.Application.Features.Role.Commands.SavePermissionsToRole;
@@ -10,6 +11,7 @@ using Server.Application.Features.Role.Commands.UpdateRole;
 using Server.Application.Features.Role.Queries.GetAllRolePermissions;
 using Server.Application.Features.Role.Queries.GetAllRolesPagination;
 using Server.Application.Features.Role.Queries.GetRoleById;
+using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
 using Server.Contracts.Roles.GetAllRolePermissions;
@@ -62,6 +64,20 @@ public class RolesController : AdminApiController
     public async Task<IActionResult> DeleteRole([FromRoute] DeleteRoleRequest request)
     {
         var mapper = _mapper.Map<DeleteRoleCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("bulk-delete")]
+    [Authorize(Permissions.Roles.Delete)]
+    public async Task<IActionResult> BulkDeleteRoles(BulkDeleteRolesRequest request)
+    {
+        var mapper = _mapper.Map<BulkDeleteRolesCommand>(request);
 
         var result = await _mediatorSender.Send(mapper);
 

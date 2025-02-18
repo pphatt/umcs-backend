@@ -2,11 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
+using Server.Contracts.Faculties.BulkDeleteFaculties;
 using Server.Contracts.Faculties.CreateFaculty;
 using Server.Contracts.Faculties.DeleteFaculty;
 using Server.Contracts.Faculties.GetAllFacultiesPagination;
@@ -58,6 +60,20 @@ public class FacultiesController : AdminApiController
     public async Task<IActionResult> DeleteFaculty([FromRoute] DeleteFacultyRequest request)
     {
         var mapper = _mapper.Map<DeleteFacultyCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("bulk-delete")]
+    [Authorize(Permissions.Faculties.Delete)]
+    public async Task<IActionResult> BulkDeleteFaculties(BulkDeleteFacultiesRequest request)
+    {
+        var mapper = _mapper.Map<BulkDeleteFacultiesCommand>(request);
 
         var result = await _mediatorSender.Send(mapper);
 
