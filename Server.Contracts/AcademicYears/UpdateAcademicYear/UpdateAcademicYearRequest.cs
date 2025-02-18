@@ -18,7 +18,4 @@ public class UpdateAcademicYearRequest
 
     [FromForm]
     public required DateTime FinalClosureDate { get; set; }
-
-    [FromForm]
-    public required bool IsActive { get; set; } = false;
 }

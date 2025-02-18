@@ -35,7 +35,6 @@ public class UpdateAcademicYearCommandHandler : IRequestHandler<UpdateAcademicYe
         academicYear.StartClosureDate = request.StartClosureDate;
         academicYear.EndClosureDate = request.EndClosureDate;
         academicYear.FinalClosureDate = request.FinalClosureDate;
-        academicYear.IsActive = request.IsActive;
         academicYear.DateUpdated = DateTime.UtcNow;
 
         _unitOfWork.AcademicYearRepository.Update(academicYear);

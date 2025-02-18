@@ -15,6 +15,4 @@ public class UpdateAcademicYearCommand : IRequest<ErrorOr<ResponseWrapper>>
     public required DateTime EndClosureDate { get; set; }
 
     public required DateTime FinalClosureDate { get; set; }
-
-    public required bool IsActive { get; set; } = false;
 }
