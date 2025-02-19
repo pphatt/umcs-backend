@@ -30,6 +30,7 @@ public class ContributionsController : ClientApiController
 
         mapper.UserId = User.GetUserId();
         mapper.FacultyId = User.GetUserFacultyId();
+        mapper.Slug = request.Title.Slugify();
 
         var result = await _mediatorSender.Send(mapper);
 
@@ -49,6 +50,7 @@ public class ContributionsController : ClientApiController
         mapper.Id = Id;
         mapper.UserId = User.GetUserId();
         mapper.FacultyId = User.GetUserFacultyId();
+        mapper.Slug = request.Title.Slugify();
 
         var result = await _mediatorSender.Send(mapper);
 

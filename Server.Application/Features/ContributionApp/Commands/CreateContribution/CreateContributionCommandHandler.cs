@@ -74,6 +74,13 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
             return Errors.Contribution.CannotSubmit;
         }
 
+        var isSlugAlreadyExisted = await _unitOfWork.ContributionRepository.IsSlugAlreadyExisted(request.Slug);
+
+        if (isSlugAlreadyExisted)
+        {
+            return Errors.Contribution.SlugExists;
+        }
+
         var contribution = new Contribution
         {
             Id = Guid.NewGuid(),
@@ -81,6 +88,7 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
             AcademicYearId = academicYear.Id,
             UserId = request.UserId,
             Title = request.Title,
+            Slug = request.Slug,
             Content = request.Content,
             ShortDescription = request.ShortDescription,
             SubmissionDate = _dateTimeProvider.UtcNow,

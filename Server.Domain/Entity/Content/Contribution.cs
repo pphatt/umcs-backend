@@ -1,10 +1,12 @@
-﻿using Server.Domain.Common.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.Domain.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Domain.Entity.Content;
 
 [Table("Contributions")]
+[Index(nameof(Slug), IsUnique = true)]
 public class Contribution : BaseEntity
 {
     [Required]
@@ -26,19 +28,23 @@ public class Contribution : BaseEntity
 
     [Required]
     [MaxLength(256)]
-    public required string Title { get; set; } = default!;
+    public string Title { get; set; } = default!;
 
     [Required]
-    public required string Content { get; set; } = default!;
+    [Column(TypeName = "varchar(256)")]
+    public string Slug { get; set; } = default!;
+
+    [Required]
+    public string Content { get; set; } = default!;
 
     [Required]
     public string ShortDescription { get; set; }
 
     [Required]
-    public required bool IsConfirmed { get; set; }
+    public bool IsConfirmed { get; set; }
 
     [Required]
-    public required ContributionStatus Status { get; set; }
+    public ContributionStatus Status { get; set; }
 
     [Required]
     public DateTime SubmissionDate { get; set; }

@@ -16,6 +16,11 @@ public static partial class Errors
             description: "Contribution not found."
         );
 
+        public static Error SlugExists => Error.Validation(
+            code: "Contribution.SlugExists",
+            description: "Please enter another title. Current title is already exist."
+        );
+
         public static Error NotConfirmed => Error.Validation(
             code: "Contribution.NotConfirmed",
             description: "Please accept term and condition before submitting."

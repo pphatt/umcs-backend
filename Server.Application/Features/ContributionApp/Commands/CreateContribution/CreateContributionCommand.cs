@@ -13,6 +13,8 @@ public class CreateContributionCommand : IRequest<ErrorOr<ResponseWrapper>>
 
     public string Title { get; set; } = default!;
 
+    public string Slug { get; set; } = default!;
+
     public IFormFile? Thumbnail { get; set; }
 
     public string Content { get; set; }

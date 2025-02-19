@@ -98,6 +98,13 @@ public class UpdateContributionCommandHandler : IRequestHandler<UpdateContributi
             return Errors.Contribution.CannotSubmit;
         }
 
+        var isSlugAlreadyExisted = await _unitOfWork.ContributionRepository.IsSlugAlreadyExisted(request.Slug, contribution.Id);
+
+        if (isSlugAlreadyExisted)
+        {
+            return Errors.Contribution.SlugExists;
+        }
+
         var oldFiles = await _unitOfWork.FileRepository.GetByContributionIdAsync(request.Id);
 
         _mapper.Map(request, contribution);
