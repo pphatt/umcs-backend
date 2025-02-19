@@ -22,6 +22,8 @@ public class Contribution : BaseEntity
     [ForeignKey("AcademicYearId")]
     public AcademicYear AcademicYear { get; set; } = default!;
 
+    public ICollection<File> Files { get; set; } = new List<File>();
+
     [Required]
     [MaxLength(256)]
     public required string Title { get; set; } = default!;
