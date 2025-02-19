@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Dtos.Media;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;

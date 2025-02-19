@@ -13,7 +13,7 @@ public class FileValidationFilter : ActionFilterAttribute
     private int _maxFiles;
     private readonly long _minSize;
 
-    public FileValidationFilter(long maxSize, int maxFiles = 6, long minSize = 1024)
+    public FileValidationFilter(long maxSize, int maxFiles = 5, long minSize = 1024)
     {
         _allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         _maxSize = maxSize;

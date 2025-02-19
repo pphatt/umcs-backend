@@ -22,6 +22,10 @@ public class UnitOfWork : IUnitOfWork
 
     public IAcademicYearRepository AcademicYearRepository => new AcademicYearRepository(_context, _mapper);
 
+    public IContributionRepository ContributionRepository => new ContributionRepository(_context);
+
+    public IFileRepository FileRepository => new FileRepository(_context);
+
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
     public void Dispose() => _context.Dispose();

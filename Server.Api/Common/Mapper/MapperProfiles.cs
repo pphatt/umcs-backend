@@ -13,6 +13,7 @@ using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
+using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -43,6 +44,7 @@ using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
+using Server.Contracts.Contributions.CreateContribution;
 using Server.Contracts.Faculties.BulkDeleteFaculties;
 using Server.Contracts.Faculties.CreateFaculty;
 using Server.Contracts.Faculties.DeleteFaculty;
@@ -128,5 +130,8 @@ public class MapperProfiles : Profile
 
         CreateMap<ActivateAcademicYearRequest, ActivateAcademicYearCommand>();
         CreateMap<InactivateAcademicYearRequest, InactivateAcademicYearCommand>();
+
+        // Contribution.
+        CreateMap<CreateContributionRequest, CreateContributionCommand>();
     }
 }

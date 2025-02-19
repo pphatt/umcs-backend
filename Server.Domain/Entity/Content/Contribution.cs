@@ -32,6 +32,9 @@ public class Contribution : BaseEntity
     public required string Content { get; set; } = default!;
 
     [Required]
+    public string ShortDescription { get; set; }
+
+    [Required]
     public required bool IsConfirmed { get; set; }
 
     [Required]

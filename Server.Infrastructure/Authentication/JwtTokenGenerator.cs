@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Authentication;
+using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Entity.Identity;
@@ -16,16 +17,18 @@ namespace Server.Infrastructure.Authentication;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
-    IDateTimeProvider _dateTimeProvider;
-    UserManager<AppUser> _userManager;
-    RoleManager<AppRole> _roleManager;
-    JwtSettings _jwtSettings;
+    private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<AppRole> _roleManager;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly JwtSettings _jwtSettings;
 
-    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IOptions<JwtSettings> jwtSettings)
+    public JwtTokenGenerator(IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork, IOptions<JwtSettings> jwtSettings)
     {
         _dateTimeProvider = dateTimeProvider;
         _userManager = userManager;
         _roleManager = roleManager;
+        _unitOfWork = unitOfWork;
         _jwtSettings = jwtSettings.Value;
     }
 
@@ -50,6 +53,14 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
         var permissions = await GetPermissions(roles.ToList());
 
+        string facultyName = string.Empty;
+
+        if (user.FacultyId is not null)
+        {
+            var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(user.FacultyId.Value);
+            facultyName = faculty.Name;
+        }
+
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -57,8 +68,11 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new Claim(ClaimTypes.NameIdentifier, user.UserName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+            new Claim(UserClaims.FacultyId, user.FacultyId.ToString() ?? string.Empty),
+            new Claim(UserClaims.FacultyName, facultyName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName ?? string.Empty),
+            new Claim(UserClaims.Avatar, user.Avatar ?? string.Empty),
             new Claim(UserClaims.Roles, string.Join(",", roles)),
             new Claim(UserClaims.Permissions, JsonSerializer.Serialize(permissions)),
             // Jwt ID

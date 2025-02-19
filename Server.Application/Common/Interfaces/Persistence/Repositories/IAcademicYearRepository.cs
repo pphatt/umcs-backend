@@ -1,5 +1,4 @@
-﻿using Server.Application.Common.Dtos;
-using Server.Application.Common.Dtos.Content.AcademicYear;
+﻿using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Entity.Content;
 
@@ -12,4 +11,8 @@ public interface IAcademicYearRepository : IRepository<AcademicYear, Guid>
     Task<bool> HasContributionsAsync(Guid academicYearId);
 
     Task<PaginationResult<AcademicYearDto>> GetAllAcademicYearsPagination(string? keyword, int pageIndex = 1, int pageSize = 10);
+
+    Task<bool> CanSubmitAsync(DateTime date);
+
+    Task<AcademicYear?> GetAcademicYearByDateAsync(DateTime date);
 }
