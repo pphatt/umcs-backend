@@ -14,6 +14,7 @@ using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPa
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
+using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -44,7 +45,9 @@ using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
+using Server.Contracts.Common.Media;
 using Server.Contracts.Contributions.CreateContribution;
+using Server.Contracts.Contributions.UpdateContribution;
 using Server.Contracts.Faculties.BulkDeleteFaculties;
 using Server.Contracts.Faculties.CreateFaculty;
 using Server.Contracts.Faculties.DeleteFaculty;
@@ -66,6 +69,8 @@ using Server.Contracts.Roles.GetRoleById;
 using Server.Contracts.Roles.UpdateRole;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+
+using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Api.Common.Mapper;
 
@@ -133,5 +138,18 @@ public class MapperProfiles : Profile
 
         // Contribution.
         CreateMap<CreateContributionRequest, CreateContributionCommand>();
+        CreateMap<UpdateContributionRequest, UpdateContributionCommand>();
+        CreateMap<UpdateContributionCommand, Contribution>()
+            .ForMember(dest => dest.Files, opt => opt.Ignore())
+            .ForMember(dest => dest.AcademicYearId, opt => opt.Ignore())
+            .ForMember(dest => dest.AcademicYear, opt => opt.Ignore())
+            .ForMember(dest => dest.Status, opt => opt.Ignore())
+            .ForMember(dest => dest.SubmissionDate, opt => opt.Ignore())
+            .ForMember(dest => dest.PublicDate, opt => opt.Ignore())
+            .ForMember(dest => dest.Faculty, opt => opt.Ignore())
+            .ForMember(dest => dest.ContributionTags, opt => opt.Ignore());
+
+        // File.
+        CreateMap<File, DeleteFilesRequest>();
     }
 }

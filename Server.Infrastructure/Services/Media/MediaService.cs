@@ -229,7 +229,7 @@ public class MediaService : IMediaService
                 continue;
             }
 
-            ResourceType resourceType = file.Type == FileType.Avatar ? ResourceType.Image : ResourceType.Raw;
+            ResourceType resourceType = file.Type == FileType.File ? ResourceType.Raw : ResourceType.Image;
 
             try
             {
