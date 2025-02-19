@@ -191,7 +191,7 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
         
                         <!-- Message Section -->
                         <div style='padding: 40px 74px; text-align: center;'>
-                            <h1 style='font-size: 32px; line-height: 1.3; font-weight: 700; text-align: center; letter-spacing: -1px;'>Submitted contribution successfully</h1>
+                            <h1 style='font-size: 32px; line-height: 1.3; font-weight: 700; text-align: center; letter-spacing: -1px;'>New Contribution request is pending.</h1>
                             <p style='margin: 0; line-height: 2; color: #747474; font-weight: 500;'>Wait around 14 days to get accepted.</p>
                         </div>
         
