@@ -1,10 +1,7 @@
-﻿namespace Server.Contracts.Identity.GetAllUsersPagination;
+﻿using Server.Contracts.Common;
 
-public class GetAllUsersPaginationRequest
+namespace Server.Contracts.Identity.GetAllUsersPagination;
+
+public class GetAllUsersPaginationRequest : PaginationRequest
 {
-    public string? Keyword { get; set; }
-
-    public int PageIndex { get; set; } = 1;
-
-    public int PageSize { get; set; } = 10;
 }

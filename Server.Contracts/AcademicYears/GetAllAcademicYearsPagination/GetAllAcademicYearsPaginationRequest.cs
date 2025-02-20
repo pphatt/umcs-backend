@@ -1,10 +1,7 @@
-﻿namespace Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
+﻿using Server.Contracts.Common;
 
-public class GetAllAcademicYearsPaginationRequest
+namespace Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
+
+public class GetAllAcademicYearsPaginationRequest : PaginationRequest
 {
-    public string? Keyword { get; set; }
-
-    public int PageIndex { get; set; } = 1;
-
-    public int PageSize { get; set; } = 10;
 }
