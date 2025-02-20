@@ -2,6 +2,8 @@
 
 namespace Server.Application.Common.Dtos.Content.AcademicYear;
 
+using AcademicYear = Domain.Entity.Content.AcademicYear;
+
 public class AcademicYearDto
 {
     public Guid Id { get; set; }
@@ -26,7 +28,7 @@ public class AcademicYearDto
     {
         public AutoMapperProfile()
         {
-            CreateMap<Domain.Entity.Content.AcademicYear, AcademicYearDto>();
+            CreateMap<AcademicYear, AcademicYearDto>();
         }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Server.Application.Common.Dtos.Content.Faculty;
 
+using Faculty = Domain.Entity.Content.Faculty;
+
 public class FacultyDto
 {
     public Guid Id { get; set; }
@@ -18,7 +20,7 @@ public class FacultyDto
     {
         public AutoMapperProfile()
         {
-            CreateMap<Domain.Entity.Content.Faculty, FacultyDto>();
+            CreateMap<Faculty, FacultyDto>();
         }
     }
 }
