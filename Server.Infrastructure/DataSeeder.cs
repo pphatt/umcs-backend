@@ -14,16 +14,19 @@ public partial class DataSeeder
 {
     public async static Task SeedAsync(AppDbContext context, RoleManager<AppRole> roleManager)
     {
+        var adminId = Guid.NewGuid();
+
         // seed faculies.
         var faculties = await FacultyList(context);
+
+        // seed academic years.
+        var academicYears = await AcademicYearList(context, adminId);
 
         // seed roles.
         var roles = await RoleList(context);
 
         // seed users.
         var passwordHasher = new PasswordHasher<AppUser>();
-
-        var adminId = Guid.NewGuid();
 
         var studentList = StudentList(faculties);
 
@@ -303,5 +306,224 @@ public partial class DataSeeder
         return list;
 
         #endregion Student List
+    }
+
+    private static async Task<List<AcademicYear>> AcademicYearList(AppDbContext context, Guid userId)
+    {
+        #region Academic Year List
+
+        var academicYears = new List<AcademicYear>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2021-2022",
+                StartClosureDate = new DateTime(2021, 1, 1),
+                EndClosureDate = new DateTime(2021, 2, 1),
+                FinalClosureDate = new DateTime(2021, 3, 1),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2022-2023",
+                StartClosureDate = new DateTime(2022, 4, 15),
+                EndClosureDate = new DateTime(2022, 5, 20),
+                FinalClosureDate = new DateTime(2022, 6, 30),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2023-2024",
+                StartClosureDate = new DateTime(2023, 7, 10),
+                EndClosureDate = new DateTime(2023, 8, 15),
+                FinalClosureDate = new DateTime(2023, 9, 20),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2024-2025",
+                StartClosureDate = new DateTime(2024, 3, 5),
+                EndClosureDate = new DateTime(2024, 4, 10),
+                FinalClosureDate = new DateTime(2024, 5, 15),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2025-2026",
+                StartClosureDate = new DateTime(2025, 9, 1),
+                EndClosureDate = new DateTime(2025, 10, 5),
+                FinalClosureDate = new DateTime(2025, 11, 10),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2026-2027",
+                StartClosureDate = new DateTime(2026, 2, 15),
+                EndClosureDate = new DateTime(2026, 3, 20),
+                FinalClosureDate = new DateTime(2026, 4, 25),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2027-2028",
+                StartClosureDate = new DateTime(2027, 6, 5),
+                EndClosureDate = new DateTime(2027, 7, 10),
+                FinalClosureDate = new DateTime(2027, 8, 15),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2028-2029",
+                StartClosureDate = new DateTime(2028, 11, 10),
+                EndClosureDate = new DateTime(2028, 12, 15),
+                FinalClosureDate = new DateTime(2029, 1, 20),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2029-2030",
+                StartClosureDate = new DateTime(2029, 5, 1),
+                EndClosureDate = new DateTime(2029, 6, 5),
+                FinalClosureDate = new DateTime(2029, 7, 10),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2030-2031",
+                StartClosureDate = new DateTime(2030, 8, 15),
+                EndClosureDate = new DateTime(2030, 9, 20),
+                FinalClosureDate = new DateTime(2030, 10, 25),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2031-2032",
+                StartClosureDate = new DateTime(2031, 2, 1),
+                EndClosureDate = new DateTime(2031, 3, 10),
+                FinalClosureDate = new DateTime(2031, 4, 20),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2032-2033",
+                StartClosureDate = new DateTime(2032, 4, 5),
+                EndClosureDate = new DateTime(2032, 5, 15),
+                FinalClosureDate = new DateTime(2032, 6, 25),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2033-2034",
+                StartClosureDate = new DateTime(2033, 7, 10),
+                EndClosureDate = new DateTime(2033, 8, 20),
+                FinalClosureDate = new DateTime(2033, 9, 30),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2034-2035",
+                StartClosureDate = new DateTime(2034, 10, 1),
+                EndClosureDate = new DateTime(2034, 11, 5),
+                FinalClosureDate = new DateTime(2034, 12, 10),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2035-2036",
+                StartClosureDate = new DateTime(2035, 3, 15),
+                EndClosureDate = new DateTime(2035, 4, 20),
+                FinalClosureDate = new DateTime(2035, 5, 25),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2036-2037",
+                StartClosureDate = new DateTime(2036, 9, 5),
+                EndClosureDate = new DateTime(2036, 10, 15),
+                FinalClosureDate = new DateTime(2036, 11, 25),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2037-2038",
+                StartClosureDate = new DateTime(2037, 1, 10),
+                EndClosureDate = new DateTime(2037, 2, 15),
+                FinalClosureDate = new DateTime(2037, 3, 20),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2038-2039",
+                StartClosureDate = new DateTime(2038, 5, 5),
+                EndClosureDate = new DateTime(2038, 6, 10),
+                FinalClosureDate = new DateTime(2038, 7, 15),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2039-2040",
+                StartClosureDate = new DateTime(2039, 8, 1),
+                EndClosureDate = new DateTime(2039, 9, 5),
+                FinalClosureDate = new DateTime(2039, 10, 10),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2040-2041",
+                StartClosureDate = new DateTime(2040, 11, 10),
+                EndClosureDate = new DateTime(2040, 12, 15),
+                FinalClosureDate = new DateTime(2041, 1, 20),
+                IsActive = true,
+                UserIdCreated = userId,
+            },
+        };
+
+        if (!await context.AcademicYears.AnyAsync())
+        {
+            await context.AcademicYears.AddRangeAsync(academicYears);
+            await context.SaveChangesAsync();
+        }
+
+        return academicYears;
+
+        #endregion Academic Year List
     }
 }

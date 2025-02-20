@@ -5,7 +5,6 @@ using Server.Application.Wrapper;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace Server.Application.Features.Role.Commands.SavePermissionsToRole;
@@ -35,7 +34,7 @@ public class SavePermissionsToRoleCommandHandler : IRequestHandler<SavePermissio
             await _roleManager.RemoveClaimAsync(role, permission);
         }
 
-        var requestedPermissions = 
+        var requestedPermissions =
             request.RoleClaims
                    .Where(x => x.Selected)
                    .Select(x => x.Value)

@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Identity.Role;
-using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Wrapper;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Entity.Identity;
@@ -39,7 +38,7 @@ public class GetAllRolesPaginationQueryHandler : IRequestHandler<GetAllRolesPagi
         var pageIndex = request.PageIndex < 0 ? 1 : request.PageIndex;
         var skipPage = (pageIndex - 1) * request.PageSize;
 
-        allRolesQuery = 
+        allRolesQuery =
             allRolesQuery
                 .Skip(skipPage)
                 .Take(request.PageSize);

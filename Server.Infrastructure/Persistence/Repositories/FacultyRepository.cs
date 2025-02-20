@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Interfaces.Persistence.Repositories;

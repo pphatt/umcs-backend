@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ErrorOr;
+﻿using ErrorOr;
 using MediatR;
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Interfaces.Persistence;
@@ -19,7 +18,7 @@ public class GetAllAcademicYearsPaginationQueryHandler : IRequestHandler<GetAllA
 
     public async Task<ErrorOr<ResponseWrapper<PaginationResult<AcademicYearDto>>>> Handle(GetAllAcademicYearsPaginationQuery request, CancellationToken cancellationToken)
     {
-        var result = 
+        var result =
             await _unitOfWork
                 .AcademicYearRepository
                 .GetAllAcademicYearsPagination(keyword: request.Keyword, pageIndex: request.PageIndex, pageSize: request.PageSize);

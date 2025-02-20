@@ -144,7 +144,7 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
             {
                 var file = new File
                 {
-                    Id= Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     ContributionId = contribution.Id,
                     Type = FileType.File,
                     Name = info.Name,

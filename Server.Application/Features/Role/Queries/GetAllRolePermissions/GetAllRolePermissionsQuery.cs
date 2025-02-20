@@ -7,5 +7,5 @@ namespace Server.Application.Features.Role.Queries.GetAllRolePermissions;
 
 public class GetAllRolePermissionsQuery : IRequest<ErrorOr<ResponseWrapper<PermissionsDto>>>
 {
-    public Guid Id {  get; set; }
+    public Guid Id { get; set; }
 }

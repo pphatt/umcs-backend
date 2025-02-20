@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Services;
-using System.Security.Claims;
 
 namespace Server.Infrastructure.Services;
 

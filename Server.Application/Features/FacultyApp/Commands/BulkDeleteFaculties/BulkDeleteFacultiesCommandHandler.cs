@@ -8,7 +8,6 @@ using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculties;
 

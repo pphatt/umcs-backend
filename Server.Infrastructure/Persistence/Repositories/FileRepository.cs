@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
-using Server.Contracts.Common.Media;
 using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Infrastructure.Persistence.Repositories;

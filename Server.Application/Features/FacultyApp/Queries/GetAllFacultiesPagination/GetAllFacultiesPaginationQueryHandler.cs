@@ -19,7 +19,7 @@ public class GetAllFacultiesPaginationQueryHandler : IRequestHandler<GetAllFacul
 
     public async Task<ErrorOr<ResponseWrapper<PaginationResult<FacultyDto>>>> Handle(GetAllFacultiesPaginationQuery request, CancellationToken cancellationToken)
     {
-        var faculties = 
+        var faculties =
             await _unitOfWork
                 .FacultyRepository
                 .GetAllFacultiesPagination(keyword: request.Keyword, pageIndex: request.PageIndex, pageSize: request.PageSize);

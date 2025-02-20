@@ -152,7 +152,7 @@ public class MediaService : IMediaService
             var extension = Path.GetExtension(file.FileName).ToLower();
             var folderPath = string.Empty;
 
-            switch(dto.type)
+            switch (dto.type)
             {
                 case FileType.Avatar:
                     folderPath = $"user-{dto.userId}/avatar";
