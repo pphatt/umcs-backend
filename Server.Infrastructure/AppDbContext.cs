@@ -21,6 +21,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     internal DbSet<ContributionTag> ContributionTags { get; set; }
     internal DbSet<Faculty> Faculties { get; set; }
     internal DbSet<Tag> Tags { get; set; }
+    internal DbSet<Domain.Entity.Content.File> Files { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -77,6 +78,12 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .HasOne(ct => ct.Tag)
             .WithMany(t => t.ContributionTags)
             .HasForeignKey(ct => ct.TagId);
+
+        modelBuilder.Entity<Domain.Entity.Content.File>()
+            .HasOne(f => f.Contribution)
+            .WithMany(c => c.Files)
+            .HasForeignKey(f => f.ContributionId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         #endregion Table Relationship Configuration
     }

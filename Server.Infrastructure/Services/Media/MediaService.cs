@@ -150,7 +150,20 @@ public class MediaService : IMediaService
         foreach (var file in files)
         {
             var extension = Path.GetExtension(file.FileName).ToLower();
-            var folderPath = dto.type == FileType.Avatar ? $"user-{dto.userId}/avatar" : $"user-{dto.userId}/contributions/contribution-{dto.contributionId}";
+            var folderPath = string.Empty;
+
+            switch(dto.type)
+            {
+                case FileType.Avatar:
+                    folderPath = $"user-{dto.userId}/avatar";
+                    break;
+                case FileType.Thumbnail:
+                    folderPath = $"user-{dto.userId}/contributions/contribution-{dto.contributionId}/{FileType.Thumbnail}";
+                    break;
+                default:
+                    folderPath = $"user-{dto.userId}/contributions/contribution-{dto.contributionId}/{FileType.File}";
+                    break;
+            }
 
             UploadResult uploadResult;
 
@@ -216,7 +229,7 @@ public class MediaService : IMediaService
                 continue;
             }
 
-            ResourceType resourceType = file.Type == FileType.Avatar ? ResourceType.Image : ResourceType.Raw;
+            ResourceType resourceType = file.Type == FileType.File ? ResourceType.Raw : ResourceType.Image;
 
             try
             {

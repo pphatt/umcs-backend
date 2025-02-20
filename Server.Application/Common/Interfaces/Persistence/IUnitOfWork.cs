@@ -9,4 +9,6 @@ public interface IUnitOfWork
     ITokenRepository TokenRepository { get; }
     IFacultyRepository FacultyRepository { get; }
     IAcademicYearRepository AcademicYearRepository { get; }
+    IContributionRepository ContributionRepository { get; }
+    IFileRepository FileRepository { get; }
 }
