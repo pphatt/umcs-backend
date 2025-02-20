@@ -46,9 +46,9 @@ public class AcademicYearRepository : RepositoryBase<AcademicYear, Guid>, IAcade
 
         query = query
             .Where(x => x.DateDeleted == null)
+            .OrderByDescending(x => x.DateCreated)
             .Skip(skipPage)
-            .Take(pageSize)
-            .OrderByDescending(x => x.DateCreated);
+            .Take(pageSize);
 
         var result = await _mapper.ProjectTo<AcademicYearDto>(query).ToListAsync();
 

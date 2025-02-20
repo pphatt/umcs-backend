@@ -41,9 +41,9 @@ public class FacultyRepository : RepositoryBase<Faculty, Guid>, IFacultyReposito
 
         query = query
             .Where(x => x.DateDeleted == null)
+            .OrderByDescending(x => x.DateCreated)
             .Skip(skipPage)
-            .Take(pageSize)
-            .OrderByDescending(x => x.DateCreated);
+            .Take(pageSize);
 
         var result = await _mapper.ProjectTo<FacultyDto>(query).ToListAsync();
 

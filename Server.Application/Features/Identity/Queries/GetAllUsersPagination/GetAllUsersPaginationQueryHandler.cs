@@ -46,9 +46,9 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
 
         allUserQuery =
             allUserQuery
+                .OrderBy(x => x.DateCreated)
                 .Skip(skipPages)
-                .Take(request.PageSize)
-                .OrderBy(x => x.DateCreated);
+                .Take(request.PageSize);
 
         var result = await _mapper.ProjectTo<UserDto>(allUserQuery).ToListAsync(cancellationToken);
 
