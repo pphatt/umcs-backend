@@ -6,11 +6,11 @@ using Server.Contracts.Faculties.GetAllFacultiesPagination;
 
 namespace Server.Api.Controllers.ClientApi;
 
-public class FacultyController : ClientApiController
+public class FacultiesController : ClientApiController
 {
     private readonly IMapper _mapper;
 
-    public FacultyController(ISender mediatorSender, IMapper mapper) : base(mediatorSender)
+    public FacultiesController(ISender mediatorSender, IMapper mapper) : base(mediatorSender)
     {
         _mapper = mapper;
     }
