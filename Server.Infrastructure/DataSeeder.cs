@@ -29,6 +29,7 @@ public partial class DataSeeder
         var passwordHasher = new PasswordHasher<AppUser>();
 
         var studentList = StudentList(faculties);
+        var coordinatorList = CoordinatorList(faculties);
 
         if (!await context.Users.AnyAsync())
         {
@@ -76,6 +77,19 @@ public partial class DataSeeder
                 });
             }
 
+            // create coordinator account.
+            foreach (var user in coordinatorList)
+            {
+                user.PasswordHash = passwordHasher.HashPassword(user, "Admin@123");
+
+                await context.Users.AddAsync(user);
+                await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+                {
+                    RoleId = roles[2].Id,
+                    UserId = user.Id,
+                });
+            }
+
             await context.SaveChangesAsync();
         }
 
@@ -95,6 +109,36 @@ public partial class DataSeeder
                 foreach (var adminPermission in adminPermissionList)
                 {
                     await roleManager.AddClaimAsync(roles[0], new Claim(UserClaims.Permissions, adminPermission.Value!));
+                }
+            }
+
+            // seed student role claims permissions.
+            var studentPermissions = await roleManager.GetClaimsAsync(roles[1]);
+
+            if (!studentPermissions.Any())
+            {
+                var studentPermissionList = new List<RoleClaimsDto>
+                {
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Create"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Edit"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Download"
+                    }
+                };
+
+                foreach (var studentPermission in studentPermissionList)
+                {
+                    await roleManager.AddClaimAsync(roles[1], new Claim(UserClaims.Permissions, studentPermission.Value!));
                 }
             }
         }
@@ -132,6 +176,9 @@ public partial class DataSeeder
         {
             new() { Id = Guid.NewGuid(), Name = Roles.Admin, NormalizedName = Roles.Admin.ToUpperInvariant(), DisplayName = "Administrator", },
             new() { Id = Guid.NewGuid(), Name = Roles.Student, NormalizedName = Roles.Student.ToUpperInvariant(), DisplayName = "Student" },
+            new() { Id = Guid.NewGuid(), Name = Roles.Coordinator, NormalizedName = Roles.Coordinator.ToUpperInvariant(), DisplayName = "Marketing Coordinator" },
+            new() { Id = Guid.NewGuid(), Name = Roles.Manager, NormalizedName = Roles.Manager.ToUpperInvariant(), DisplayName = "Manager" },
+            new() { Id = Guid.NewGuid(), Name = Roles.Guest, NormalizedName = Roles.Guest.ToUpperInvariant(), DisplayName = "Guest" },
         };
 
         if (!await context.Roles.AnyAsync())
@@ -306,6 +353,94 @@ public partial class DataSeeder
         return list;
 
         #endregion Student List
+    }
+
+    private static List<AppUser> CoordinatorList(List<Faculty> faculties)
+    {
+        #region Cooridnator List
+
+        var list = new List<AppUser>()
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Tien Phat",
+                LastName = "Vu",
+                Email = "phatvtgcs210973@fpt.edu.vn",
+                NormalizedEmail = "phatvtgcs210973@fpt.edu.vn".ToUpperInvariant(),
+                UserName = "coordinator",
+                NormalizedUserName = "coordinator".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[0].Id,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Anh Duong",
+                LastName = "Trinh",
+                Email = "cooridnator1@gmail.com",
+                NormalizedEmail = "cooridnator1@gmail.com".ToUpperInvariant(),
+                UserName = "coordinator1",
+                NormalizedUserName = "coordinator1".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[1].Id,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Thien An",
+                LastName = "Do",
+                Email = "cooridnator2@gmail.com",
+                NormalizedEmail = "cooridnator2@gmail.com".ToUpperInvariant(),
+                UserName = "coordinator2",
+                NormalizedUserName = "coordinator2".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[2].Id,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Vien Hao",
+                LastName = "Dang",
+                Email = "cooridnator3@gmail.com",
+                NormalizedEmail = "cooridnator3@gmail.com".ToUpperInvariant(),
+                UserName = "coordinator3",
+                NormalizedUserName = "coordinator3".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[3].Id,
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Nguyen Quoc Khanh",
+                LastName = "Le",
+                Email = "cooridnator4@gmail.com",
+                NormalizedEmail = "cooridnator4@gmail.com".ToUpperInvariant(),
+                UserName = "coordinator4",
+                NormalizedUserName = "coordinator4".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[4].Id,
+            },
+        };
+
+        return list;
+
+        #endregion Cooridnator List
     }
 
     private static async Task<List<AcademicYear>> AcademicYearList(AppDbContext context, Guid userId)
