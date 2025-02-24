@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity.Data;
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Dtos.Identity.Role;
@@ -25,6 +24,7 @@ using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
+using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
@@ -58,8 +58,10 @@ using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.BulkDeleteUsers;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
+using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.GetAllUsersPagination;
 using Server.Contracts.Identity.GetUserById;
+using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
@@ -98,6 +100,7 @@ public class MapperProfiles : Profile
         CreateMap<GetAllUsersPaginationRequest, GetAllUsersPaginationQuery>();
 
         CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
+        CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();

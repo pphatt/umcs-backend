@@ -34,7 +34,7 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
         var resetPasswordBaseUrl = _configuration["ApplicationSettings:ResetPasswordBaseUrl"];
-        var resetPasswordUrl = $"{resetPasswordBaseUrl}?token=${Uri.EscapeDataString(token)}";
+        var resetPasswordUrl = $"{resetPasswordBaseUrl}?token={Uri.EscapeDataString(token)}";
 
         var emailMessage = new MailRequest
         {

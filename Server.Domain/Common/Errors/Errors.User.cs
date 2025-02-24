@@ -20,5 +20,10 @@ public static partial class Errors
             code: "User.InactiveOrLockedOut",
             description: "User is inactive or locked out. Contact admin for more information."
         );
+
+        public static Error FailResetPassword => Error.Failure(
+            code: "User.FailResetPassword",
+            description: "Error occurs while reseting password."
+        );
     }
 }
