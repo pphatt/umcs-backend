@@ -23,6 +23,8 @@ using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
 using Server.Application.Features.Identity.Commands.DeleteUser;
+using Server.Application.Features.Identity.Commands.ForgotPassword;
+using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
@@ -43,7 +45,6 @@ using Server.Contracts.AcademicYears.GetAcademicYearById;
 using Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
 using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
-using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
 using Server.Contracts.Contributions.CreateContribution;
@@ -57,8 +58,10 @@ using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.BulkDeleteUsers;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
+using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.GetAllUsersPagination;
 using Server.Contracts.Identity.GetUserById;
+using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
@@ -71,6 +74,7 @@ using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 using File = Server.Domain.Entity.Content.File;
+using LoginRequest = Server.Contracts.Authentication.Login.LoginRequest;
 
 namespace Server.Api.Common.Mapper;
 
@@ -94,6 +98,9 @@ public class MapperProfiles : Profile
 
         CreateMap<GetUserByIdRequest, GetUserByIdQuery>();
         CreateMap<GetAllUsersPaginationRequest, GetAllUsersPaginationQuery>();
+
+        CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
+        CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();
