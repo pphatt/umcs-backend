@@ -111,7 +111,13 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
         {
             ToEmail = request.Email,
             Subject = "Account information",
-            Body = $"Email: <h1>{newUser.Email}</h1> <br> Password: <h1>{password}</h1>."
+            Body = $@"Hi {newUser.UserName},<br><br>
+                    Your account has been successfully created. Below are your login credentials:<br><br>
+                    <strong>Email:</strong> {newUser.Email}<br>
+                    <strong>Password:</strong> {password}<br><br>
+                    For security reasons, we recommend changing your password upon first login.<br><br>
+                    Best regards,<br>
+                    The Account Security Team"
         });
 
         return new ResponseWrapper
