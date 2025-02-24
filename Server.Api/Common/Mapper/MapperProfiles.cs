@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity.Data;
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Dtos.Identity.Role;
@@ -23,6 +24,7 @@ using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
 using Server.Application.Features.Identity.Commands.DeleteUser;
+using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
@@ -43,7 +45,6 @@ using Server.Contracts.AcademicYears.GetAcademicYearById;
 using Server.Contracts.AcademicYears.GetAllAcademicYearsPagination;
 using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
-using Server.Contracts.Authentication.Login;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
 using Server.Contracts.Contributions.CreateContribution;
@@ -71,6 +72,7 @@ using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 using File = Server.Domain.Entity.Content.File;
+using LoginRequest = Server.Contracts.Authentication.Login.LoginRequest;
 
 namespace Server.Api.Common.Mapper;
 
@@ -94,6 +96,8 @@ public class MapperProfiles : Profile
 
         CreateMap<GetUserByIdRequest, GetUserByIdQuery>();
         CreateMap<GetAllUsersPaginationRequest, GetAllUsersPaginationQuery>();
+
+        CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();
