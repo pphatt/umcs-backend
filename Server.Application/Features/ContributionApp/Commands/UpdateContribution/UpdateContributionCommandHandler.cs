@@ -3,6 +3,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
@@ -31,6 +32,7 @@ public class UpdateContributionCommandHandler : IRequestHandler<UpdateContributi
     private readonly IEmailService _emailService;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IMapper _mapper;
+    private readonly IConfiguration _configuration;
 
     public UpdateContributionCommandHandler(
         IUnitOfWork unitOfWork,
@@ -39,7 +41,8 @@ public class UpdateContributionCommandHandler : IRequestHandler<UpdateContributi
         IMediaService mediaService,
         IEmailService emailService,
         IDateTimeProvider dateTimeProvider,
-        IMapper mapper)
+        IMapper mapper,
+        IConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
@@ -48,6 +51,7 @@ public class UpdateContributionCommandHandler : IRequestHandler<UpdateContributi
         _emailService = emailService;
         _dateTimeProvider = dateTimeProvider;
         _mapper = mapper;
+        _configuration = configuration;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(UpdateContributionCommand request, CancellationToken cancellationToken)
@@ -179,10 +183,13 @@ public class UpdateContributionCommandHandler : IRequestHandler<UpdateContributi
 
         await _unitOfWork.CompleteAsync();
 
+        var baseUrl = _configuration["ApplicationSettings:FrontendUrl"];
         var coordinators = await _userManager.FindUserInRoleByFacultyIdAsync(_roleManager, Roles.Coordinator, request.FacultyId);
 
         foreach (var coordinator in coordinators)
         {
+            var blogUrl = $"{baseUrl}/contribution/${contribution.Id}";
+
             await _emailService.SendEmailAsync(new MailRequest
             {
                 ToEmail = coordinator.Email!,
@@ -211,6 +218,9 @@ public class UpdateContributionCommandHandler : IRequestHandler<UpdateContributi
                                     <td>
                                         <p style='margin: 0; line-height: 2; font-weight: bold;'>Contribution ID number</p>
                                         <p style='margin: 12px 0 0 0; font-weight: 500; line-height: 1.4; color: #6F6F6F;'>{contribution.Id}</p>
+                                    </td>
+                                    <td align='right'>
+                                        <a href='{blogUrl}' style='border: 1px solid #929292; font-size: 16px; text-decoration: none; padding: 10px 0px; width: 220px; display: block; text-align: center; font-weight: 500; color: #000;'>View Contribution</a>
                                     </td>
                                 </tr>
                             </table>

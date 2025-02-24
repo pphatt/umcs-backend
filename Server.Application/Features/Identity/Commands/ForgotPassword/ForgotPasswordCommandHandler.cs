@@ -39,8 +39,21 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
         var emailMessage = new MailRequest
         {
             ToEmail = user.Email ?? string.Empty,
-            Subject = "RESET PASSWORD",
-            Body = $"Please reset your password by clicking the following link: {resetPasswordUrl}"
+            Subject = "Your password reset request",
+            Body = $@"Hi {user.Email},<br>
+                    <br>
+                    We received your request to reset the password for your account.<br>
+                    <br>
+                    To reset your password, please click on the following link:<br>
+                    <br>
+                    <a href=""{resetPasswordUrl}"" style=""color: #0067B8; text-decoration: none;"">Reset Your Password</a><br>
+                    <br>
+                    If you didn't request this password reset, you can safely ignore this email. Your password won't be changed unless you click the link above.<br>
+                    <br>
+                    Thanks,
+                    <br>
+                    The Account Security Team
+                    <br>"
         };
 
         await _emailService.SendEmailAsync(emailMessage);
