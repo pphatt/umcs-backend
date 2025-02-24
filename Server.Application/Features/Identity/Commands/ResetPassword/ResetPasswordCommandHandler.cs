@@ -61,12 +61,25 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand,
                 var emailMessage = new MailRequest
                 {
                     ToEmail = user.Email ?? string.Empty,
-                    Subject = "RESET PASSWORD SUCCESSFULLY",
-                    Body = @"Hi,<br><br>
-                            Your account password has been reset successfully.<br><br>
-                            If you did not request this change, please contact our support team immediately.<br><br>
-                            Best regards,<br>
-                            The Account Security Team"
+                    Subject = "Your Password Has Been Reset Successfully",
+                    Body = $@"
+                            <!DOCTYPE html>
+                            <html lang='en'>
+                            <head>
+                                <meta charset='UTF-8'>
+                                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                                <title>Password Reset Confirmation</title>
+                            </head>
+                            <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #f4f4f4'>
+                                <div style='background: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);'>
+                                    Hi,<br><br>
+                                    Your account password has been reset successfully.<br><br>
+                                    If you did not request this change, please contact our support team immediately.<br><br>
+                                    Best regards,<br>
+                                    The Account Security Team
+                                </div>
+                            </body>
+                            </html>"
                 };
 
                 await _emailService.SendEmailAsync(emailMessage);
