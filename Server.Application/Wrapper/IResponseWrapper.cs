@@ -9,7 +9,7 @@ public interface IResponseWrapper
     bool IsSuccessful { get; set; }
 }
 
-public interface IResponseWrapper<T> : IResponseWrapper where T : class
+public interface IResponseWrapper<T> : IResponseWrapper
 {
     T ResponseData { get; set; }
 }

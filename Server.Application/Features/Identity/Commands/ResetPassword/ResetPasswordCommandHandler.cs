@@ -32,6 +32,10 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand,
         // 4. UserSecurityStamp, if supported
         // More info: https://stackoverflow.com/a/59850344
 
+        // This logic have 2 approaches:
+        // 1. Get the Request Token Raw (The unescaped data string from the response data of the ForgotPasswordTokenHandler).
+        // 2. Get the EscapeDataString Request Token ones like current approach and decode it from the ResetPasswordHandler.
+
         var token = Uri.UnescapeDataString(request.Token);
         var resetTokenArray = Convert.FromBase64String(token);
         var unprotectedResetTokenData = _dataProtector.Unprotect(resetTokenArray);
