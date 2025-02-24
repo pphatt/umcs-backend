@@ -50,6 +50,8 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
                     <br>
                     If you didn't request this password reset, you can safely ignore this email. Your password won't be changed unless you click the link above.<br>
                     <br>
+                    For your security, this link will expire in 30 minutes. Only click this link on an official website. Don't share it with anyone. We'll never ask you to share it outside an official platform.<br>
+                    <br>
                     Thanks,
                     <br>
                     The Account Security Team

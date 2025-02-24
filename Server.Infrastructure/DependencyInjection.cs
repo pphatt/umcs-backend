@@ -209,6 +209,11 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
+        services.Configure<DataProtectionTokenProviderOptions>(options =>
+            // settings for all 4 tokens in TokenProviders not just Reset Password Token.
+            options.TokenLifespan = TimeSpan.FromMinutes(30)
+        );
+
         services.Configure<IdentityOptions>(options =>
         {
             // Email settings.
