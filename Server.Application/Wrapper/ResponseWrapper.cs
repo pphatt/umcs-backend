@@ -58,7 +58,7 @@ public class ResponseWrapper : IResponseWrapper
         => Task.FromResult(Success(messages));
 }
 
-public class ResponseWrapper<T> : ResponseWrapper, IResponseWrapper<T> where T : class
+public class ResponseWrapper<T> : ResponseWrapper, IResponseWrapper<T>
 {
     public T ResponseData { get; set; } = default!;
 

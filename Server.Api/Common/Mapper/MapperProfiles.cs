@@ -26,6 +26,7 @@ using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.UpdateUser;
+using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
@@ -63,6 +64,7 @@ using Server.Contracts.Identity.GetAllUsersPagination;
 using Server.Contracts.Identity.GetUserById;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
+using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
@@ -101,6 +103,7 @@ public class MapperProfiles : Profile
 
         CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
         CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
+        CreateMap<ValidateForgotPasswordTokenRequest, ValidateForgotPasswordTokenCommand>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();
