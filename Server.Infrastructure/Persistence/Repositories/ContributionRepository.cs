@@ -2,9 +2,11 @@
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
+using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
+using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 
 namespace Server.Infrastructure.Persistence.Repositories;
@@ -12,10 +14,12 @@ namespace Server.Infrastructure.Persistence.Repositories;
 public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContributionRepository
 {
     private readonly AppDbContext _context;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public ContributionRepository(AppDbContext context) : base(context)
+    public ContributionRepository(AppDbContext context, IDateTimeProvider dateTimeProvider) : base(context)
     {
         _context = context;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     public async Task<bool> IsSlugAlreadyExisted(string slug, Guid? contributionId = null)
@@ -112,5 +116,21 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             PageSize = pageSize,
             Results = contributionsDto
         };
+    }
+
+    public async Task ApproveContribution(Guid Id)
+    {
+        var contribution = await _context.Contributions.Where(x => x.Id == Id).FirstOrDefaultAsync();
+
+        if (contribution is null)
+        {
+            throw new Exception("Contribution was not found.");
+        }
+
+        contribution.Status = ContributionStatus.Approve;
+        contribution.PublicDate = _dateTimeProvider.UtcNow;
+        _context.Contributions.Update(contribution);
+
+        await _context.SaveChangesAsync();
     }
 }

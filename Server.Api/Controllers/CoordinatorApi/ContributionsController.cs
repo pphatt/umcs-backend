@@ -3,7 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
+using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Domain.Common.Constants.Authorization;
 
@@ -30,6 +32,20 @@ public class ContributionsController : CoordinatorApiController
 
         return result.Match(
             paginationResult => Ok(paginationResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("approve")]
+    [Authorize(Permissions.Contributions.Approve)]
+    public async Task<IActionResult> ApproveContribution(ApproveContributionRequest request)
+    {
+        var mapper = _mapper.Map<ApproveContributionCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            approveResult => Ok(approveResult),
             errors => Problem(errors)
         );
     }

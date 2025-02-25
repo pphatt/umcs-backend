@@ -152,7 +152,7 @@ public partial class DataSeeder
                     new()
                     {
                         Selected = true,
-                        Value = "Permissions.Contributions.Manage"
+                        Value = "Permissions.ManageContributions.View"
                     }
                 };
             }

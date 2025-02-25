@@ -13,6 +13,7 @@ using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
+using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
 using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
@@ -49,6 +50,7 @@ using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
+using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
 using Server.Contracts.Contributions.UpdateContribution;
@@ -162,6 +164,8 @@ public class MapperProfiles : Profile
             .ForMember(dest => dest.ContributionTags, opt => opt.Ignore());
 
         CreateMap<CoordinatorGetAllContributionsPaginationRequest, CoordinatorGetAllContributionsPaginationQuery>();
+
+        CreateMap<ApproveContributionRequest, ApproveContributionCommand>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();

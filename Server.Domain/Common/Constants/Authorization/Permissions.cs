@@ -77,11 +77,14 @@ public static class Permissions
 
         [Description("Delete Contribution")]
         public const string Delete = "Permissions.Contributions.Delete";
+
+        [Description("Approve Contribution")]
+        public const string Approve = "Permissions.Contributions.Approve";
     }
 
     public static class ManageContributions
     {
         [Description("View Manage Contributions")]
-        public const string Manage = "Permissions.Contributions.Manage";
+        public const string Manage = "Permissions.ManageContributions.View";
     }
 }
