@@ -124,4 +124,10 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         contribution.PublicDate = _dateTimeProvider.UtcNow;
         _context.Contributions.Update(contribution);
     }
+
+    public async Task RejectContribution(Contribution contribution)
+    {
+        contribution.Status = ContributionStatus.Reject;
+        _context.Contributions.Update(contribution);
+    }
 }

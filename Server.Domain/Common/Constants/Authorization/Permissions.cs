@@ -80,6 +80,9 @@ public static class Permissions
 
         [Description("Approve Contribution")]
         public const string Approve = "Permissions.Contributions.Approve";
+
+        [Description("Reject Contribution")]
+        public const string Reject = "Permissions.Contributions.Reject";
     }
 
     public static class ManageContributions

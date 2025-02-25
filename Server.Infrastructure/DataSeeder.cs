@@ -153,6 +153,16 @@ public partial class DataSeeder
                     {
                         Selected = true,
                         Value = "Permissions.ManageContributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Approve"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Reject"
                     }
                 };
             }
