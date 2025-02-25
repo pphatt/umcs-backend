@@ -78,4 +78,10 @@ public static class Permissions
         [Description("Delete Contribution")]
         public const string Delete = "Permissions.Contributions.Delete";
     }
+
+    public static class ManageContribution
+    {
+        [Description("View Manage Contributions")]
+        public const string Manage = "Permissions.Contributions.Manage";
+    }
 }

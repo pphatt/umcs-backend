@@ -157,7 +157,7 @@ public static class DependencyInjection
                                 status = "Unauthorized"
                             });
                         }
-                        // or internal error.
+                        // or internal error (or this can be happened when access token is incorrect).
                         else
                         {
                             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

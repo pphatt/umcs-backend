@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Domain.Entity.Content;
 
 [Table("AcademicYears")]
+[Index(nameof(Name), IsUnique = true)]
 public class AcademicYear : BaseEntity
 {
     [Required]

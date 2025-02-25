@@ -15,6 +15,7 @@ using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
+using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -48,6 +49,7 @@ using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
+using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
 using Server.Contracts.Contributions.UpdateContribution;
 using Server.Contracts.Faculties.BulkDeleteFaculties;
@@ -158,6 +160,8 @@ public class MapperProfiles : Profile
             .ForMember(dest => dest.PublicDate, opt => opt.Ignore())
             .ForMember(dest => dest.Faculty, opt => opt.Ignore())
             .ForMember(dest => dest.ContributionTags, opt => opt.Ignore());
+
+        CreateMap<CoordinatorGetAllContributionsPaginationRequest, CoordinatorGetAllContributionsPaginationQuery>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();

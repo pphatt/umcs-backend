@@ -141,6 +141,21 @@ public partial class DataSeeder
                     await roleManager.AddClaimAsync(roles[1], new Claim(UserClaims.Permissions, studentPermission.Value!));
                 }
             }
+
+            // seed coordinator role claims permissions.
+            var coordinatorPermissions = await roleManager.GetClaimsAsync(roles[2]);
+
+            if (!coordinatorPermissions.Any())
+            {
+                var coordinatorPermissionList = new List<RoleClaimsDto>
+                {
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Manage"
+                    }
+                };
+            }
         }
     }
 
@@ -463,7 +478,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2022-2023",
-                StartClosureDate = new DateTime(2022, 4, 15),
+                StartClosureDate = new DateTime(2022, 1, 15),
                 EndClosureDate = new DateTime(2022, 5, 20),
                 FinalClosureDate = new DateTime(2022, 6, 30),
                 IsActive = true,
@@ -473,7 +488,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2023-2024",
-                StartClosureDate = new DateTime(2023, 7, 10),
+                StartClosureDate = new DateTime(2023, 1, 10),
                 EndClosureDate = new DateTime(2023, 8, 15),
                 FinalClosureDate = new DateTime(2023, 9, 20),
                 IsActive = true,
@@ -483,7 +498,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2024-2025",
-                StartClosureDate = new DateTime(2024, 3, 5),
+                StartClosureDate = new DateTime(2024, 1, 5),
                 EndClosureDate = new DateTime(2024, 4, 10),
                 FinalClosureDate = new DateTime(2024, 5, 15),
                 IsActive = true,
@@ -493,7 +508,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2025-2026",
-                StartClosureDate = new DateTime(2025, 9, 1),
+                StartClosureDate = new DateTime(2025, 1, 1),
                 EndClosureDate = new DateTime(2025, 10, 5),
                 FinalClosureDate = new DateTime(2025, 11, 10),
                 IsActive = true,
@@ -503,7 +518,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2026-2027",
-                StartClosureDate = new DateTime(2026, 2, 15),
+                StartClosureDate = new DateTime(2026, 1, 15),
                 EndClosureDate = new DateTime(2026, 3, 20),
                 FinalClosureDate = new DateTime(2026, 4, 25),
                 IsActive = true,
@@ -513,7 +528,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2027-2028",
-                StartClosureDate = new DateTime(2027, 6, 5),
+                StartClosureDate = new DateTime(2027, 1, 5),
                 EndClosureDate = new DateTime(2027, 7, 10),
                 FinalClosureDate = new DateTime(2027, 8, 15),
                 IsActive = true,
@@ -523,7 +538,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2028-2029",
-                StartClosureDate = new DateTime(2028, 11, 10),
+                StartClosureDate = new DateTime(2028, 1, 10),
                 EndClosureDate = new DateTime(2028, 12, 15),
                 FinalClosureDate = new DateTime(2029, 1, 20),
                 IsActive = true,
@@ -533,7 +548,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2029-2030",
-                StartClosureDate = new DateTime(2029, 5, 1),
+                StartClosureDate = new DateTime(2029, 1, 1),
                 EndClosureDate = new DateTime(2029, 6, 5),
                 FinalClosureDate = new DateTime(2029, 7, 10),
                 IsActive = true,
@@ -543,7 +558,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2030-2031",
-                StartClosureDate = new DateTime(2030, 8, 15),
+                StartClosureDate = new DateTime(2030, 1, 15),
                 EndClosureDate = new DateTime(2030, 9, 20),
                 FinalClosureDate = new DateTime(2030, 10, 25),
                 IsActive = true,
@@ -553,7 +568,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2031-2032",
-                StartClosureDate = new DateTime(2031, 2, 1),
+                StartClosureDate = new DateTime(2031, 1, 1),
                 EndClosureDate = new DateTime(2031, 3, 10),
                 FinalClosureDate = new DateTime(2031, 4, 20),
                 IsActive = true,
@@ -563,7 +578,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2032-2033",
-                StartClosureDate = new DateTime(2032, 4, 5),
+                StartClosureDate = new DateTime(2032, 1, 5),
                 EndClosureDate = new DateTime(2032, 5, 15),
                 FinalClosureDate = new DateTime(2032, 6, 25),
                 IsActive = true,
@@ -573,7 +588,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2033-2034",
-                StartClosureDate = new DateTime(2033, 7, 10),
+                StartClosureDate = new DateTime(2033, 1, 10),
                 EndClosureDate = new DateTime(2033, 8, 20),
                 FinalClosureDate = new DateTime(2033, 9, 30),
                 IsActive = true,
@@ -583,7 +598,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2034-2035",
-                StartClosureDate = new DateTime(2034, 10, 1),
+                StartClosureDate = new DateTime(2034, 1, 1),
                 EndClosureDate = new DateTime(2034, 11, 5),
                 FinalClosureDate = new DateTime(2034, 12, 10),
                 IsActive = true,
@@ -593,7 +608,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2035-2036",
-                StartClosureDate = new DateTime(2035, 3, 15),
+                StartClosureDate = new DateTime(2035, 1, 15),
                 EndClosureDate = new DateTime(2035, 4, 20),
                 FinalClosureDate = new DateTime(2035, 5, 25),
                 IsActive = true,
@@ -603,7 +618,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2036-2037",
-                StartClosureDate = new DateTime(2036, 9, 5),
+                StartClosureDate = new DateTime(2036, 1, 5),
                 EndClosureDate = new DateTime(2036, 10, 15),
                 FinalClosureDate = new DateTime(2036, 11, 25),
                 IsActive = true,
@@ -623,7 +638,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2038-2039",
-                StartClosureDate = new DateTime(2038, 5, 5),
+                StartClosureDate = new DateTime(2038, 1, 5),
                 EndClosureDate = new DateTime(2038, 6, 10),
                 FinalClosureDate = new DateTime(2038, 7, 15),
                 IsActive = true,
@@ -633,7 +648,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2039-2040",
-                StartClosureDate = new DateTime(2039, 8, 1),
+                StartClosureDate = new DateTime(2039, 1, 1),
                 EndClosureDate = new DateTime(2039, 9, 5),
                 FinalClosureDate = new DateTime(2039, 10, 10),
                 IsActive = true,
@@ -643,7 +658,7 @@ public partial class DataSeeder
             {
                 Id = Guid.NewGuid(),
                 Name = "2040-2041",
-                StartClosureDate = new DateTime(2040, 11, 10),
+                StartClosureDate = new DateTime(2040, 1, 10),
                 EndClosureDate = new DateTime(2040, 12, 15),
                 FinalClosureDate = new DateTime(2041, 1, 20),
                 IsActive = true,

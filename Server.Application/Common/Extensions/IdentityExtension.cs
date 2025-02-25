@@ -30,6 +30,13 @@ public static class IdentityExtension
         return Guid.Parse(facultyId);
     }
 
+    public static string GetUserFacultyName(this ClaimsPrincipal claimsPrincipal)
+    {
+        var facultyName = claimsPrincipal.Claims.GetSpecificClaim(UserClaims.FacultyName);
+
+        return facultyName;
+    }
+
     public static async Task<List<AppUser>> FindUserInRoleByFacultyIdAsync(this UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, string role, Guid facultyId)
     {
         var userInRole = await userManager.GetUsersInRoleAsync(role);
