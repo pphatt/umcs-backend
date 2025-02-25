@@ -44,6 +44,8 @@ public class ContributionsController : CoordinatorApiController
     {
         var mapper = _mapper.Map<ApproveContributionCommand>(request);
 
+        mapper.CoordinatorId = User.GetUserId();
+
         var result = await _mediatorSender.Send(mapper);
 
         return result.Match(

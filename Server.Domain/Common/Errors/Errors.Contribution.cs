@@ -45,5 +45,10 @@ public static partial class Errors
             code: "Contribution.CannotSubmit",
             description: "Submission due date have passed."
         );
+
+        public static Error NotBelongToFaculty => Error.Validation(
+            code: "Contribution.NotBelongToFaculty",
+            description: "This contribution is not belong to your faculty."
+        );
     };
 }

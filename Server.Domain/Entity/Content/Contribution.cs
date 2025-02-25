@@ -53,5 +53,7 @@ public class Contribution : BaseEntity
 
     public bool AllowedGuest { get; set; } = false;
 
+    public Guid? CoordinatorApprovedId { get; set; }
+
     public List<ContributionTag> ContributionTags { get; set; } = new();
 }

@@ -16,6 +16,11 @@ public static partial class Errors
             description: "User cannot found."
         );
 
+        public static Error CoordinatorCannotFound => Error.NotFound(
+            code: "Coordinator.CannotFound",
+            description: "Coordinator cannot found."
+        );
+
         public static Error InactiveOrLockedOut => Error.Validation(
             code: "User.InactiveOrLockedOut",
             description: "User is inactive or locked out. Contact admin for more information."

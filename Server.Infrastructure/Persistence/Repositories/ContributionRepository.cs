@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
@@ -8,6 +9,7 @@ using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
+using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -118,10 +120,19 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         };
     }
 
-    public async Task ApproveContribution(Contribution contribution)
+    public async Task ApproveContribution(Contribution contribution, Guid coordinatorId)
     {
+        // who approve this contribution.
+        var coordinator = await _context.Users.FirstOrDefaultAsync(x => x.Id == coordinatorId);
+
+        if (coordinator is null)
+        {
+            throw new Exception("Coordinator was not found.");
+        }
+
         contribution.Status = ContributionStatus.Approve;
         contribution.PublicDate = _dateTimeProvider.UtcNow;
+        contribution.CoordinatorApprovedId = coordinator.Id;
         _context.Contributions.Update(contribution);
     }
 

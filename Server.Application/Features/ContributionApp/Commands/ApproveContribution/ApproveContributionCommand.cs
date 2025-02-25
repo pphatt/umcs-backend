@@ -7,4 +7,6 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
 public class ApproveContributionCommand : IRequest<ErrorOr<ResponseWrapper>>
 {
     public Guid Id { get; set; }
+
+    public Guid CoordinatorId { get; set; }
 }
