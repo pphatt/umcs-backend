@@ -64,7 +64,7 @@ public static class Permissions
         public const string Delete = "Permissions.AcademicYears.Delete";
     }
 
-    public static class Contribution
+    public static class Contributions
     {
         [Description("Create New Contribution")]
         public const string Create = "Permissions.Contributions.Create";
@@ -79,7 +79,7 @@ public static class Permissions
         public const string Delete = "Permissions.Contributions.Delete";
     }
 
-    public static class ManageContribution
+    public static class ManageContributions
     {
         [Description("View Manage Contributions")]
         public const string Manage = "Permissions.Contributions.Manage";

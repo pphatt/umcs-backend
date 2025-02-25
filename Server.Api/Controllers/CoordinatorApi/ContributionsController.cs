@@ -19,7 +19,7 @@ public class ContributionsController : CoordinatorApiController
     }
 
     [HttpGet("pagination")]
-    [Authorize(Permissions.ManageContribution.Manage)]
+    [Authorize(Permissions.ManageContributions.Manage)]
     public async Task<IActionResult> GetAllContributionsPagination([FromQuery] CoordinatorGetAllContributionsPaginationRequest request)
     {
         var mapper = _mapper.Map<CoordinatorGetAllContributionsPaginationQuery>(request);
