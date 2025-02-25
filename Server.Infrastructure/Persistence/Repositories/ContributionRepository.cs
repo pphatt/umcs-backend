@@ -118,19 +118,10 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         };
     }
 
-    public async Task ApproveContribution(Guid Id)
+    public async Task ApproveContribution(Contribution contribution)
     {
-        var contribution = await _context.Contributions.Where(x => x.Id == Id).FirstOrDefaultAsync();
-
-        if (contribution is null)
-        {
-            throw new Exception("Contribution was not found.");
-        }
-
         contribution.Status = ContributionStatus.Approve;
         contribution.PublicDate = _dateTimeProvider.UtcNow;
         _context.Contributions.Update(contribution);
-
-        await _context.SaveChangesAsync();
     }
 }
