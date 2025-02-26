@@ -103,7 +103,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             SubmissionDate = x.c.DateCreated,
             PublicDate = x.c.PublicDate,
             ShortDescription = x.c.ShortDescription,
-            RejectReason = null, // temporary
+            RejectReason = GetRejectionReason(x.c).GetAwaiter().GetResult(),
             GuestAllowed = x.c.AllowedGuest,
             Avatar = x.u.Avatar
         }).ToList();
@@ -181,6 +181,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             throw new Exception("Current authenticated user was not found.");
         }
 
+        // add to contribution activity log.
         await _context.ContributionActivityLogs.AddAsync(new ContributionActivityLog
         {
             ContributionId = contribution.Id,
@@ -188,10 +189,11 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             CoordinatorId = coordinator.Id,
             CoordinatorUsername = coordinator.UserName,
             FromStatus = contribution.Status,
-            ToStatus = ContributionStatus.Approve,
+            ToStatus = ContributionStatus.Reject,
             Description = reason,
         });
 
+        // add to rejection reason table.
         await _context.ContributionRejections.AddAsync(new ContributionRejection
         {
             ContributionId = contribution.Id,
@@ -200,5 +202,13 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
 
         contribution.Status = ContributionStatus.Reject;
         _context.Contributions.Update(contribution);
+    }
+
+    public async Task<string> GetRejectionReason(Contribution contribution)
+    {
+        //var reason = await _context.ContributionRejections.FirstOrDefaultAsync(x => x.ContributionId == contribution.Id);
+        var reason = await _context.ContributionActivityLogs.FirstOrDefaultAsync(x => x.ContributionId == contribution.Id && x.ToStatus == ContributionStatus.Reject);
+
+        return reason is not null ? reason.Description : string.Empty;
     }
 }
