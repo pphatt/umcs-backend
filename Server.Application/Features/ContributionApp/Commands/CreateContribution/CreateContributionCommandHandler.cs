@@ -244,9 +244,14 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
                     </body>
                     </html>"
             });
-        }
 
-        await _unitOfWork.CompleteAsync();
+            await _unitOfWork.CompleteAsync();
+
+            // log the send to coordinator to approve.
+            await _unitOfWork.ContributionRepository.SendToApproved(contribution.Id, user.Id);
+
+            await _unitOfWork.CompleteAsync();
+        }
 
         return new ResponseWrapper
         {

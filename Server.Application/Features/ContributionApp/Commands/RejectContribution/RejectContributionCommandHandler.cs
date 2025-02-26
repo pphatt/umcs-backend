@@ -59,6 +59,13 @@ public class RejectContributionCommandHandler : IRequestHandler<RejectContributi
             return Errors.Contribution.AlreadyRejected;
         }
 
+        var coordinator = await _userManager.FindByIdAsync(request.CoordinatorId.ToString());
+
+        if (coordinator is null)
+        {
+            return Errors.User.CoordinatorCannotFound;
+        }
+
         var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
 
         if (student is null)
@@ -73,7 +80,12 @@ public class RejectContributionCommandHandler : IRequestHandler<RejectContributi
             return Errors.Faculty.CannotFound;
         }
 
-        await _unitOfWork.ContributionRepository.RejectContribution(contribution);
+        if (coordinator.FacultyId != contribution.FacultyId)
+        {
+            return Errors.Contribution.NotBelongToFaculty;
+        }
+
+        await _unitOfWork.ContributionRepository.RejectContribution(contribution, request.CoordinatorId, request.Reason);
 
         var baseUrl = _configuration["ApplicationSettings:FrontendUrl"];
         var blogUrl = $"{baseUrl}/contribution/${contribution.Id}";

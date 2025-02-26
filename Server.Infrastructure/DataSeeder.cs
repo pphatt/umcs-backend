@@ -165,6 +165,11 @@ public partial class DataSeeder
                         Value = "Permissions.Contributions.Reject"
                     }
                 };
+
+                foreach (var coordinatorPermission in coordinatorPermissionList)
+                {
+                    await roleManager.AddClaimAsync(roles[2], new Claim(UserClaims.Permissions, coordinatorPermission.Value!));
+                }
             }
         }
     }
@@ -228,8 +233,8 @@ public partial class DataSeeder
                 Id = Guid.NewGuid(),
                 FirstName = "Tien Phat",
                 LastName = "Vu",
-                Email = "student1@gmail.com",
-                NormalizedEmail = "student1@gmail.com".ToUpperInvariant(),
+                Email = "phatvu080903@gmail.com",
+                NormalizedEmail = "phatvu080903@gmail.com".ToUpperInvariant(),
                 UserName = "student1",
                 NormalizedUserName = "student1".ToUpperInvariant(),
                 IsActive = true,
@@ -243,15 +248,15 @@ public partial class DataSeeder
                 Id = Guid.NewGuid(),
                 FirstName = "Meryl",
                 LastName = "Streep",
-                Email = "student2@gmail.com",
-                NormalizedEmail = "student2@gmail.com".ToUpperInvariant(),
+                Email = "jettlaststand@gmail.com",
+                NormalizedEmail = "jettlaststand@gmail.com".ToUpperInvariant(),
                 UserName = "student2",
                 NormalizedUserName = "student2".ToUpperInvariant(),
                 IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[1].Id,
             },
             new()
             {
@@ -266,7 +271,7 @@ public partial class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[2].Id,
             },
             new()
             {
@@ -281,7 +286,7 @@ public partial class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[3].Id,
             },
             new()
             {
@@ -296,7 +301,7 @@ public partial class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[4].Id,
             },
             new()
             {
@@ -326,7 +331,7 @@ public partial class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[1].Id,
             },
             new()
             {
@@ -341,7 +346,7 @@ public partial class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[2].Id,
             },
             new()
             {
@@ -356,7 +361,7 @@ public partial class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[3].Id,
             },
             new()
             {
@@ -371,7 +376,7 @@ public partial class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                FacultyId = faculties[0].Id,
+                FacultyId = faculties[4].Id,
             },
         };
 

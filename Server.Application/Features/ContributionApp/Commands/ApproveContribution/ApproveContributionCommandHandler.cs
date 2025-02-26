@@ -81,7 +81,7 @@ public class ApproveContributionCommandHandler : IRequestHandler<ApproveContribu
             return Errors.Faculty.CannotFound;
         }
 
-        if (coordinator.FacultyId != student.FacultyId)
+        if (coordinator.FacultyId != contribution.FacultyId)
         {
             return Errors.Contribution.NotBelongToFaculty;
         }

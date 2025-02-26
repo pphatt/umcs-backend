@@ -7,6 +7,8 @@ using Server.Domain.Entity.Token;
 
 namespace Server.Infrastructure;
 
+using File = Domain.Entity.Content.File;
+
 public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -16,12 +18,14 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     internal DbSet<RefreshToken> RefreshTokens { get; set; }
     internal DbSet<AcademicYear> AcademicYears { get; set; }
     internal DbSet<Contribution> Contributions { get; set; }
+    internal DbSet<ContributionRejection> ContributionRejections { get; set; }
+    internal DbSet<ContributionActivityLog> ContributionActivityLogs { get; set; }
     internal DbSet<ContributionComment> ContributionComments { get; set; }
     internal DbSet<ContributionLike> ContributionLikes { get; set; }
     internal DbSet<ContributionTag> ContributionTags { get; set; }
     internal DbSet<Faculty> Faculties { get; set; }
     internal DbSet<Tag> Tags { get; set; }
-    internal DbSet<Domain.Entity.Content.File> Files { get; set; }
+    internal DbSet<File> Files { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,11 +83,21 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithMany(t => t.ContributionTags)
             .HasForeignKey(ct => ct.TagId);
 
-        modelBuilder.Entity<Domain.Entity.Content.File>()
+        modelBuilder.Entity<File>()
             .HasOne(f => f.Contribution)
             .WithMany(c => c.Files)
             .HasForeignKey(f => f.ContributionId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ContributionActivityLog>()
+            .HasOne(log => log.Contribution)
+            .WithMany()
+            .HasForeignKey(log => log.ContributionId);
+
+        modelBuilder.Entity<ContributionActivityLog>()
+            .HasOne(log => log.Coordinator)
+            .WithMany()
+            .HasForeignKey(log => log.CoordinatorId);
 
         #endregion Table Relationship Configuration
     }

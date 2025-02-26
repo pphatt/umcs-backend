@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
@@ -7,9 +6,7 @@ using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
-using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
-using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -120,6 +117,34 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         };
     }
 
+    public async Task SendToApproved(Guid contributionId, Guid studentId)
+    {
+        var contribution = await _context.Contributions.FindAsync(contributionId);
+
+        if (contribution is null)
+        {
+            throw new Exception($"Contribution with id of {contributionId} was not found.");
+        }
+
+        var student = await _context.Users.FindAsync(studentId);
+
+        if (student is null)
+        {
+            throw new Exception("Student was not found.");
+        }
+
+        await _context.ContributionActivityLogs.AddAsync(new ContributionActivityLog
+        {
+            ContributionId = contribution.Id,
+            ContributionTitle = contribution.Title,
+            CoordinatorId = student.Id,
+            CoordinatorUsername = student.UserName,
+            FromStatus = contribution.Status,
+            ToStatus = ContributionStatus.Pending,
+            Description = $"{student.UserName} submit new contribution and wait for approval."
+        });
+    }
+
     public async Task ApproveContribution(Contribution contribution, Guid coordinatorId)
     {
         // who approve this contribution.
@@ -127,8 +152,19 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
 
         if (coordinator is null)
         {
-            throw new Exception("Coordinator was not found.");
+            throw new Exception("Current authenticated user was not found.");
         }
+
+        await _context.ContributionActivityLogs.AddAsync(new ContributionActivityLog
+        {
+            ContributionId = contribution.Id,
+            ContributionTitle = contribution.Title,
+            CoordinatorId = coordinator.Id,
+            CoordinatorUsername = coordinator.UserName,
+            FromStatus = contribution.Status,
+            ToStatus = ContributionStatus.Approve,
+            Description = $"{coordinator.UserName} approve",
+        });
 
         contribution.Status = ContributionStatus.Approve;
         contribution.PublicDate = _dateTimeProvider.UtcNow;
@@ -136,8 +172,32 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         _context.Contributions.Update(contribution);
     }
 
-    public async Task RejectContribution(Contribution contribution)
+    public async Task RejectContribution(Contribution contribution, Guid coordinatorId, string reason)
     {
+        var coordinator = await _context.Users.FindAsync(coordinatorId);
+
+        if (coordinator is null)
+        {
+            throw new Exception("Current authenticated user was not found.");
+        }
+
+        await _context.ContributionActivityLogs.AddAsync(new ContributionActivityLog
+        {
+            ContributionId = contribution.Id,
+            ContributionTitle = contribution.Title,
+            CoordinatorId = coordinator.Id,
+            CoordinatorUsername = coordinator.UserName,
+            FromStatus = contribution.Status,
+            ToStatus = ContributionStatus.Approve,
+            Description = reason,
+        });
+
+        await _context.ContributionRejections.AddAsync(new ContributionRejection
+        {
+            ContributionId = contribution.Id,
+            Reason = reason
+        });
+
         contribution.Status = ContributionStatus.Reject;
         _context.Contributions.Update(contribution);
     }

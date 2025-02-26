@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure;
 
@@ -11,9 +12,11 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250226123628_AddContributionActivityLogsTable")]
+    partial class AddContributionActivityLogsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,7 +169,7 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("AcademicYears");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Content.Guid", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -282,8 +285,6 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("ContributionId");
 
-                    b.HasIndex("CoordinatorId");
-
                     b.ToTable("ContributionActivityLogs");
                 });
 
@@ -341,37 +342,6 @@ namespace Server.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ContributionLikes");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionRejection", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ContributionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateDeleted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContributionId")
-                        .IsUnique();
-
-                    b.ToTable("ContributionRejections");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionTag", b =>
@@ -718,7 +688,7 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Content.Guid", b =>
                 {
                     b.HasOne("Server.Domain.Entity.Content.AcademicYear", "AcademicYear")
                         .WithMany("Contributions")
@@ -737,28 +707,9 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("Faculty");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionActivityLog", b =>
-                {
-                    b.HasOne("Server.Domain.Entity.Content.Contribution", "Contribution")
-                        .WithMany()
-                        .HasForeignKey("ContributionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entity.Identity.AppUser", "Coordinator")
-                        .WithMany()
-                        .HasForeignKey("CoordinatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Contribution");
-
-                    b.Navigation("Coordinator");
-                });
-
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionTag", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Content.Contribution", "Contribution")
+                    b.HasOne("Server.Domain.Entity.Content.Guid", "Guid")
                         .WithMany("ContributionTags")
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -770,20 +721,20 @@ namespace Server.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Contribution");
+                    b.Navigation("Guid");
 
                     b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.File", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Content.Contribution", "Contribution")
+                    b.HasOne("Server.Domain.Entity.Content.Guid", "Guid")
                         .WithMany("Files")
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Contribution");
+                    b.Navigation("Guid");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Token.RefreshToken", b =>
@@ -802,7 +753,7 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("Contributions");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Content.Guid", b =>
                 {
                     b.Navigation("ContributionTags");
 
