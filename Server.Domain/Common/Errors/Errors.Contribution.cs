@@ -55,5 +55,10 @@ public static partial class Errors
             code: "Contribution.NotPublicYet",
             description: "This contribution is not found or not public yet."
         );
+
+        public static Error NotAllowYet => Error.Validation(
+            code: "Contribution.NotAllowYet",
+            description: "This contribution has not allowed guest to view yet."
+        );
     };
 }

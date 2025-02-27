@@ -4,18 +4,18 @@ using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
-namespace Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
+namespace Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
 
-public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, ErrorOr<ResponseWrapper>>
+public class RevokeAllowGuestCommandHandler : IRequestHandler<RevokeAllowGuestCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public AllowGuestCommandHandler(IUnitOfWork unitOfWork)
+    public RevokeAllowGuestCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<ResponseWrapper>> Handle(AllowGuestCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper>> Handle(RevokeAllowGuestCommand request, CancellationToken cancellationToken)
     {
         var contribution = await _unitOfWork.ContributionRepository.GetByIdAsync(request.ContributionId);
 
@@ -29,6 +29,11 @@ public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, Error
         if (publicContribution is null)
         {
             return Errors.Contribution.CannotFound;
+        }
+
+        if (!contribution.AllowedGuest || !publicContribution.AllowedGuest)
+        {
+            return Errors.Contribution.NotAllowYet;
         }
 
         var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.FacultyId);
@@ -48,15 +53,15 @@ public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, Error
             return Errors.Contribution.NotPublicYet;
         }
 
-        contribution.AllowedGuest = true;
-        publicContribution.AllowedGuest = true;
+        contribution.AllowedGuest = false;
+        publicContribution.AllowedGuest = false;
 
         await _unitOfWork.CompleteAsync();
 
         return new ResponseWrapper
         {
             IsSuccessful = true,
-            Message = "Allow guest successfully."
+            Message = "Revoke allow guest successfully."
         };
     }
 }
