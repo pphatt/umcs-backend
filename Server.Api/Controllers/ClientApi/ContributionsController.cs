@@ -12,6 +12,7 @@ using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.ClientApi;
 
+[Tags("Contributions Student")]
 public class ContributionsController : ClientApiController
 {
     private readonly IMapper _mapper;

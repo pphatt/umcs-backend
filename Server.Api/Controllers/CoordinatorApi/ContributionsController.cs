@@ -13,10 +13,10 @@ using Server.Contracts.Contributions.GetContributionBySlug;
 using Server.Contracts.Contributions.RejectContribution;
 using Server.Domain.Common.Constants.Authorization;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 
 namespace Server.Api.Controllers.CoordinatorApi;
 
+[Tags("Contributions Coordinator")]
 public class ContributionsController : CoordinatorApiController
 {
     private readonly IMapper _mapper;
