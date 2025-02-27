@@ -19,12 +19,12 @@ public class ContributionActivityLog : BaseEntity
     public string ContributionTitle { get; set; } = default!;
 
     [Required]
-    public Guid CoordinatorId { get; set; }
+    public Guid UserId { get; set; }
 
-    public AppUser Coordinator { get; set; } = default!;
+    public AppUser User { get; set; } = default!;
 
     [Required]
-    public string CoordinatorUsername { get; set; } = default!;
+    public string Username { get; set; } = default!;
 
     [MaxLength(500)]
     public string Description { get; set; } = default!;

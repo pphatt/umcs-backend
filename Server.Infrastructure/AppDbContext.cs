@@ -96,9 +96,9 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .HasForeignKey(log => log.ContributionId);
 
         modelBuilder.Entity<ContributionActivityLog>()
-            .HasOne(log => log.Coordinator)
+            .HasOne(log => log.User)
             .WithMany()
-            .HasForeignKey(log => log.CoordinatorId);
+            .HasForeignKey(log => log.UserId);
 
         #endregion Table Relationship Configuration
     }

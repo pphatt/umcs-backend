@@ -187,8 +187,8 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         {
             ContributionId = contribution.Id,
             ContributionTitle = contribution.Title,
-            CoordinatorId = student.Id,
-            CoordinatorUsername = student.UserName,
+            UserId = student.Id,
+            Username = student.UserName,
             FromStatus = contribution.Status,
             ToStatus = ContributionStatus.Pending,
             Description = $"{student.UserName} submit new contribution and wait for approval."
@@ -223,8 +223,8 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         {
             ContributionId = contribution.Id,
             ContributionTitle = contribution.Title,
-            CoordinatorId = coordinator.Id,
-            CoordinatorUsername = coordinator.UserName,
+            UserId = coordinator.Id,
+            Username = coordinator.UserName,
             FromStatus = contribution.Status,
             ToStatus = ContributionStatus.Approve,
             Description = $"{coordinator.UserName} approve",
@@ -260,8 +260,8 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         {
             ContributionId = contribution.Id,
             ContributionTitle = contribution.Title,
-            CoordinatorId = coordinator.Id,
-            CoordinatorUsername = coordinator.UserName,
+            UserId = coordinator.Id,
+            Username = coordinator.UserName,
             FromStatus = contribution.Status,
             ToStatus = ContributionStatus.Reject,
             Description = reason,
