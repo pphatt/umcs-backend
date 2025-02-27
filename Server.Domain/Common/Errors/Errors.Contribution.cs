@@ -45,5 +45,20 @@ public static partial class Errors
             code: "Contribution.CannotSubmit",
             description: "Submission due date have passed."
         );
+
+        public static Error NotBelongToFaculty => Error.Validation(
+            code: "Contribution.NotBelongToFaculty",
+            description: "This contribution is not belong to your faculty."
+        );
+
+        public static Error NotPublicYet => Error.Validation(
+            code: "Contribution.NotPublicYet",
+            description: "This contribution is not found or not public yet."
+        );
+
+        public static Error NotAllowYet => Error.Validation(
+            code: "Contribution.NotAllowYet",
+            description: "This contribution has not allowed guest to view yet."
+        );
     };
 }

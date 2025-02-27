@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Server.Domain.Common.Enums;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -38,5 +39,20 @@ public static class StringExtension
         output = Regex.Replace(output, @"\s", "-");
 
         return output;
+    }
+
+    public static string ToStringValue(this ContributionStatus status)
+    {
+        switch (status)
+        {
+            case ContributionStatus.Pending:
+                return "PENDING";
+            case ContributionStatus.Approve:
+                return "APPROVED";
+            case ContributionStatus.Reject:
+                return "REJECTED";
+            default:
+                return "UNKNOWN";
+        }
     }
 }

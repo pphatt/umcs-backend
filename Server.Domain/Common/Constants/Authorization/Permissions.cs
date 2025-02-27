@@ -64,7 +64,7 @@ public static class Permissions
         public const string Delete = "Permissions.AcademicYears.Delete";
     }
 
-    public static class Contribution
+    public static class Contributions
     {
         [Description("Create New Contribution")]
         public const string Create = "Permissions.Contributions.Create";
@@ -77,5 +77,23 @@ public static class Permissions
 
         [Description("Delete Contribution")]
         public const string Delete = "Permissions.Contributions.Delete";
+
+        [Description("Approve Contribution")]
+        public const string Approve = "Permissions.Contributions.Approve";
+
+        [Description("Reject Contribution")]
+        public const string Reject = "Permissions.Contributions.Reject";
+    }
+
+    public static class ManageContributions
+    {
+        [Description("View Manage Contributions")]
+        public const string Manage = "Permissions.ManageContributions.View";
+    }
+
+    public static class SettingGAC
+    {
+        [Description("Manage Guest Setting Access Control")]
+        public const string Manage = "Permissions.SettingGAC.Manage";
     }
 }

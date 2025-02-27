@@ -16,6 +16,11 @@ public static partial class Errors
             description: "User cannot found."
         );
 
+        public static Error CoordinatorCannotFound => Error.NotFound(
+            code: "Coordinator.CannotFound",
+            description: "Coordinator cannot found."
+        );
+
         public static Error InactiveOrLockedOut => Error.Validation(
             code: "User.InactiveOrLockedOut",
             description: "User is inactive or locked out. Contact admin for more information."
@@ -24,6 +29,11 @@ public static partial class Errors
         public static Error FailResetPassword => Error.Failure(
             code: "User.FailResetPassword",
             description: "Error occurs while reseting password."
+        );
+
+        public static Error NotOwnedContribution => Error.Validation(
+            code: "User.NotOwnedContribution",
+            description: "This is not your contribution"
         );
     }
 }

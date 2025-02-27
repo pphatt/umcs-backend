@@ -12,6 +12,7 @@ using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.ClientApi;
 
+[Tags("Contributions Student")]
 public class ContributionsController : ClientApiController
 {
     private readonly IMapper _mapper;
@@ -23,7 +24,7 @@ public class ContributionsController : ClientApiController
 
     [HttpPost("create")]
     [FileValidationFilter(5 * 1024 * 1024)]
-    [Authorize(Permissions.Contribution.Create)]
+    [Authorize(Permissions.Contributions.Create)]
     public async Task<IActionResult> CreateContribution([FromForm] CreateContributionRequest request)
     {
         var mapper = _mapper.Map<CreateContributionCommand>(request);
@@ -42,7 +43,7 @@ public class ContributionsController : ClientApiController
 
     [HttpPut("{Id}")]
     [FileValidationFilter(5 * 1024 * 1024)]
-    [Authorize(Permissions.Contribution.Edit)]
+    [Authorize(Permissions.Contributions.Edit)]
     public async Task<IActionResult> UpdateContribution([FromRoute] Guid Id, [FromForm] UpdateContributionRequest request)
     {
         var mapper = _mapper.Map<UpdateContributionCommand>(request);

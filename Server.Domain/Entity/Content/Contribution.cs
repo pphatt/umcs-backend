@@ -49,10 +49,11 @@ public class Contribution : BaseEntity
     [Required]
     public DateTime SubmissionDate { get; set; }
 
-    [Required]
-    public DateTime PublicDate { get; set; }
+    public DateTime? PublicDate { get; set; }
 
     public bool AllowedGuest { get; set; } = false;
+
+    public Guid? CoordinatorApprovedId { get; set; }
 
     public List<ContributionTag> ContributionTags { get; set; } = new();
 }

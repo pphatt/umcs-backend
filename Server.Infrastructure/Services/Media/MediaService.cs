@@ -202,7 +202,7 @@ public class MediaService : IMediaService
                 var fileDetails = new FileDto
                 {
                     Path = uploadResult.Url.ToString(),
-                    Name = uploadResult.DisplayName.ToString(),
+                    Name = file.Name,
                     Extension = extension,
                     PublicId = uploadResult.PublicId,
                     Type = dto.type

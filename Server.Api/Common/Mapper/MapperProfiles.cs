@@ -13,8 +13,12 @@ using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
+using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
+using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
+using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
+using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -29,6 +33,8 @@ using Server.Application.Features.Identity.Commands.UpdateUser;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
+using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
+using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
@@ -48,7 +54,11 @@ using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
+using Server.Contracts.Contributions.ApproveContribution;
+using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
+using Server.Contracts.Contributions.GetContributionBySlug;
+using Server.Contracts.Contributions.RejectContribution;
 using Server.Contracts.Contributions.UpdateContribution;
 using Server.Contracts.Faculties.BulkDeleteFaculties;
 using Server.Contracts.Faculties.CreateFaculty;
@@ -65,6 +75,8 @@ using Server.Contracts.Identity.GetUserById;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
+using Server.Contracts.PublicContributions.AllowGuest;
+using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
@@ -158,6 +170,19 @@ public class MapperProfiles : Profile
             .ForMember(dest => dest.PublicDate, opt => opt.Ignore())
             .ForMember(dest => dest.Faculty, opt => opt.Ignore())
             .ForMember(dest => dest.ContributionTags, opt => opt.Ignore());
+
+        CreateMap<CoordinatorGetAllContributionsPaginationRequest, CoordinatorGetAllContributionsPaginationQuery>();
+
+        CreateMap<ApproveContributionRequest, ApproveContributionCommand>();
+        CreateMap<RejectContributionRequest, RejectContributionCommand>();
+
+        CreateMap<GetContributionBySlugRequest, GetContributionBySlugQuery>();
+
+        // Public Contribution.
+        CreateMap<AllowGuestRequest, AllowGuestCommand>();
+        CreateMap<Contribution, ContributionPublic>();
+
+        CreateMap<RevokeAllowGuestRequest, RevokeAllowGuestCommand>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();

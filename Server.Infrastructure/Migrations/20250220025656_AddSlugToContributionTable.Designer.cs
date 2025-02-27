@@ -166,7 +166,7 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("AcademicYears");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Content.Guid", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -631,7 +631,7 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Content.Guid", b =>
                 {
                     b.HasOne("Server.Domain.Entity.Content.AcademicYear", "AcademicYear")
                         .WithMany("Contributions")
@@ -652,7 +652,7 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionTag", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Content.Contribution", "Contribution")
+                    b.HasOne("Server.Domain.Entity.Content.Guid", "Guid")
                         .WithMany("ContributionTags")
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -664,20 +664,20 @@ namespace Server.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Contribution");
+                    b.Navigation("Guid");
 
                     b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.File", b =>
                 {
-                    b.HasOne("Server.Domain.Entity.Content.Contribution", "Contribution")
+                    b.HasOne("Server.Domain.Entity.Content.Guid", "Guid")
                         .WithMany("Files")
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Contribution");
+                    b.Navigation("Guid");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Token.RefreshToken", b =>
@@ -696,7 +696,7 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("Contributions");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Content.Guid", b =>
                 {
                     b.Navigation("ContributionTags");
 

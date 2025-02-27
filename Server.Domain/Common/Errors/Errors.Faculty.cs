@@ -25,5 +25,10 @@ public static partial class Errors
             code: "Faculty.DuplicateName",
             description: "Faculty's name already exists."
         );
+
+        public static Error MissingName => Error.Validation(
+            code: "Faculty.MissingName",
+            description: "Faculty's name is missing."
+        );
     }
 }

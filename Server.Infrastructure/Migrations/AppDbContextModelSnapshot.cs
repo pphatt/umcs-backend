@@ -160,6 +160,9 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("AcademicYears");
                 });
 
@@ -179,6 +182,9 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("CoordinatorApprovedId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -194,7 +200,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("PublicDate")
+                    b.Property<DateTime?>("PublicDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ShortDescription")
@@ -229,6 +235,56 @@ namespace Server.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Contributions");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionActivityLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContributionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContributionTitle")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("FromStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToStatus")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContributionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ContributionActivityLogs");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionComment", b =>
@@ -287,12 +343,136 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("ContributionLikes");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AcademicYearId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("AllowedGuest")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("CoordinatorApprovedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FacultyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FacultyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LikeQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PublicDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SubmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AcademicYearId");
+
+                    b.HasIndex("FacultyId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("ContributionPublics");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionRejection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContributionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContributionId")
+                        .IsUnique();
+
+                    b.ToTable("ContributionRejections");
+                });
+
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionTag", b =>
                 {
                     b.Property<Guid>("ContributionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ContributionPublicId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateCreated")
@@ -308,6 +488,8 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ContributionId", "TagId");
+
+                    b.HasIndex("ContributionPublicId");
 
                     b.HasIndex("TagId");
 
@@ -336,6 +518,9 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Faculties");
                 });
 
@@ -346,6 +531,9 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ContributionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ContributionPublicId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateCreated")
@@ -385,6 +573,8 @@ namespace Server.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ContributionId");
+
+                    b.HasIndex("ContributionPublicId");
 
                     b.ToTable("Files");
                 });
@@ -647,6 +837,44 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("Faculty");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionActivityLog", b =>
+                {
+                    b.HasOne("Server.Domain.Entity.Content.Contribution", "Contribution")
+                        .WithMany()
+                        .HasForeignKey("ContributionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contribution");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
+                {
+                    b.HasOne("Server.Domain.Entity.Content.AcademicYear", "AcademicYear")
+                        .WithMany()
+                        .HasForeignKey("AcademicYearId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
+                        .WithMany()
+                        .HasForeignKey("FacultyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AcademicYear");
+
+                    b.Navigation("Faculty");
+                });
+
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionTag", b =>
                 {
                     b.HasOne("Server.Domain.Entity.Content.Contribution", "Contribution")
@@ -654,6 +882,10 @@ namespace Server.Infrastructure.Migrations
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Server.Domain.Entity.Content.ContributionPublic", null)
+                        .WithMany("ContributionTags")
+                        .HasForeignKey("ContributionPublicId");
 
                     b.HasOne("Server.Domain.Entity.Content.Tag", "Tag")
                         .WithMany("ContributionTags")
@@ -673,6 +905,10 @@ namespace Server.Infrastructure.Migrations
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Server.Domain.Entity.Content.ContributionPublic", null)
+                        .WithMany("Files")
+                        .HasForeignKey("ContributionPublicId");
 
                     b.Navigation("Contribution");
                 });
@@ -694,6 +930,13 @@ namespace Server.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+                {
+                    b.Navigation("ContributionTags");
+
+                    b.Navigation("Files");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
                 {
                     b.Navigation("ContributionTags");
 
