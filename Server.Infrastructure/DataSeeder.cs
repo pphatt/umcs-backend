@@ -168,6 +168,11 @@ public partial class DataSeeder
                     {
                         Selected = true,
                         Value = "Permissions.Contributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.SettingGAC.Manage"
                     }
                 };
 

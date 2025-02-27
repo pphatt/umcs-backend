@@ -90,4 +90,10 @@ public static class Permissions
         [Description("View Manage Contributions")]
         public const string Manage = "Permissions.ManageContributions.View";
     }
+
+    public static class SettingGAC
+    {
+        [Description("Manage Guest Setting Access Control")]
+        public const string Manage = "Permissions.SettingGAC.Manage";
+    }
 }

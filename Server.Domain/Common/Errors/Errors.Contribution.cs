@@ -53,7 +53,7 @@ public static partial class Errors
 
         public static Error NotPublicYet => Error.Validation(
             code: "Contribution.NotPublicYet",
-            description: "This contribution is not public yet."
+            description: "This contribution is not found or not public yet."
         );
     };
 }
