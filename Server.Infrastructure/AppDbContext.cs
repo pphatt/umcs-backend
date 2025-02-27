@@ -20,6 +20,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     internal DbSet<Contribution> Contributions { get; set; }
     internal DbSet<ContributionRejection> ContributionRejections { get; set; }
     internal DbSet<ContributionActivityLog> ContributionActivityLogs { get; set; }
+    internal DbSet<ContributionPublic> ContributionPublics { get; set; }
     internal DbSet<ContributionComment> ContributionComments { get; set; }
     internal DbSet<ContributionLike> ContributionLikes { get; set; }
     internal DbSet<ContributionTag> ContributionTags { get; set; }

@@ -25,7 +25,9 @@ public class UnitOfWork : IUnitOfWork
 
     public IAcademicYearRepository AcademicYearRepository => new AcademicYearRepository(_context, _mapper);
 
-    public IContributionRepository ContributionRepository => new ContributionRepository(_context, _dateTimeProvider);
+    public IContributionRepository ContributionRepository => new ContributionRepository(_context, _mapper, _dateTimeProvider);
+
+    public IContributionPublicRepository ContributionPublicRepository => new ContributionPublicRepository(_context);
 
     public IFileRepository FileRepository => new FileRepository(_context);
 

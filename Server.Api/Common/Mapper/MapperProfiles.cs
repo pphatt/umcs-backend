@@ -178,6 +178,7 @@ public class MapperProfiles : Profile
 
         // Public Contribution.
         CreateMap<AllowGuestRequest, AllowGuestCommand>();
+        CreateMap<Contribution, ContributionPublic>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();

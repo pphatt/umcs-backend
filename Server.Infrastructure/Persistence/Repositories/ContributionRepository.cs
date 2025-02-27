@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Extensions;
@@ -8,18 +9,19 @@ using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
-using System.Runtime.InteropServices;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
 public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContributionRepository
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
     private readonly IDateTimeProvider _dateTimeProvider;
 
-    public ContributionRepository(AppDbContext context, IDateTimeProvider dateTimeProvider) : base(context)
+    public ContributionRepository(AppDbContext context, IMapper mapper, IDateTimeProvider dateTimeProvider) : base(context)
     {
         _context = context;
+        _mapper = mapper;
         _dateTimeProvider = dateTimeProvider;
     }
 
@@ -203,6 +205,20 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             throw new Exception("Current authenticated user was not found.");
         }
 
+        var student = await _context.Users.FindAsync(contribution.UserId);
+
+        if (student is null)
+        {
+            throw new Exception("Contribution's owner is not found.");
+        }
+
+        var faculty = await _context.Faculties.FindAsync(contribution.FacultyId);
+
+        if (faculty is null)
+        {
+            throw new Exception("Contribution's faculty is not found.");
+        }
+
         await _context.ContributionActivityLogs.AddAsync(new ContributionActivityLog
         {
             ContributionId = contribution.Id,
@@ -218,6 +234,16 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         contribution.PublicDate = _dateTimeProvider.UtcNow;
         contribution.CoordinatorApprovedId = coordinator.Id;
         _context.Contributions.Update(contribution);
+
+        var publicContribution = _mapper.Map<ContributionPublic>(contribution);
+
+        publicContribution.Id = contribution.Id;
+        publicContribution.Username = student.UserName ?? string.Empty;
+        publicContribution.Avatar = student.Avatar ?? string.Empty;
+        publicContribution.FacultyName = faculty.Name ?? string.Empty;
+        publicContribution.DateCreated = _dateTimeProvider.UtcNow;
+
+        await _context.ContributionPublics.AddAsync(publicContribution);
     }
 
     public async Task RejectContribution(Contribution contribution, Guid coordinatorId, string reason)

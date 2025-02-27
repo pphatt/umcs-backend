@@ -18,8 +18,14 @@ public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, Error
     public async Task<ErrorOr<ResponseWrapper>> Handle(AllowGuestCommand request, CancellationToken cancellationToken)
     {
         var contribution = await _unitOfWork.ContributionRepository.GetByIdAsync(request.contributionId);
+        var publicContribution = await _unitOfWork.ContributionPublicRepository.GetByIdAsync(request.contributionId);
 
         if (contribution is null)
+        {
+            return Errors.Contribution.CannotFound;
+        }
+
+        if (publicContribution is null)
         {
             return Errors.Contribution.CannotFound;
         }
@@ -42,6 +48,7 @@ public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, Error
         }
 
         contribution.AllowedGuest = true;
+        publicContribution.AllowedGuest = true;
 
         await _unitOfWork.CompleteAsync();
 
