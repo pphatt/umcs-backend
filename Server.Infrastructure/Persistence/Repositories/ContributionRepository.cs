@@ -17,12 +17,14 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IFileRepository _fileRepository;
 
-    public ContributionRepository(AppDbContext context, IMapper mapper, IDateTimeProvider dateTimeProvider) : base(context)
+    public ContributionRepository(AppDbContext context, IMapper mapper, IDateTimeProvider dateTimeProvider, IFileRepository fileRepository) : base(context)
     {
         _context = context;
         _mapper = mapper;
         _dateTimeProvider = dateTimeProvider;
+        _fileRepository = fileRepository;
     }
 
     public async Task<bool> IsSlugAlreadyExisted(string slug, Guid? contributionId = null)
@@ -85,7 +87,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
 
         // I think this is the only optimized approach here.
         var contributionIds = contributions.Select(x => x.c.Id).ToList();
-        var files = await _context.Files.Where(f => contributionIds.Contains(f.ContributionId)).ToListAsync();
+        var files = await _fileRepository.GetByListContributionIdsAsync(contributionIds);
 
         var contributionsDto = contributions.Select(x => new ContributionInListDto
         {
@@ -138,7 +140,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             return null;
         }
 
-        var files = await _context.Files.Where(x => x.ContributionId == contribution.c.Id).ToListAsync();
+        var files = await _fileRepository.GetByContributionIdAsync(contribution.c.Id);
 
         var result = new ContributionDto
         {
