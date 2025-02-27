@@ -50,5 +50,10 @@ public static partial class Errors
             code: "Contribution.NotBelongToFaculty",
             description: "This contribution is not belong to your faculty."
         );
+
+        public static Error NotPublicYet => Error.Validation(
+            code: "Contribution.NotPublicYet",
+            description: "This contribution is not public yet."
+        );
     };
 }

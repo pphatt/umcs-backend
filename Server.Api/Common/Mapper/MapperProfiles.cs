@@ -18,6 +18,7 @@ using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
 using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
+using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -54,6 +55,7 @@ using Server.Contracts.Common.Media;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
+using Server.Contracts.Contributions.GetContributionBySlug;
 using Server.Contracts.Contributions.RejectContribution;
 using Server.Contracts.Contributions.UpdateContribution;
 using Server.Contracts.Faculties.BulkDeleteFaculties;
@@ -169,6 +171,8 @@ public class MapperProfiles : Profile
 
         CreateMap<ApproveContributionRequest, ApproveContributionCommand>();
         CreateMap<RejectContributionRequest, RejectContributionCommand>();
+
+        CreateMap<GetContributionBySlugRequest, GetContributionBySlugQuery>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();

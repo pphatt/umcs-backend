@@ -6,10 +6,14 @@ using Server.Application.Common.Extensions;
 using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
+using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
+using Server.Contracts.Contributions.GetContributionBySlug;
 using Server.Contracts.Contributions.RejectContribution;
 using Server.Domain.Common.Constants.Authorization;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Server.Api.Controllers.CoordinatorApi;
 
@@ -66,6 +70,24 @@ public class ContributionsController : CoordinatorApiController
 
         return result.Match(
             rejectResult => Ok(rejectResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("preview-contribution/{Slug}")]
+    [Description("Preview contribution here is when contribution is not yet to be approved or rejected, still at pending state so only the student (contribution's owner) and faculty coordinator can view.")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> PreviewContribution([FromRoute] GetContributionBySlugRequest request)
+    {
+        var mapper = _mapper.Map<GetContributionBySlugQuery>(request);
+
+        mapper.FacultyName = User.GetUserFacultyName();
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }

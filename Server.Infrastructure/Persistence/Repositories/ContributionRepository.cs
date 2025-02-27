@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Media;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
+using System.Runtime.InteropServices;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -96,7 +98,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
                 .Where(f => f.ContributionId == x.c.Id && f.Type == FileType.File)
                 .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension})
                 .ToList(),
-            Status = x.c.Status.ToString(),
+            Status = x.c.Status.ToStringValue(),
             Username = x.u.UserName is not null ? x.u.UserName.ToString() : $"{x.u.FirstName} {x.u.LastName}",
             FacultyName = x.f.Name,
             AcademicYear = x.a.Name,
@@ -115,6 +117,52 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             PageSize = pageSize,
             Results = contributionsDto
         };
+    }
+
+    public async Task<ContributionDto> GetContributionBySlugAndFaculty(string slug, Guid facultyId)
+    {
+        var query = from c in _context.Contributions
+                    where c.Slug == slug && c.DateDeleted == null
+                    join u in _context.Users on c.UserId equals u.Id
+                    join f in _context.Faculties on c.FacultyId equals f.Id
+                    join a in _context.AcademicYears on c.AcademicYearId equals a.Id
+                    where f.Id == facultyId
+                    select new { c, u, f, a };
+
+        var contribution = await query.FirstOrDefaultAsync();
+
+        if (contribution is null)
+        {
+            return null;
+        }
+
+        var files = await _context.Files.Where(x => x.ContributionId == contribution.c.Id).ToListAsync();
+
+        var result = new ContributionDto
+        {
+            Id = contribution.c.Id,
+            Title = contribution.c.Title,
+            Slug = contribution.c.Slug,
+            Thumbnails = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.Thumbnail)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            Files = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.File)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            Status = contribution.c.Status.ToStringValue(),
+            Username = contribution.u.UserName is not null ? contribution.u.UserName.ToString() : $"{contribution.u.FirstName} {contribution.u.LastName}",
+            FacultyName = contribution.f.Name,
+            AcademicYear = contribution.a.Name,
+            SubmissionDate = contribution.c.DateCreated,
+            PublicDate = contribution.c.PublicDate,
+            ShortDescription = contribution.c.ShortDescription,
+            GuestAllowed = contribution.c.AllowedGuest,
+            Avatar = contribution.u.Avatar
+        };
+
+        return result;
     }
 
     public async Task SendToApproved(Guid contributionId, Guid studentId)

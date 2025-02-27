@@ -30,5 +30,10 @@ public static partial class Errors
             code: "User.FailResetPassword",
             description: "Error occurs while reseting password."
         );
+
+        public static Error NotOwnedContribution => Error.Validation(
+            code: "User.NotOwnedContribution",
+            description: "This is not your contribution"
+        );
     }
 }
