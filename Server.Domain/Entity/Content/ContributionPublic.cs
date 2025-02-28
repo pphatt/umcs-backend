@@ -60,6 +60,8 @@ public class ContributionPublic : BaseEntity
 
     public DateTime? PublicDate { get; set; }
 
+    public bool IsCoordinatorCommented { get; set; } = false;
+
     public bool AllowedGuest { get; set; } = false;
 
     public Guid? CoordinatorApprovedId { get; set; }

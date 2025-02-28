@@ -102,4 +102,10 @@ public static class Permissions
         [Description("View Activity Logs")]
         public const string View = "Permissions.ActivityLogs.View";
     }
+
+    public static class UngradedContribution
+    {
+        [Description("View Ungraded Contribution")]
+        public const string View = "Permissions.UngradedContribution.View";
+    }
 }

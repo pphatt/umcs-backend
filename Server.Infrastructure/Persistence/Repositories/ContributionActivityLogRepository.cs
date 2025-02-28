@@ -5,7 +5,6 @@ using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Entity.Content;
-using System.Runtime.InteropServices;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
