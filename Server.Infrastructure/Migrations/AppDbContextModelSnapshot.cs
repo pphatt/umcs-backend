@@ -194,7 +194,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserFacultyId")
+                    b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsConfirmed")
@@ -229,7 +229,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("UserFacultyId");
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -376,7 +376,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserFacultyId")
+                    b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FacultyName")
@@ -425,7 +425,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("UserFacultyId");
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -670,7 +670,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("UserFacultyId")
+                    b.Property<Guid?>("FacultyId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
@@ -828,7 +828,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany("Contributions")
-                        .HasForeignKey("UserFacultyId")
+                        .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -848,7 +848,7 @@ namespace Server.Infrastructure.Migrations
                     b.HasOne("Server.Domain.Entity.Identity.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Contribution");
@@ -866,7 +866,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany()
-                        .HasForeignKey("UserFacultyId")
+                        .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

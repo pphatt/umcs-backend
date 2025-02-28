@@ -53,12 +53,27 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 
         #region Table Relationship Configuration
 
-        modelBuilder.Entity<RefreshToken>()
-            .HasOne(r => r.User)
-            .WithOne(r => r.RefreshToken)
+        modelBuilder.Entity<AppUser>()
+            .HasOne(u => u.RefreshToken)
+            .WithOne(r => r.User)
             .HasForeignKey<RefreshToken>(r => r.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // AcademicYear relationships
+        modelBuilder.Entity<AcademicYear>()
+            .HasMany(a => a.Contributions)
+            .WithOne(c => c.AcademicYear)
+            .HasForeignKey(c => c.AcademicYearId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Faculty relationships
+        modelBuilder.Entity<Faculty>()
+            .HasMany(f => f.Contributions)
+            .WithOne(c => c.Faculty)
+            .HasForeignKey(c => c.FacultyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Contribution relationships
         modelBuilder.Entity<Contribution>()
             .HasOne(c => c.Faculty)
             .WithMany(f => f.Contributions)
@@ -71,34 +86,54 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .HasForeignKey(c => c.AcademicYearId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Contribution>()
+            .HasMany(c => c.Files)
+            .WithOne(f => f.Contribution)
+            .HasForeignKey(f => f.ContributionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Contribution>()
+            .HasMany(c => c.ContributionTags)
+            .WithOne(ct => ct.Contribution)
+            .HasForeignKey(ct => ct.ContributionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ContributionPublic relationships
+        modelBuilder.Entity<ContributionActivityLog>()
+            .HasOne(cal => cal.User)
+            .WithMany()
+            .HasForeignKey(cal => cal.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ContributionTag relationships
         modelBuilder.Entity<ContributionTag>()
             .HasKey(ct => new { ct.ContributionId, ct.TagId });
 
         modelBuilder.Entity<ContributionTag>()
             .HasOne(ct => ct.Contribution)
             .WithMany(c => c.ContributionTags)
-            .HasForeignKey(ct => ct.ContributionId);
+            .HasForeignKey(ct => ct.ContributionId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ContributionTag>()
             .HasOne(ct => ct.Tag)
             .WithMany(t => t.ContributionTags)
-            .HasForeignKey(ct => ct.TagId);
+            .HasForeignKey(ct => ct.TagId)
+            .OnDelete(DeleteBehavior.Cascade);
 
+        // File relationships
         modelBuilder.Entity<File>()
             .HasOne(f => f.Contribution)
             .WithMany(c => c.Files)
             .HasForeignKey(f => f.ContributionId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<ContributionActivityLog>()
-            .HasOne(log => log.Contribution)
-            .WithMany()
-            .HasForeignKey(log => log.ContributionId);
-
-        modelBuilder.Entity<ContributionActivityLog>()
-            .HasOne(log => log.User)
-            .WithMany()
-            .HasForeignKey(log => log.UserId);
+        // Tag relationships
+        modelBuilder.Entity<Tag>()
+            .HasMany(t => t.ContributionTags)
+            .WithOne(ct => ct.Tag)
+            .HasForeignKey(ct => ct.TagId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         #endregion Table Relationship Configuration
     }

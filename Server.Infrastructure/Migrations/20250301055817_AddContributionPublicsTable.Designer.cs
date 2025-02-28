@@ -12,7 +12,7 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250227102727_AddContributionPublicsTable")]
+    [Migration("20250301055817_AddContributionPublicsTable")]
     partial class AddContributionPublicsTable
     {
         /// <inheritdoc />
@@ -197,7 +197,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserFacultyId")
+                    b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsConfirmed")
@@ -232,7 +232,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("UserFacultyId");
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -254,13 +254,6 @@ namespace Server.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CoordinatorUsername")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -280,6 +273,13 @@ namespace Server.Infrastructure.Migrations
 
                     b.Property<int>("ToStatus")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -379,7 +379,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserFacultyId")
+                    b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FacultyName")
@@ -428,7 +428,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("UserFacultyId");
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -673,7 +673,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("UserFacultyId")
+                    b.Property<Guid?>("FacultyId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
@@ -831,7 +831,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany("Contributions")
-                        .HasForeignKey("UserFacultyId")
+                        .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -848,7 +848,7 @@ namespace Server.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Domain.Entity.Identity.AppUser", "Coordinator")
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -856,7 +856,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.Navigation("Contribution");
 
-                    b.Navigation("Coordinator");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
@@ -869,7 +869,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany()
-                        .HasForeignKey("UserFacultyId")
+                        .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

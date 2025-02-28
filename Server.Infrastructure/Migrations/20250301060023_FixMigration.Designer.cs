@@ -12,8 +12,8 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250227110322_ChangeUserColumnsInContributionActivityLogsTable")]
-    partial class ChangeUserColumnsInContributionActivityLogsTable
+    [Migration("20250301060023_FixMigration")]
+    partial class FixMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,7 +197,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserFacultyId")
+                    b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsConfirmed")
@@ -232,7 +232,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("UserFacultyId");
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -379,7 +379,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserFacultyId")
+                    b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FacultyName")
@@ -428,7 +428,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("UserFacultyId");
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -673,7 +673,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("UserFacultyId")
+                    b.Property<Guid?>("FacultyId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
@@ -831,7 +831,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany("Contributions")
-                        .HasForeignKey("UserFacultyId")
+                        .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -869,7 +869,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany()
-                        .HasForeignKey("UserFacultyId")
+                        .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
