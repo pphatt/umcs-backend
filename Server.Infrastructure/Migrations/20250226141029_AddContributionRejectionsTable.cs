@@ -30,7 +30,7 @@ namespace Server.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ContributionActivityLogs_CoordinatorId",
                 table: "ContributionActivityLogs",
-                column: "CoordinatorId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContributionRejections_ContributionId",
@@ -41,7 +41,7 @@ namespace Server.Infrastructure.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_ContributionActivityLogs_AppUsers_CoordinatorId",
                 table: "ContributionActivityLogs",
-                column: "CoordinatorId",
+                column: "UserId",
                 principalTable: "AppUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);

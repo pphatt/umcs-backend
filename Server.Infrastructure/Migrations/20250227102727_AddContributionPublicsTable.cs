@@ -85,7 +85,7 @@ namespace Server.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ContributionPublics_FacultyId",
                 table: "ContributionPublics",
-                column: "FacultyId");
+                column: "UserFacultyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContributionPublics_Slug",

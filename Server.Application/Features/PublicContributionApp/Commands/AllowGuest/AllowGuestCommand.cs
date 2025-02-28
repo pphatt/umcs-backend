@@ -8,5 +8,7 @@ public class AllowGuestCommand : IRequest<ErrorOr<ResponseWrapper>>
 {
     public Guid ContributionId { get; set; }
 
-    public Guid FacultyId { get; set; }
+    public Guid UserId { get; set; }
+
+    public Guid UserFacultyId { get; set; }
 }
