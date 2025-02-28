@@ -20,7 +20,7 @@ namespace Server.Infrastructure.Migrations
                 newName: "Username");
 
             migrationBuilder.RenameColumn(
-                name: "CoordinatorId",
+                name: "UserId",
                 table: "ContributionActivityLogs",
                 newName: "UserId");
 
@@ -53,7 +53,7 @@ namespace Server.Infrastructure.Migrations
             migrationBuilder.RenameColumn(
                 name: "UserId",
                 table: "ContributionActivityLogs",
-                newName: "CoordinatorId");
+                newName: "UserId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_ContributionActivityLogs_UserId",
@@ -63,7 +63,7 @@ namespace Server.Infrastructure.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_ContributionActivityLogs_AppUsers_CoordinatorId",
                 table: "ContributionActivityLogs",
-                column: "CoordinatorId",
+                column: "UserId",
                 principalTable: "AppUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);

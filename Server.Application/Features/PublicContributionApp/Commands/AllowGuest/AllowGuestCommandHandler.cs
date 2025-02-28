@@ -1,18 +1,24 @@
 ﻿using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
+using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
+using Server.Domain.Entity.Content;
+using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 
 public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly UserManager<AppUser> _userManager;
 
-    public AllowGuestCommandHandler(IUnitOfWork unitOfWork)
+    public AllowGuestCommandHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
     {
         _unitOfWork = unitOfWork;
+        _userManager = userManager;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(AllowGuestCommand request, CancellationToken cancellationToken)
@@ -31,7 +37,15 @@ public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, Error
             return Errors.Contribution.CannotFound;
         }
 
-        var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.FacultyId);
+        // coordinator, admin, ...
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+
+        if (user is null)
+        {
+            return Errors.User.CannotFound;
+        }
+
+        var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.UserFacultyId);
 
         if (faculty is null)
         {
@@ -50,6 +64,19 @@ public class AllowGuestCommandHandler : IRequestHandler<AllowGuestCommand, Error
 
         contribution.AllowedGuest = true;
         publicContribution.AllowedGuest = true;
+
+        await _unitOfWork.CompleteAsync();
+
+        _unitOfWork.ContributionActivityLogRepository.Add(new ContributionActivityLog
+        {
+            ContributionId = contribution.Id,
+            ContributionTitle = contribution.Title,
+            UserId = user.Id,
+            Username = user.UserName,
+            FromStatus = ContributionStatus.Approve,
+            ToStatus = ContributionStatus.Approve,
+            Description = $"{user.UserName} allow guest to view the public contribution.",
+        });
 
         await _unitOfWork.CompleteAsync();
 

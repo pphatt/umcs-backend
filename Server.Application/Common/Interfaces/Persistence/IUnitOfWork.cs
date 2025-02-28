@@ -11,5 +11,6 @@ public interface IUnitOfWork
     IAcademicYearRepository AcademicYearRepository { get; }
     IContributionRepository ContributionRepository { get; }
     IContributionPublicRepository ContributionPublicRepository { get; }
+    IContributionActivityLogRepository ContributionActivityLogRepository { get; }
     IFileRepository FileRepository { get; }
 }

@@ -197,7 +197,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("FacultyId")
+                    b.Property<Guid>("UserFacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsConfirmed")
@@ -232,7 +232,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("FacultyId");
+                    b.HasIndex("UserFacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -254,7 +254,7 @@ namespace Server.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("CoordinatorId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CoordinatorUsername")
@@ -540,7 +540,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("FacultyId")
+                    b.Property<Guid?>("UserFacultyId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
@@ -698,7 +698,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany("Contributions")
-                        .HasForeignKey("FacultyId")
+                        .HasForeignKey("UserFacultyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

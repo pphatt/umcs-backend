@@ -8,5 +8,7 @@ public class AllowGuestWithManyContributionsCommand : IRequest<ErrorOr<ResponseW
 {
     public List<Guid> ContributionIds { get; set; } = default!;
 
-    public Guid FacultyId { get; set; }
+    public Guid UserId { get; set; }
+
+    public Guid UserFacultyId { get; set; }
 }

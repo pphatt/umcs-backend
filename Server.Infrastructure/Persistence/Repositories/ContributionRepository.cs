@@ -282,9 +282,9 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
 
     public async Task<string> GetRejectionReason(Contribution contribution)
     {
-        //var reason = await _context.ContributionRejections.FirstOrDefaultAsync(x => x.ContributionId == contribution.Id);
-        var reason = await _context.ContributionActivityLogs.FirstOrDefaultAsync(x => x.ContributionId == contribution.Id && x.ToStatus == ContributionStatus.Reject);
+        var reason = await _context.ContributionRejections.FirstOrDefaultAsync(x => x.ContributionId == contribution.Id);
+        //var reason = await _context.ContributionActivityLogs.FirstOrDefaultAsync(x => x.ContributionId == contribution.Id && x.ToStatus == ContributionStatus.Reject);
 
-        return reason is not null ? reason.Description : string.Empty;
+        return reason is not null ? reason.Reason : string.Empty;
     }
 }
