@@ -36,6 +36,7 @@ using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
+using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuestWithManyContributions;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
@@ -79,6 +80,7 @@ using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.PublicContributions.AllowGuest;
 using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
+using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
@@ -187,6 +189,7 @@ public class MapperProfiles : Profile
         CreateMap<RevokeAllowGuestRequest, RevokeAllowGuestCommand>();
 
         CreateMap<AllowGuestWithManyContributionsRequest, AllowGuestWithManyContributionsCommand>();
+        CreateMap<RevokeAllowGuestWithManyContributionsRequest, RevokeAllowGuestWithManyContributionsCommand>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();
