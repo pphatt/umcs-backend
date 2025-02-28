@@ -51,7 +51,8 @@ public class PublicContributionsController : CoordinatorApiController
     {
         var mapper = _mapper.Map<RevokeAllowGuestCommand>(request);
 
-        mapper.FacultyId = User.GetUserFacultyId();
+        mapper.UserId = User.GetUserId();
+        mapper.UserFacultyId = User.GetUserFacultyId();
 
         var result = await _mediatorSender.Send(mapper);
 
@@ -84,7 +85,8 @@ public class PublicContributionsController : CoordinatorApiController
     {
         var mapper = _mapper.Map<RevokeAllowGuestWithManyContributionsCommand>(request);
 
-        mapper.FacultyId = User.GetUserFacultyId();
+        mapper.UserId = User.GetUserId();
+        mapper.UserFacultyId = User.GetUserFacultyId();
 
         var result = await _mediatorSender.Send(mapper);
 

@@ -90,6 +90,9 @@ public class AllowGuestWithManyContributionsCommandHandler : IRequestHandler<All
             publicContributionList.Add(publicContribution);
         }
 
+        // reason the move the save outside is that if one of the contribution throw, it will cancel the transaction.
+        await _unitOfWork.CompleteAsync();
+
         foreach (var contribution in publicContributionList)
         {
             _unitOfWork.ContributionActivityLogRepository.Add(new ContributionActivityLog
@@ -104,7 +107,6 @@ public class AllowGuestWithManyContributionsCommandHandler : IRequestHandler<All
             });
         }
 
-        // reason the move the save outside is that if one of the contribution throw, it will cancel the transaction.
         await _unitOfWork.CompleteAsync();
 
         return new ResponseWrapper

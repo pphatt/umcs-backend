@@ -1,25 +1,31 @@
 ﻿using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
+using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
+using Server.Domain.Entity.Content;
+using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuestWithManyContributions;
 
 public class RevokeAllowGuestWithManyContributionsCommandHandler : IRequestHandler<RevokeAllowGuestWithManyContributionsCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly UserManager<AppUser> _userManager;
 
-    public RevokeAllowGuestWithManyContributionsCommandHandler(IUnitOfWork unitOfWork)
+    public RevokeAllowGuestWithManyContributionsCommandHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
     {
         _unitOfWork = unitOfWork;
+        _userManager = userManager;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(RevokeAllowGuestWithManyContributionsCommand request, CancellationToken cancellationToken)
     {
         var contributionIds = request.ContributionIds;
 
-        var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.FacultyId);
+        var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.UserFacultyId);
 
         if (faculty is null)
         {
@@ -30,6 +36,16 @@ public class RevokeAllowGuestWithManyContributionsCommandHandler : IRequestHandl
         {
             return Errors.Contribution.CannotFound;
         }
+
+        // coordinator, admin, ...
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+
+        if (user is null)
+        {
+            return Errors.User.CannotFound;
+        }
+
+        var publicContributionList = new List<ContributionPublic>();
 
         foreach (var id in contributionIds)
         {
@@ -70,9 +86,27 @@ public class RevokeAllowGuestWithManyContributionsCommandHandler : IRequestHandl
 
             contribution.AllowedGuest = false;
             publicContribution.AllowedGuest = false;
+
+            publicContributionList.Add(publicContribution);
         }
 
         // reason the move the save outside is that if one of the contribution throw, it will cancel the transaction.
+        await _unitOfWork.CompleteAsync();
+
+        foreach (var contribution in publicContributionList)
+        {
+            _unitOfWork.ContributionActivityLogRepository.Add(new ContributionActivityLog
+            {
+                ContributionId = contribution.Id,
+                ContributionTitle = contribution.Title,
+                UserId = user.Id,
+                Username = user.UserName,
+                FromStatus = ContributionStatus.Approve,
+                ToStatus = ContributionStatus.Approve,
+                Description = $"{user.UserName} revoke allow guest to view the public contribution.",
+            });
+        }
+
         await _unitOfWork.CompleteAsync();
 
         return new ResponseWrapper
