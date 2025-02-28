@@ -6,7 +6,7 @@ using Server.Application.Wrapper.Pagination;
 
 namespace Server.Application.Features.ContributionActivityLogsApp.Queries.GetAllContributionActivityLogsPagination;
 
-public class GetAllContributionActivityLogsPaginationQuery : IRequest<ErrorOr<ResponseWrapper<PaginationResult<ContributionActivityLogsDto>>>>
+public class GetAllContributionActivityLogsPaginationQuery : IRequest<ErrorOr<ResponseWrapper<PaginationResult<ContributionActivityLogDto>>>>
 {
     public int PageIndex { get; set; } = 1;
 

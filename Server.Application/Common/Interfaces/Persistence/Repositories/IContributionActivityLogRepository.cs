@@ -6,5 +6,9 @@ namespace Server.Application.Common.Interfaces.Persistence.Repositories;
 
 public interface IContributionActivityLogRepository : IRepository<ContributionActivityLog, Guid>
 {
-    Task<PaginationResult<ContributionActivityLogsDto>> GetAllContributionActivityLogsPagination(int pageIndex = 1, int pageSize = 10, string? facultyName = null, string? academicYearName = null);
+    Task<PaginationResult<ContributionActivityLogDto>> GetAllContributionActivityLogsPagination(
+        int pageIndex = 1,
+        int pageSize = 10,
+        string? facultyName = null,
+        string? academicYearName = null);
 }

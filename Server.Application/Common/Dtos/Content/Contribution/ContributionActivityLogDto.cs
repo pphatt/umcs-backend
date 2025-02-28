@@ -2,7 +2,7 @@
 
 namespace Server.Application.Common.Dtos.Content.Contribution;
 
-public class ContributionActivityLogsDto
+public class ContributionActivityLogDto
 {
     public Guid Id { get; set; }
 

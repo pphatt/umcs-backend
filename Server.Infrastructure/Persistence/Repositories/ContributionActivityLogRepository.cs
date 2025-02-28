@@ -23,7 +23,11 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
         _academicYearRepository = academicYearRepository;
     }
 
-    public async Task<PaginationResult<ContributionActivityLogsDto>> GetAllContributionActivityLogsPagination(int pageIndex = 1, int pageSize = 10, string? facultyName = null, string? academicYearName = null)
+    public async Task<PaginationResult<ContributionActivityLogDto>> GetAllContributionActivityLogsPagination(
+        int pageIndex = 1,
+        int pageSize = 10,
+        string? facultyName = null,
+        string? academicYearName = null)
     {
         var query = _context.ContributionActivityLogs
             .Where(x => x.DateDeleted == null)
@@ -63,11 +67,11 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
             .Take(pageSize)
             .ToListAsync();
 
-        var result = new List<ContributionActivityLogsDto>();
+        var result = new List<ContributionActivityLogDto>();
 
         foreach (var activity in activityList)
         {
-            var a = _mapper.Map<ContributionActivityLogsDto>(activity);
+            var a = _mapper.Map<ContributionActivityLogDto>(activity);
 
             a.FromStatus = activity.FromStatus.ToStringValue();
             a.ToStatus = activity.ToStatus.ToStringValue();
@@ -75,7 +79,7 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
             result.Add(a);
         }
 
-        return new PaginationResult<ContributionActivityLogsDto>
+        return new PaginationResult<ContributionActivityLogDto>
         {
             CurrentPage = pageIndex,
             RowCount = rowCount,

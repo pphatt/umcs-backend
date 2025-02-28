@@ -7,7 +7,7 @@ using Server.Application.Wrapper.Pagination;
 
 namespace Server.Application.Features.ContributionActivityLogsApp.Queries.GetAllContributionActivityLogsPagination;
 
-public class GetAllContributionActivityLogsPaginationQueryHandler : IRequestHandler<GetAllContributionActivityLogsPaginationQuery, ErrorOr<ResponseWrapper<PaginationResult<ContributionActivityLogsDto>>>>
+public class GetAllContributionActivityLogsPaginationQueryHandler : IRequestHandler<GetAllContributionActivityLogsPaginationQuery, ErrorOr<ResponseWrapper<PaginationResult<ContributionActivityLogDto>>>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -17,7 +17,7 @@ public class GetAllContributionActivityLogsPaginationQueryHandler : IRequestHand
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<ResponseWrapper<PaginationResult<ContributionActivityLogsDto>>>> Handle(
+    public async Task<ErrorOr<ResponseWrapper<PaginationResult<ContributionActivityLogDto>>>> Handle(
         GetAllContributionActivityLogsPaginationQuery request,
         CancellationToken cancellationToken)
     {
@@ -27,7 +27,7 @@ public class GetAllContributionActivityLogsPaginationQueryHandler : IRequestHand
             facultyName: request.FacultyName,
             academicYearName: request.AcademicYearName);
 
-        return new ResponseWrapper<PaginationResult<ContributionActivityLogsDto>>
+        return new ResponseWrapper<PaginationResult<ContributionActivityLogDto>>
         {
             IsSuccessful = true,
             ResponseData = result

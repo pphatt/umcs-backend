@@ -15,6 +15,7 @@ using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPa
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.ContributionActivityLogsApp.Queries.GetAllContributionActivityLogsPagination;
+using Server.Application.Features.ContributionActivityLogsApp.Queries.GetContributionActivityLogById;
 using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
@@ -59,6 +60,7 @@ using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
 using Server.Contracts.ContributionActivityLogs.GetAllContributionActivityLogsPagination;
+using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogById;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
@@ -194,8 +196,11 @@ public class MapperProfiles : Profile
         CreateMap<AllowGuestWithManyContributionsRequest, AllowGuestWithManyContributionsCommand>();
         CreateMap<RevokeAllowGuestWithManyContributionsRequest, RevokeAllowGuestWithManyContributionsCommand>();
 
-        CreateMap<ContributionActivityLog, ContributionActivityLogsDto>();
+        // Contribution Activity.
+        CreateMap<ContributionActivityLog, ContributionActivityLogDto>();
+
         CreateMap<GetAllContributionActivityLogsPaginationRequest, GetAllContributionActivityLogsPaginationQuery>();
+        CreateMap<GetContributionActivityLogByIdRequest, GetContributionActivityLogByIdQuery>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();
