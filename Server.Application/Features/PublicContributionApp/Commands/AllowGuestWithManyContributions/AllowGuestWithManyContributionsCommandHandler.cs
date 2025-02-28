@@ -70,9 +70,10 @@ public class AllowGuestWithManyContributionsCommandHandler : IRequestHandler<All
 
             contribution.AllowedGuest = true;
             publicContribution.AllowedGuest = true;
-
-            await _unitOfWork.CompleteAsync();
         }
+
+        // reason the move the save outside is that if one of the contribution throw, it will cancel the transaction.
+        await _unitOfWork.CompleteAsync();
 
         return new ResponseWrapper
         {
