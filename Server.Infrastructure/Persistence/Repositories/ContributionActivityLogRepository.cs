@@ -33,18 +33,22 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
         {
             var faculty = await _facultyRepository.GetFacultyByNameAsync(facultyName);
 
-            var contributions = await _context.Contributions.Where(x => x.FacultyId == faculty.Id).Select(x => x.Id).ToListAsync();
-
-            query = query.Where(x => contributions.Contains(x.ContributionId));
+            // single query execution + sub-query join more performance than using list async.
+            query = query.Where(x => _context.Contributions
+                .Where(c => c.FacultyId == faculty.Id)
+                .Select(c => c.Id)
+                .Contains(x.ContributionId));
         }
 
         if (!string.IsNullOrWhiteSpace(academicYearName))
         {
             var academicYear = await _academicYearRepository.GetAcademicYearByNameAsync(academicYearName);
 
-            var contributions = await _context.Contributions.Where(x => x.AcademicYearId == academicYear.Id).Select(x => x.Id).ToListAsync();
-
-            query = query.Where(x => contributions.Contains(x.ContributionId));
+            // same here.
+            query = query.Where(x => _context.Contributions
+                .Where(x => x.AcademicYearId == academicYear.Id)
+                .Select(x => x.Id)
+                .Contains(x.ContributionId));
         }
 
         var rowCount = await query.CountAsync();
