@@ -16,6 +16,7 @@ using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
 using Server.Application.Features.ContributionActivityLogsApp.Queries.GetAllContributionActivityLogsPagination;
 using Server.Application.Features.ContributionActivityLogsApp.Queries.GetContributionActivityLogById;
+using Server.Application.Features.ContributionActivityLogsApp.Queries.GetContributionActivityLogsByContributionId;
 using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
@@ -61,6 +62,7 @@ using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
 using Server.Contracts.ContributionActivityLogs.GetAllContributionActivityLogsPagination;
 using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogById;
+using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogsByContributionId;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
@@ -201,6 +203,8 @@ public class MapperProfiles : Profile
 
         CreateMap<GetAllContributionActivityLogsPaginationRequest, GetAllContributionActivityLogsPaginationQuery>();
         CreateMap<GetContributionActivityLogByIdRequest, GetContributionActivityLogByIdQuery>();
+
+        CreateMap<GetContributionActivityLogsByContributionIdRequest, GetContributionActivityLogsByContributionIdQuery>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();

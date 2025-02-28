@@ -5,6 +5,7 @@ using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Entity.Content;
+using System.Runtime.InteropServices;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -86,5 +87,26 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
             PageSize = pageSize,
             Results = result
         };
+    }
+
+    public async Task<List<ContributionActivityLogDto>> GetContributionActivityLogsByContribution(Contribution contribution)
+    {
+        // I think the logs of a single contribution is not that many so no need to paginate this.
+        // contribution activity logs.
+        var cals = await _context.ContributionActivityLogs.Where(x => x.ContributionId == contribution.Id).ToListAsync();
+        
+        var result = new List<ContributionActivityLogDto>();
+
+        foreach (var log in cals)
+        {
+            var dto = _mapper.Map<ContributionActivityLogDto>(log);
+
+            dto.FromStatus = log.FromStatus.ToStringValue();
+            dto.ToStatus = log.ToStatus.ToStringValue();
+
+            result.Add(dto);
+        }
+
+        return result;
     }
 }

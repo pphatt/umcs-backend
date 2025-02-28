@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.ContributionActivityLogsApp.Queries.GetAllContributionActivityLogsPagination;
 using Server.Application.Features.ContributionActivityLogsApp.Queries.GetContributionActivityLogById;
+using Server.Application.Features.ContributionActivityLogsApp.Queries.GetContributionActivityLogsByContributionId;
 using Server.Contracts.ContributionActivityLogs.GetAllContributionActivityLogsPagination;
 using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogById;
+using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogsByContributionId;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.ManagerApi;
@@ -38,6 +40,20 @@ public class ContributionsController : ManagerApiController
     public async Task<IActionResult> GetContributionActivityLogById([FromRoute] GetContributionActivityLogByIdRequest request)
     {
         var mapper = _mapper.Map<GetContributionActivityLogByIdQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("activity-logs/contribution/{Id}")]
+    [Authorize(Permissions.ActivityLogs.View)]
+    public async Task<IActionResult> GetActivityLogByContributionId([FromRoute] GetContributionActivityLogsByContributionIdRequest request)
+    {
+        var mapper = _mapper.Map<GetContributionActivityLogsByContributionIdQuery>(request);
 
         var result = await _mediatorSender.Send(mapper);
 
