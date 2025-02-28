@@ -4,18 +4,18 @@ using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
-namespace Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
+namespace Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuestWithManyContributions;
 
-public class AllowGuestWithManyContributionsCommandHandler : IRequestHandler<AllowGuestWithManyContributionsCommand, ErrorOr<ResponseWrapper>>
+public class RevokeAllowGuestWithManyContributionsCommandHandler : IRequestHandler<RevokeAllowGuestWithManyContributionsCommand, ErrorOr<ResponseWrapper>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public AllowGuestWithManyContributionsCommandHandler(IUnitOfWork unitOfWork)
+    public RevokeAllowGuestWithManyContributionsCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<ResponseWrapper>> Handle(AllowGuestWithManyContributionsCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper>> Handle(RevokeAllowGuestWithManyContributionsCommand request, CancellationToken cancellationToken)
     {
         var contributionIds = request.ContributionIds;
 
@@ -51,9 +51,9 @@ public class AllowGuestWithManyContributionsCommandHandler : IRequestHandler<All
             }
 
             // cannot revoke many while allow many, there will be an api only for revoke many.
-            if (contribution.AllowedGuest)
+            if (!contribution.AllowedGuest)
             {
-                return Errors.Contribution.AlreadyAllowGuest;
+                return Errors.Contribution.NotAllowYet;
             }
 
             var publicContribution = await _unitOfWork.ContributionPublicRepository.GetByIdAsync(id);
@@ -63,13 +63,13 @@ public class AllowGuestWithManyContributionsCommandHandler : IRequestHandler<All
                 return Errors.Contribution.CannotFound;
             }
 
-            if (publicContribution.AllowedGuest)
+            if (!publicContribution.AllowedGuest)
             {
-                return Errors.Contribution.AlreadyAllowGuest;
+                return Errors.Contribution.NotAllowYet;
             }
 
-            contribution.AllowedGuest = true;
-            publicContribution.AllowedGuest = true;
+            contribution.AllowedGuest = false;
+            publicContribution.AllowedGuest = false;
 
             await _unitOfWork.CompleteAsync();
         }
@@ -77,7 +77,7 @@ public class AllowGuestWithManyContributionsCommandHandler : IRequestHandler<All
         return new ResponseWrapper
         {
             IsSuccessful = true,
-            Message = "Allow guest to all contributions successfully."
+            Message = "Revoke allow guest successfully."
         };
     }
 }
