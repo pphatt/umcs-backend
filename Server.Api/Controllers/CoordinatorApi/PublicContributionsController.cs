@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
+using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.AllowGuest;
+using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Domain.Common.Constants.Authorization;
 using System.ComponentModel;
@@ -52,6 +54,22 @@ public class PublicContributionsController : CoordinatorApiController
 
         return result.Match(
             revokeAllowResult => Ok(revokeAllowResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("allow-guest-with-many-contributions")]
+    [Authorize(Permissions.SettingGAC.Manage)]
+    public async Task<IActionResult> AllowGuestWithManyContributions(AllowGuestWithManyContributionsRequest request)
+    {
+        var mapper = _mapper.Map<AllowGuestWithManyContributionsCommand>(request);
+
+        mapper.FacultyId = User.GetUserFacultyId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            allowResult => Ok(allowResult),
             errors => Problem(errors)
         );
     }
