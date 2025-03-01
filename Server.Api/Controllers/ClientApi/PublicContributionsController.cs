@@ -3,11 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
+using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Domain.Common.Constants.Authorization;
+using System.Runtime.InteropServices;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -49,6 +52,20 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("download-file")]
+    [Authorize(Permissions.Contributions.Download)]
+    public async Task<IActionResult> DownloadSingleFile([FromQuery] DownloadSingleFileRequest request)
+    {
+        var mapper = _mapper.Map<DownloadSingleFileQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            downloadResult => Ok(downloadResult),
             errors => Problem(errors)
         );
     }

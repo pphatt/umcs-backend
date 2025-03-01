@@ -279,8 +279,16 @@ public class MediaService : IMediaService
             return _cloudinary.DownloadArchiveUrl(archiveParams);
         }
 
-        // some edge cases here:
-        // - Download single image file (checking the FileType and change to image/upload instead raw/upload).
-        return $"http://res.cloudinary.com/dus70fkd3/raw/upload/v1739610592/{publicIds[0]}";
+        var path = publicIds[0];
+
+        if (path.EndsWith(AllowFileExtension.PDF) || 
+            path.EndsWith(AllowFileExtension.DOC) ||
+            path.EndsWith(AllowFileExtension.DOCS) ||
+            path.EndsWith(AllowFileExtension.DOCX))
+        {
+            return $"http://res.cloudinary.com/dus70fkd3/raw/upload/v1739610592/{publicIds[0]}";
+        }
+
+        return $"http://res.cloudinary.com/dus70fkd3/image/upload/v1739610592/{publicIds[0]}";
     }
 }

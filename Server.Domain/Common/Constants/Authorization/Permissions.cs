@@ -83,6 +83,9 @@ public static class Permissions
 
         [Description("Reject Contribution")]
         public const string Reject = "Permissions.Contributions.Reject";
+
+        [Description("Download Contribution Files")]
+        public const string Download = "Permissions.Contributions.Download";
     }
 
     public static class ManageContributions
