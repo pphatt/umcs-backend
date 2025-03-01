@@ -43,6 +43,7 @@ using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithM
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
@@ -90,6 +91,7 @@ using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.PublicContributions.AllowGuest;
 using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
+using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
 using Server.Contracts.Roles.BulkDeleteRoles;
@@ -205,6 +207,8 @@ public class MapperProfiles : Profile
         CreateMap<RevokeAllowGuestWithManyContributionsRequest, RevokeAllowGuestWithManyContributionsCommand>();
 
         CreateMap<GetAllPublicContributionsPaginationRequest, GetAllPublicContributionsPaginationQuery>();
+
+        CreateMap<GetPublicContributionBySlugRequest, GetPublicContributionBySlugQuery>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();

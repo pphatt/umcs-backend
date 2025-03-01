@@ -19,7 +19,6 @@ public class PublicContributionInListDto
     public int Like { get; set; } = 0;
     public int View { get; set; } = 0;
     public string? ShortDescription { get; set; }
-    public bool? GuestAllowed { get; set; }
     public string? Avatar { get; set; }
     public string? WhoApproved { get; set; }
 

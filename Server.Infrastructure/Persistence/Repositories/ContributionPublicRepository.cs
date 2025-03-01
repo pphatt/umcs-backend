@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
-using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
 
 namespace Server.Infrastructure.Persistence.Repositories;
@@ -12,10 +12,12 @@ namespace Server.Infrastructure.Persistence.Repositories;
 public class ContributionPublicRepository : RepositoryBase<ContributionPublic, Guid>, IContributionPublicRepository
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public ContributionPublicRepository(AppDbContext context) : base(context)
+    public ContributionPublicRepository(AppDbContext context, IMapper mapper) : base(context)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<PaginationResult<PublicContributionInListDto>> GetAllPublicContributionsPagination(string? keyword,
@@ -90,7 +92,6 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,
-            GuestAllowed = x.c.AllowedGuest
         }).ToList();
 
         return new PaginationResult<PublicContributionInListDto>
@@ -100,5 +101,54 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
             PageSize = pageSize,
             Results = result
         };
+    }
+
+    public async Task<PublicContributionDetailsDto> GetPublicContributionBySlug(string slug)
+    {
+        var query = from c in _context.ContributionPublics
+                    where c.DateDeleted == null && c.Slug == slug
+                    join u in _context.Users on c.UserId equals u.Id
+                    join f in _context.Faculties on c.FacultyId equals f.Id
+                    join a in _context.AcademicYears on c.AcademicYearId equals a.Id
+                    select new { c, u, f, a };
+
+        var contribution = await query.FirstOrDefaultAsync();
+
+        if (contribution is null)
+        {
+            return null;
+        }
+
+        var files = await _context.Files.Where(x => x.ContributionId == contribution.c.Id).ToListAsync();
+
+        var result = new PublicContributionDetailsDto
+        {
+            Id = contribution.c.Id,
+            Title = contribution.c.Title,
+            Slug = contribution.c.Slug,
+            Content = contribution.c.Content,
+            ShortDescription = contribution.c.ShortDescription,
+            Username = contribution.u.UserName is not null ? contribution.u.UserName.ToString() : $"{contribution.u.FirstName} {contribution.u.LastName}",
+            FacultyName = contribution.f.Name,
+            AcademicYearName = contribution.a.Name,
+            Thumbnails = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.Thumbnail)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            Files = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.File)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            PublicDate = contribution.c.PublicDate,
+            SubmissionDate = contribution.c.SubmissionDate,
+            DateEdited = contribution.c.DateUpdated,
+            Avatar = contribution.u.Avatar,
+            WhoApproved = _context.Users.FindAsync(contribution.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
+            Like = contribution.c.LikeQuantity,
+            View = contribution.c.Views,
+            AllowedGuest = contribution.c.AllowedGuest,
+        };
+
+        return result;
     }
 }

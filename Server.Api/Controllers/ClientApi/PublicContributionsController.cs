@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
+using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -31,6 +33,22 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             paginationResult => Ok(paginationResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("{Slug}")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetPublicContributionBySlug([FromRoute] GetPublicContributionBySlugRequest request)
+    {
+        var mapper = _mapper.Map<GetPublicContributionBySlugQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }

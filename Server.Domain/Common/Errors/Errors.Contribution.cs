@@ -65,5 +65,10 @@ public static partial class Errors
             code: "Contribution.AlreadyAllowGuest",
             description: "This contribution has already allowed guest to view it."
         );
+
+        public static Error NotAllowed => Error.Validation(
+            code: "Contribution.NotAllowed",
+            description: "You do not have permission to access this contribution."
+        );
     };
 }
