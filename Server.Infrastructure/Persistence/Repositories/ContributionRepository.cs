@@ -218,7 +218,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
 
         if (faculty is null)
         {
-            throw new Exception("Contribution's faculty is not found.");
+            throw new Exception("Contribution's facultyName is not found.");
         }
 
         await _context.ContributionActivityLogs.AddAsync(new ContributionActivityLog
@@ -286,5 +286,67 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         //var reason = await _context.ContributionActivityLogs.FirstOrDefaultAsync(x => x.ContributionId == contribution.Id && x.ToStatus == ContributionStatus.Reject);
 
         return reason is not null ? reason.Reason : string.Empty;
+    }
+
+    public async Task<PaginationResult<UngradedContributionDto>> GetAllUngradedContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYearName = null, string? facultyName = null)
+    {
+        var query = from c in _context.Contributions
+                    where c.DateDeleted == null && c.Status == ContributionStatus.Pending && c.IsCoordinatorCommented == false
+                    join u in _context.Users on c.UserId equals u.Id
+                    join f in _context.Faculties on c.FacultyId equals f.Id
+                    join a in _context.AcademicYears on c.AcademicYearId equals a.Id
+                    select new { c, u, f, a };
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.c.Title.Contains(keyword) || x.c.Content.Contains(keyword) || x.c.ShortDescription.Contains(keyword));
+        }
+
+        if (!string.IsNullOrWhiteSpace(facultyName))
+        {
+            query = query.Where(x => x.f.Name == facultyName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(academicYearName))
+        {
+            query = query.Where(x => x.a.Name == academicYearName);
+        }
+
+        var rowCount = await query.CountAsync();
+
+        pageIndex = pageIndex - 1 < 0 ? 1 : pageIndex;
+
+        var skipPage = (pageIndex - 1) * pageSize;
+
+        var contributions = await query
+            .OrderByDescending(x => x.c.DateCreated)
+            .Skip(skipPage)
+            .Take(pageSize)
+            .ToListAsync();
+
+        // I think this is the only optimized approach here.
+        var contributionIds = contributions.Select(x => x.c.Id).ToList();
+        var files = await _fileRepository.GetByListContributionIdsAsync(contributionIds);
+
+        var contributionsDto = contributions.Select(x => new UngradedContributionDto
+        {
+            Id = x.c.Id,
+            Title = x.c.Title,
+            Slug = x.c.Slug,
+            Username = x.u.UserName is not null ? x.u.UserName.ToString() : $"{x.u.FirstName} {x.u.LastName}",
+            FacultyName = x.f.Name,
+            AcademicYear = x.a.Name,
+            SubmissionDate = x.c.DateCreated,
+            ShortDescription = x.c.ShortDescription,
+            Avatar = x.u.Avatar
+        }).ToList();
+
+        return new PaginationResult<UngradedContributionDto>
+        {
+            CurrentPage = pageIndex,
+            RowCount = rowCount,
+            PageSize = pageSize,
+            Results = contributionsDto
+        };
     }
 }

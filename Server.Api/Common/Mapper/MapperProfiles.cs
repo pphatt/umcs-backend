@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Server.Application.Common.Dtos.Content.AcademicYear;
+using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Dtos.Identity.Users;
@@ -13,11 +14,15 @@ using Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearsApp.Queries.GetAllAcademicYearsPagination;
 using Server.Application.Features.Authentication.Commands.Login;
 using Server.Application.Features.Authentication.Commands.RefreshToken;
+using Server.Application.Features.ContributionActivityLogsApp.Queries.GetAllContributionActivityLogsPagination;
+using Server.Application.Features.ContributionActivityLogsApp.Queries.GetContributionActivityLogById;
+using Server.Application.Features.ContributionActivityLogsApp.Queries.GetContributionActivityLogsByContributionId;
 using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
 using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
+using Server.Application.Features.ContributionApp.Queries.GetAllUngradedContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
@@ -56,9 +61,13 @@ using Server.Contracts.AcademicYears.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 using Server.Contracts.Authentication.RefreshToken;
 using Server.Contracts.Common.Media;
+using Server.Contracts.ContributionActivityLogs.GetAllContributionActivityLogsPagination;
+using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogById;
+using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogsByContributionId;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
+using Server.Contracts.Contributions.GetAllUngradedContributionsPagination;
 using Server.Contracts.Contributions.GetContributionBySlug;
 using Server.Contracts.Contributions.RejectContribution;
 using Server.Contracts.Contributions.UpdateContribution;
@@ -182,6 +191,8 @@ public class MapperProfiles : Profile
 
         CreateMap<GetContributionBySlugRequest, GetContributionBySlugQuery>();
 
+        CreateMap<GetAllUngradedContributionsPaginationRequest, GetAllUngradedContributionsPaginationQuery>();
+
         // Public Contribution.
         CreateMap<AllowGuestRequest, AllowGuestCommand>();
         CreateMap<Contribution, ContributionPublic>();
@@ -190,6 +201,14 @@ public class MapperProfiles : Profile
 
         CreateMap<AllowGuestWithManyContributionsRequest, AllowGuestWithManyContributionsCommand>();
         CreateMap<RevokeAllowGuestWithManyContributionsRequest, RevokeAllowGuestWithManyContributionsCommand>();
+
+        // Contribution Activity.
+        CreateMap<ContributionActivityLog, ContributionActivityLogDto>();
+
+        CreateMap<GetAllContributionActivityLogsPaginationRequest, GetAllContributionActivityLogsPaginationQuery>();
+        CreateMap<GetContributionActivityLogByIdRequest, GetContributionActivityLogByIdQuery>();
+
+        CreateMap<GetContributionActivityLogsByContributionIdRequest, GetContributionActivityLogsByContributionIdQuery>();
 
         // File.
         CreateMap<File, DeleteFilesRequest>();

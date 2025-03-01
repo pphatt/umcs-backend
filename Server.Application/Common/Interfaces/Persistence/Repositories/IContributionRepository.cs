@@ -17,4 +17,6 @@ public interface IContributionRepository : IRepository<Contribution, Guid>
     Task ApproveContribution(Contribution contribution, Guid coordinatorId);
 
     Task RejectContribution(Contribution contribution, Guid coordinatorId, string reason);
+
+    Task<PaginationResult<UngradedContributionDto>> GetAllUngradedContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYearName = null, string? facultyName = null);
 }

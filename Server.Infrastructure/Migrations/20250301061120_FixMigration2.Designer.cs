@@ -12,8 +12,8 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250226141029_AddContributionRejectionsTable")]
-    partial class AddContributionRejectionsTable
+    [Migration("20250301061120_FixMigration2")]
+    partial class FixMigration2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,7 +197,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserFacultyId")
+                    b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsConfirmed")
@@ -232,7 +232,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("UserFacultyId");
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -254,13 +254,6 @@ namespace Server.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CoordinatorUsername")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -280,6 +273,13 @@ namespace Server.Infrastructure.Migrations
 
                     b.Property<int>("ToStatus")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -346,6 +346,96 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("ContributionLikes");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AcademicYearId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("AllowedGuest")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("CoordinatorApprovedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FacultyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FacultyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LikeQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PublicDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SubmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AcademicYearId");
+
+                    b.HasIndex("FacultyId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("ContributionPublics");
+                });
+
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionRejection", b =>
                 {
                     b.Property<Guid>("Id")
@@ -385,6 +475,9 @@ namespace Server.Infrastructure.Migrations
                     b.Property<Guid>("TagId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ContributionPublicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -398,6 +491,8 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ContributionId", "TagId");
+
+                    b.HasIndex("ContributionPublicId");
 
                     b.HasIndex("TagId");
 
@@ -441,6 +536,9 @@ namespace Server.Infrastructure.Migrations
                     b.Property<Guid>("ContributionId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ContributionPublicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -478,6 +576,8 @@ namespace Server.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ContributionId");
+
+                    b.HasIndex("ContributionPublicId");
 
                     b.ToTable("Files");
                 });
@@ -573,7 +673,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("UserFacultyId")
+                    b.Property<Guid?>("FacultyId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
@@ -731,7 +831,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
                         .WithMany("Contributions")
-                        .HasForeignKey("UserFacultyId")
+                        .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -748,15 +848,34 @@ namespace Server.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Domain.Entity.Identity.AppUser", "Coordinator")
+                    b.HasOne("Server.Domain.Entity.Identity.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Contribution");
 
-                    b.Navigation("Coordinator");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
+                {
+                    b.HasOne("Server.Domain.Entity.Content.AcademicYear", "AcademicYear")
+                        .WithMany()
+                        .HasForeignKey("AcademicYearId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entity.Content.Faculty", "Faculty")
+                        .WithMany()
+                        .HasForeignKey("FacultyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AcademicYear");
+
+                    b.Navigation("Faculty");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionTag", b =>
@@ -766,6 +885,10 @@ namespace Server.Infrastructure.Migrations
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Server.Domain.Entity.Content.ContributionPublic", null)
+                        .WithMany("ContributionTags")
+                        .HasForeignKey("ContributionPublicId");
 
                     b.HasOne("Server.Domain.Entity.Content.Tag", "Tag")
                         .WithMany("ContributionTags")
@@ -785,6 +908,10 @@ namespace Server.Infrastructure.Migrations
                         .HasForeignKey("ContributionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Server.Domain.Entity.Content.ContributionPublic", null)
+                        .WithMany("Files")
+                        .HasForeignKey("ContributionPublicId");
 
                     b.Navigation("Contribution");
                 });
@@ -806,6 +933,13 @@ namespace Server.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
+                {
+                    b.Navigation("ContributionTags");
+
+                    b.Navigation("Files");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
                 {
                     b.Navigation("ContributionTags");
 

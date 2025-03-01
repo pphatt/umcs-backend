@@ -352,7 +352,7 @@ namespace Server.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Contributions_FacultyId",
                 table: "Contributions",
-                column: "UserFacultyId");
+                column: "FacultyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContributionTags_TagId",

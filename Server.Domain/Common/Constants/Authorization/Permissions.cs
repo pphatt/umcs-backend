@@ -96,4 +96,16 @@ public static class Permissions
         [Description("Manage Guest Setting Access Control")]
         public const string Manage = "Permissions.SettingGAC.Manage";
     }
+
+    public static class ActivityLogs
+    {
+        [Description("View Activity Logs")]
+        public const string View = "Permissions.ActivityLogs.View";
+    }
+
+    public static class UngradedContribution
+    {
+        [Description("View Ungraded Contribution")]
+        public const string View = "Permissions.UngradedContribution.View";
+    }
 }
