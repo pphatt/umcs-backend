@@ -276,11 +276,21 @@ public class MediaService : IMediaService
 
         if (publicIds.Count > 1)
         {
+            // edge case here is that the download just be able to download raw file (archiveParams.ResourceType(FileType.Raw)),
+            // which means it cannot zip the image file with it. 
             return _cloudinary.DownloadArchiveUrl(archiveParams);
         }
 
-        // some edge cases here:
-        // - Download single image file (checking the FileType and change to image/upload instead raw/upload).
-        return $"http://res.cloudinary.com/dus70fkd3/raw/upload/v1739610592/{publicIds[0]}";
+        var path = publicIds[0];
+
+        if (path.EndsWith(AllowFileExtension.PDF) || 
+            path.EndsWith(AllowFileExtension.DOC) ||
+            path.EndsWith(AllowFileExtension.DOCS) ||
+            path.EndsWith(AllowFileExtension.DOCX))
+        {
+            return $"http://res.cloudinary.com/dus70fkd3/raw/upload/v1739610592/{publicIds[0]}";
+        }
+
+        return $"http://res.cloudinary.com/dus70fkd3/image/upload/v1739610592/{publicIds[0]}";
     }
 }
