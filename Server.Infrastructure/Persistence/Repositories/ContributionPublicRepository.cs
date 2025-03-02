@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using ErrorOr;
 using Microsoft.EntityFrameworkCore;
+using Server.Application.Common.Dtos.Content.Like;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
@@ -150,5 +152,40 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         };
 
         return result;
+    }
+
+    public async Task<PaginationResult<UserLikeInListDto>> GetAllUsersLikedContributionPagination(Guid contributionId, int pageIndex = 1, int pageSize = 10)
+    {
+        var query = from l in _context.Likes
+                    where l.ContributionId == contributionId
+                    join u in _context.Users on l.UserId equals u.Id
+                    select new { l, u };
+
+        var rowCount = await query.CountAsync();
+
+        pageIndex = pageIndex - 1 < 0 ? 1 : pageIndex;
+
+        var skipPage = (pageIndex - 1) * pageSize;
+
+        var users = await query
+            .OrderByDescending(x => x.l.DateCreated)
+            .Skip(skipPage)
+            .Take(pageSize)
+            .Select(x => new UserLikeInListDto
+            {
+                Username = x.u.UserName,
+                Email = x.u.Email,
+                Avatar = x.u.Avatar,
+                DateCreated = x.l.DateCreated
+            })
+            .ToListAsync();
+
+        return new PaginationResult<UserLikeInListDto>
+        {
+            CurrentPage = pageIndex,
+            RowCount = rowCount,
+            PageSize = pageSize,
+            Results = users
+        };
     }
 }

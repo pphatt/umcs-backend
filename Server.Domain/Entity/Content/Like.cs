@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Domain.Entity.Content;
 
-[Table("ContributionLikes")]
-public class ContributionLike : BaseEntity
+[Table("Likes")]
+public class Like : BaseEntity
 {
     [Required]
     public required Guid ContributionId { get; set; }

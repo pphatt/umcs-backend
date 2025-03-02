@@ -42,9 +42,11 @@ using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuestWithManyContributions;
+using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContribution;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
@@ -95,9 +97,11 @@ using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
+using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
+using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
@@ -216,6 +220,11 @@ public class MapperProfiles : Profile
 
         CreateMap<DownloadSingleFileRequest, DownloadSingleFileQuery>();
         CreateMap<DownloadAllFilesRequests, DownloadAllFilesQuery>();
+
+        // Like.
+        CreateMap<ToggleLikeContributionRequest, ToggleLikeContributionCommand>();
+
+        CreateMap<GetAllUsersLikedContributionPaginationRequest, GetAllUsersLikedContributionPaginationQuery>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();

@@ -13,4 +13,5 @@ public interface IUnitOfWork
     IContributionPublicRepository ContributionPublicRepository { get; }
     IContributionActivityLogRepository ContributionActivityLogRepository { get; }
     IFileRepository FileRepository { get; }
+    ILikeRepository LikeRepository { get; }
 }

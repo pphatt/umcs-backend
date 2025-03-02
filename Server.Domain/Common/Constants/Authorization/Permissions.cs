@@ -86,6 +86,9 @@ public static class Permissions
 
         [Description("Download Contribution Files")]
         public const string Download = "Permissions.Contributions.Download";
+
+        [Description("Like Contribution")]
+        public const string Like = "Permissions.Contributions.Like";
     }
 
     public static class ManageContributions

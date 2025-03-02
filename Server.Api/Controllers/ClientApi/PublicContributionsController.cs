@@ -3,14 +3,18 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContribution;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
+using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
+using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Domain.Common.Constants.Authorization;
 using System.Runtime.InteropServices;
 
@@ -82,6 +86,36 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             downloadResult => Ok(downloadResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("toggle-like/{ContributionId}")]
+    [Authorize(Permissions.Contributions.Like)]
+    public async Task<IActionResult> ToggleLikeContribution([FromRoute] ToggleLikeContributionRequest request)
+    {
+        var mapper = _mapper.Map<ToggleLikeContributionCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            toggleLikeResult => Ok(toggleLikeResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("who-liked/{ContributionId}")]
+    [Authorize(Permissions.Contributions.Like)]
+    public async Task<IActionResult> GetAllUsersLikedContributionPagination(GetAllUsersLikedContributionPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllUsersLikedContributionPaginationQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }
