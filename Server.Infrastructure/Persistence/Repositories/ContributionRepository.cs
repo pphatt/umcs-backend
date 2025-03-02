@@ -172,14 +172,13 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         return result;
     }
 
-    public async Task<PublicContributionDetailsDto> GetPersonalContributionBySlug(string slug, Guid userId)
+    public async Task<PublicContributionDetailsDto> GetPersonalContributionBySlug(string slug)
     {
         var query = from c in _context.Contributions
                     where c.Slug == slug && c.DateDeleted == null
                     join u in _context.Users on c.UserId equals u.Id
                     join f in _context.Faculties on c.FacultyId equals f.Id
                     join a in _context.AcademicYears on c.AcademicYearId equals a.Id
-                    where u.Id == userId
                     select new { c, u, f, a };
 
         var contribution = await query.FirstOrDefaultAsync();
@@ -190,46 +189,6 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         }
 
         var files = await _fileRepository.GetByContributionIdAsync(contribution.c.Id);
-
-        if (contribution.c.PublicDate.HasValue)
-        {
-            var publicContribution = await _context.ContributionPublics.FirstOrDefaultAsync(x => x.Id == contribution.c.Id);
-
-            if (publicContribution is null)
-            {
-                return null;
-            }
-
-            var publicResult = new PublicContributionDetailsDto
-            {
-                Id = contribution.c.Id,
-                Title = contribution.c.Title,
-                Slug = contribution.c.Slug,
-                Content = contribution.c.Content,
-                ShortDescription = contribution.c.ShortDescription,
-                Username = contribution.u.UserName is not null ? contribution.u.UserName.ToString() : $"{contribution.u.FirstName} {contribution.u.LastName}",
-                FacultyName = contribution.f.Name,
-                AcademicYearName = contribution.a.Name,
-                Thumbnails = files
-                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.Thumbnail)
-                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
-                .ToList(),
-                Files = files
-                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.File)
-                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
-                .ToList(),
-                PublicDate = contribution.c.PublicDate,
-                SubmissionDate = contribution.c.SubmissionDate,
-                DateEdited = contribution.c.DateUpdated,
-                Avatar = contribution.u.Avatar,
-                WhoApproved = _context.Users.FindAsync(contribution.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
-                Like = publicContribution.LikeQuantity,
-                View = publicContribution.Views,
-                AllowedGuest = contribution.c.AllowedGuest,
-            };
-
-            return publicResult;
-        }
 
         var result = new PublicContributionDetailsDto
         {
