@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
-using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
+using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
@@ -28,9 +28,9 @@ public class ContributionsController : CoordinatorApiController
 
     [HttpGet("pagination")]
     [Authorize(Permissions.ManageContributions.Manage)]
-    public async Task<IActionResult> GetAllContributionsPagination([FromQuery] CoordinatorGetAllContributionsPaginationRequest request)
+    public async Task<IActionResult> GetAllContributionsPagination([FromQuery] GetAllContributionsPaginationRequest request)
     {
-        var mapper = _mapper.Map<CoordinatorGetAllContributionsPaginationQuery>(request);
+        var mapper = _mapper.Map<GetAllContributionsPaginationQuery>(request);
 
         mapper.Faculty = User.GetUserFacultyName();
 

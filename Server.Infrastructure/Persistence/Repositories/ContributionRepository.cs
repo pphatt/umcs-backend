@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Contribution;
+using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
@@ -9,6 +10,8 @@ using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
+using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -37,7 +40,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         return await _context.Contributions.AnyAsync(x => x.Slug == slug);
     }
 
-    public async Task<PaginationResult<ContributionInListDto>> GetAllContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYear = null, string? faculty = null, string? status = null)
+    public async Task<PaginationResult<ContributionInListDto>> GetAllContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, Guid? userId = null, string? academicYear = null, string? faculty = null, string? status = null, bool? allowedGuest = null)
     {
         var query = from c in _context.Contributions
                     where c.DateDeleted == null
@@ -62,6 +65,11 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             query = query.Where(x => x.f.Name == faculty);
         }
 
+        if (userId is not null)
+        {
+            query = query.Where(x => x.u.Id == userId);
+        }
+
         if (status is not null)
         {
             if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var requestStatus))
@@ -72,6 +80,11 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             {
                 throw new Exception("Invalid status param.");
             }
+        }
+
+        if (allowedGuest is not null)
+        {
+            query = query.Where(x => x.c.AllowedGuest == (bool)allowedGuest);
         }
 
         var totalRow = await query.CountAsync();
@@ -164,6 +177,52 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             ShortDescription = contribution.c.ShortDescription,
             GuestAllowed = contribution.c.AllowedGuest,
             Avatar = contribution.u.Avatar
+        };
+
+        return result;
+    }
+
+    public async Task<ContributionDto> GetPersonalContributionBySlug(string slug, Guid userId)
+    {
+        var query = from c in _context.Contributions
+                    where c.Slug == slug && c.DateDeleted == null && c.UserId == userId
+                    join u in _context.Users on c.UserId equals u.Id
+                    join f in _context.Faculties on c.FacultyId equals f.Id
+                    join a in _context.AcademicYears on c.AcademicYearId equals a.Id
+                    select new { c, u, f, a };
+
+        var contribution = await query.FirstOrDefaultAsync();
+
+        if (contribution is null)
+        {
+            return null;
+        }
+
+        var files = await _fileRepository.GetByContributionIdAsync(contribution.c.Id);
+
+        var result = new ContributionDto
+        {
+            Id = contribution.c.Id,
+            Title = contribution.c.Title,
+            Slug = contribution.c.Slug,
+            Content = contribution.c.Content,
+            ShortDescription = contribution.c.ShortDescription,
+            Username = contribution.u.UserName is not null ? contribution.u.UserName.ToString() : $"{contribution.u.FirstName} {contribution.u.LastName}",
+            FacultyName = contribution.f.Name,
+            AcademicYear = contribution.a.Name,
+            Thumbnails = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.Thumbnail)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            Files = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.File)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            PublicDate = contribution.c.PublicDate,
+            SubmissionDate = contribution.c.SubmissionDate,
+            DateUpdated = contribution.c.DateUpdated,
+            Avatar = contribution.u.Avatar,
+            Status = contribution.c.Status.ToStringValue(),
         };
 
         return result;

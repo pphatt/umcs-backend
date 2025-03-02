@@ -46,7 +46,7 @@ public class PublicContributionsController : ClientApiController
         );
     }
 
-    [HttpGet("{Slug}")]
+    [HttpGet("contribution/{Slug}")]
     [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetPublicContributionBySlug([FromRoute] GetPublicContributionBySlugRequest request)
     {
