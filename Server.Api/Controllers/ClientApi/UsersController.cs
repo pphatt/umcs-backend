@@ -3,16 +3,17 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
+using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Domain.Common.Constants.Authorization;
-using System.ComponentModel;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -63,6 +64,23 @@ public class UsersController : ClientApiController
 
         return result.Match(
             validateResult => Ok(validateResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("recent-contributions")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetRecentContribution(GetAllContributionsPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllContributionsPaginationQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+        mapper.Faculty = User.GetUserFacultyName();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }

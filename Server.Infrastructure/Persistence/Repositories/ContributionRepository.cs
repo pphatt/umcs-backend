@@ -40,7 +40,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         return await _context.Contributions.AnyAsync(x => x.Slug == slug);
     }
 
-    public async Task<PaginationResult<ContributionInListDto>> GetAllContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYear = null, string? faculty = null, string? status = null)
+    public async Task<PaginationResult<ContributionInListDto>> GetAllContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, Guid? userId = null, string? academicYear = null, string? faculty = null, string? status = null, bool? allowedGuest = null)
     {
         var query = from c in _context.Contributions
                     where c.DateDeleted == null
@@ -65,6 +65,11 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             query = query.Where(x => x.f.Name == faculty);
         }
 
+        if (userId is not null)
+        {
+            query = query.Where(x => x.u.Id == userId);
+        }
+
         if (status is not null)
         {
             if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var requestStatus))
@@ -75,6 +80,11 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             {
                 throw new Exception("Invalid status param.");
             }
+        }
+
+        if (allowedGuest is not null)
+        {
+            query = query.Where(x => x.c.AllowedGuest == (bool)allowedGuest);
         }
 
         var totalRow = await query.CountAsync();

@@ -21,7 +21,7 @@ using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
-using Server.Application.Features.ContributionApp.Queries.CoordinatorGetAllContributionsPagination;
+using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetAllUngradedContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
@@ -198,7 +198,7 @@ public class MapperProfiles : Profile
             .ForMember(dest => dest.Faculty, opt => opt.Ignore())
             .ForMember(dest => dest.ContributionTags, opt => opt.Ignore());
 
-        CreateMap<CoordinatorGetAllContributionsPaginationRequest, CoordinatorGetAllContributionsPaginationQuery>();
+        CreateMap<GetAllContributionsPaginationRequest, GetAllContributionsPaginationQuery>();
 
         CreateMap<ApproveContributionRequest, ApproveContributionCommand>();
         CreateMap<RejectContributionRequest, RejectContributionCommand>();
