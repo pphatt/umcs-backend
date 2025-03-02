@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
@@ -9,7 +10,7 @@ using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
 
-public class GetPersonalContributionDetailBySlugQueryHandler : IRequestHandler<GetPersonalContributionDetailBySlugQuery, ErrorOr<ResponseWrapper<PublicContributionDetailsDto>>>
+public class GetPersonalContributionDetailBySlugQueryHandler : IRequestHandler<GetPersonalContributionDetailBySlugQuery, ErrorOr<ResponseWrapper<ContributionDto>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
@@ -20,7 +21,7 @@ public class GetPersonalContributionDetailBySlugQueryHandler : IRequestHandler<G
         _userManager = userManager;
     }
 
-    public async Task<ErrorOr<ResponseWrapper<PublicContributionDetailsDto>>> Handle(GetPersonalContributionDetailBySlugQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<ContributionDto>>> Handle(GetPersonalContributionDetailBySlugQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId.ToString());
 
@@ -36,21 +37,9 @@ public class GetPersonalContributionDetailBySlugQueryHandler : IRequestHandler<G
             return Errors.Contribution.CannotFound;
         }
 
-        if (contribution.PublicDate.HasValue)
-        {
-            // if the contribution is public, get from public contribution instead because of view, like, ...
-            var res = await _unitOfWork.ContributionPublicRepository.GetPublicContributionBySlug(request.Slug);
+        var result = await _unitOfWork.ContributionRepository.GetPersonalContributionBySlug(request.Slug, request.UserId);
 
-            return new ResponseWrapper<PublicContributionDetailsDto>
-            {
-                IsSuccessful = true,
-                ResponseData = res
-            };
-        }
-
-        var result = await _unitOfWork.ContributionRepository.GetPersonalContributionBySlug(request.Slug);
-
-        return new ResponseWrapper<PublicContributionDetailsDto>
+        return new ResponseWrapper<ContributionDto>
         {
             IsSuccessful = true,
             ResponseData = result

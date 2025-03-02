@@ -172,10 +172,10 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         return result;
     }
 
-    public async Task<PublicContributionDetailsDto> GetPersonalContributionBySlug(string slug)
+    public async Task<ContributionDto> GetPersonalContributionBySlug(string slug, Guid userId)
     {
         var query = from c in _context.Contributions
-                    where c.Slug == slug && c.DateDeleted == null
+                    where c.Slug == slug && c.DateDeleted == null && c.UserId == userId
                     join u in _context.Users on c.UserId equals u.Id
                     join f in _context.Faculties on c.FacultyId equals f.Id
                     join a in _context.AcademicYears on c.AcademicYearId equals a.Id
@@ -190,7 +190,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
 
         var files = await _fileRepository.GetByContributionIdAsync(contribution.c.Id);
 
-        var result = new PublicContributionDetailsDto
+        var result = new ContributionDto
         {
             Id = contribution.c.Id,
             Title = contribution.c.Title,
@@ -199,7 +199,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             ShortDescription = contribution.c.ShortDescription,
             Username = contribution.u.UserName is not null ? contribution.u.UserName.ToString() : $"{contribution.u.FirstName} {contribution.u.LastName}",
             FacultyName = contribution.f.Name,
-            AcademicYearName = contribution.a.Name,
+            AcademicYear = contribution.a.Name,
             Thumbnails = files
                 .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.Thumbnail)
                 .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
@@ -210,14 +210,9 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
                 .ToList(),
             PublicDate = contribution.c.PublicDate,
             SubmissionDate = contribution.c.SubmissionDate,
-            DateEdited = contribution.c.DateUpdated,
+            DateUpdated = contribution.c.DateUpdated,
             Avatar = contribution.u.Avatar,
-            DidLike = false,
-            WhoApproved = null,
             Status = contribution.c.Status.ToStringValue(),
-            Like = 0,
-            View = 0,
-            AllowedGuest = contribution.c.AllowedGuest,
         };
 
         return result;

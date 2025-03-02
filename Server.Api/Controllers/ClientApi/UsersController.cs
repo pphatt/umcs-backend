@@ -68,10 +68,40 @@ public class UsersController : ClientApiController
     }
 
     [HttpGet("contribution/{Slug}")]
-    [Description("View contribution here is split into two parts: if the contribution is not yet public or rejection, it will be retrieved from the contribution itself for only the student (the owner) to see; otherwise, it will come from the public contribution once approved.")]
     [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetPersonalContributionDetailBySlug([FromRoute] GetPersonalContributionDetailBySlugRequest request)
     {
+        /*
+         * This contribution view flow is designed to streamline the front-end (FE) implementation by clarifying the API usage based on the contribution's state.
+         * Here's how it works:
+         *
+         * - When a user (the owner) accesses their "recent-contributions" (a list of all contributions they've made) and clicks on one:
+         *   - There are two possible scenarios:
+         *     1. The contribution is not yet public (e.g., pending or rejected).
+         *     2. The contribution is already a public contribution (approved).
+         *
+         * - Scenario 1 (Not Public Yet or Rejected):
+         *   - The FE will use the endpoint: "client-api/user-controller/contribution/{slug}"
+         *   - This retrieves data directly from the "Contributions" table, allowing only the owner to view their unpublished or rejected work.
+         *
+         * - Scenario 2 (Public Contribution):
+         *   - The FE will use the endpoint: "client-api/public-contribution-controller/contribution/{slug}"
+         *   - This fetches data from the "PublicContributions" table, reflecting the approved and publicly available contribution.
+         *
+         * - Front-End Logic:
+         *   - The "recent-contributions" list returned to the FE includes metadata like `PublicDate` (or an `IsPublicYet` flag).
+         *   - This metadata determines which API route to call next:
+         *     - If `PublicDate` is null (or `IsPublicYet` is false), use the user-specific endpoint.
+         *     - If `PublicDate` exists (or `IsPublicYet` is true), use the public endpoint.
+         */
+
+        /*
+         * My friend's approach is that:
+         * - Public contributions use "client-api/public-contribution-controller/contribution/{slug}" from "PublicContributions" table.
+         * - Ungraded contributions use "coordinator-api/contribution-controller/contribution/{slug}" from "Contribution" table.
+         * - The same "client-api/user-controller/contribution/{slug}" endpoint also handles updates.
+         */
+
         var mapper = _mapper.Map<GetPersonalContributionDetailBySlugQuery>(request);
 
         mapper.UserId = User.GetUserId();

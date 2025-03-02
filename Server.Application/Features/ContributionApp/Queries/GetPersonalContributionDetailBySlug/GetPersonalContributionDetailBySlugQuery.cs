@@ -1,11 +1,12 @@
 ﻿using ErrorOr;
 using MediatR;
+using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Wrapper;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
 
-public class GetPersonalContributionDetailBySlugQuery : IRequest<ErrorOr<ResponseWrapper<PublicContributionDetailsDto>>>
+public class GetPersonalContributionDetailBySlugQuery : IRequest<ErrorOr<ResponseWrapper<ContributionDto>>>
 {
     public string Slug { get; set; } = default!;
 

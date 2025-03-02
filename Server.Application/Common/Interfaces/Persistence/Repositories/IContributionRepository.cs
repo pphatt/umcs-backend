@@ -13,7 +13,7 @@ public interface IContributionRepository : IRepository<Contribution, Guid>
 
     Task<ContributionDto> GetContributionBySlugAndFaculty(string slug, Guid facultyId);
 
-    Task<PublicContributionDetailsDto> GetPersonalContributionBySlug(string slug);
+    Task<ContributionDto> GetPersonalContributionBySlug(string slug, Guid userId);
 
     Task SendToApproved(Guid contributionId, Guid studentId);
 
