@@ -33,6 +33,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IFileRepository FileRepository => new FileRepository(_context);
 
+    public ILikeRepository LikeRepository => new LikeRepository(_context);
+
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
     public void Dispose() => _context.Dispose();

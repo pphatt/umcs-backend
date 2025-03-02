@@ -267,7 +267,7 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("ContributionComments");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionLike", b =>
+            modelBuilder.Entity("Server.Domain.Entity.Content.Like", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

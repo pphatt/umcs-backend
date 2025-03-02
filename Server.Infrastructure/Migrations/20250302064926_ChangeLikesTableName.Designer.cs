@@ -12,8 +12,8 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250301112831_AddIsCoordinatorCommentedToContributionTable")]
-    partial class AddIsCoordinatorCommentedToContributionTable
+    [Migration("20250302064926_ChangeLikesTableName")]
+    partial class ChangeLikesTableName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -323,32 +323,6 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("ContributionComments");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entity.Content.Like", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ContributionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateDeleted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContributionLikes");
-                });
-
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
                 {
                     b.Property<Guid>("Id")
@@ -586,6 +560,32 @@ namespace Server.Infrastructure.Migrations
                     b.HasIndex("ContributionPublicId");
 
                     b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.Like", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContributionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.Tag", b =>
