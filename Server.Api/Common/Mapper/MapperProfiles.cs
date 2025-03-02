@@ -46,6 +46,7 @@ using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContr
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
@@ -96,6 +97,7 @@ using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
+using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
@@ -221,6 +223,8 @@ public class MapperProfiles : Profile
 
         // Like.
         CreateMap<ToggleLikeContributionRequest, ToggleLikeContributionCommand>();
+
+        CreateMap<GetAllUsersLikedContributionPaginationRequest, GetAllUsersLikedContributionPaginationQuery>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();
