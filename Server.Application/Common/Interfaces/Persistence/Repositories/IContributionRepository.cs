@@ -1,4 +1,5 @@
 ﻿using Server.Application.Common.Dtos.Content.Contribution;
+using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Entity.Content;
 
@@ -11,6 +12,8 @@ public interface IContributionRepository : IRepository<Contribution, Guid>
     Task<PaginationResult<ContributionInListDto>> GetAllContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYear = null, string? faculty = null, string? status = null);
 
     Task<ContributionDto> GetContributionBySlugAndFaculty(string slug, Guid facultyId);
+
+    Task<PublicContributionDetailsDto> GetPersonalContributionBySlug(string slug, Guid userId);
 
     Task SendToApproved(Guid contributionId, Guid studentId);
 
