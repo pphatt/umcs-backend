@@ -48,6 +48,23 @@ public class PublicContributionsController : ClientApiController
         );
     }
 
+    [HttpGet("guest/pagination")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetAllGuestContributionPagination([FromQuery] GetAllPublicContributionsPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllPublicContributionsPaginationQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+        mapper.AllowedGuest = true;
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            paginationResult => Ok(paginationResult),
+            errors => Problem(errors)
+        );
+    }
+
     [HttpGet("contribution/{Slug}")]
     [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetPublicContributionBySlug([FromRoute] GetPublicContributionBySlugRequest request)

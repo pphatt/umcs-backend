@@ -22,6 +22,7 @@ public class PublicContributionInListDto
     public string? Avatar { get; set; }
     public string? WhoApproved { get; set; }
     public bool DidLike { get; set; } = false;
+    public bool? GuestAllowed { get; set; }
 
     public string? Status { get; set; } = ContributionStatus.Approve.ToStringValue();
 }
