@@ -71,9 +71,24 @@ public static partial class Errors
             description: "You do not have permission to access this contribution."
         );
 
+        public static Error NotBelongTo => Error.Validation(
+            code: "Contribution.NotBelongTo",
+            description: "This contribution is not belong to you."
+        );
+
         public static Error NoFilesFound => Error.NotFound(
             code: "Contribution.NoFilesFound",
             description: "Contribution do not have any files."
+        );
+
+        public static Error CannotCommentOnContributionAlreadyGraded => Error.Validation(
+            code: "Contribution.CannotCommentOnContributionAlreadyGraded",
+            description: "Cannot comment on contribution that already graded."
+        );
+
+        public static Error CannotCommentOnNotPublicContribution => Error.Validation(
+            code: "Contribution.CannotCommentOnNotPublicContribution",
+            description: "Cannot comment on contribution that not public."
         );
     };
 }

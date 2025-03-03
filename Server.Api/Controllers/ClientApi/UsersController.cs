@@ -85,7 +85,7 @@ public class UsersController : ClientApiController
         );
     }
 
-    [HttpGet("contribution/{Slug}")]
+    [HttpGet("preview-contribution/{Slug}")]
     [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetPersonalContributionDetailBySlug([FromRoute] GetPersonalContributionDetailBySlugRequest request)
     {
@@ -99,7 +99,7 @@ public class UsersController : ClientApiController
          *     2. The contribution is already a public contribution (approved).
          *
          * - Scenario 1 (Not Public Yet or Rejected):
-         *   - The FE will use the endpoint: "client-api/user-controller/contribution/{slug}"
+         *   - The FE will use the endpoint: "client-api/user-controller/preview-contribution/{slug}"
          *   - This retrieves data directly from the "Contributions" table, allowing only the owner to view their unpublished or rejected work.
          *
          * - Scenario 2 (Public Contribution):
@@ -116,8 +116,13 @@ public class UsersController : ClientApiController
         /*
          * My friend's approach is that:
          * - Public contributions use "client-api/public-contribution-controller/contribution/{slug}" from "PublicContributions" table.
-         * - Ungraded contributions use "coordinator-api/contribution-controller/contribution/{slug}" from "Contribution" table.
+         * - Ungraded contributions use "coordinator-api/contribution-controller/preview-contribution/{slug}" from "Contribution" table.
          * - The same "client-api/user-controller/contribution/{slug}" endpoint also handles updates.
+         */
+
+        /*
+         * The different from two approaches is that when the private contribution get requested my approach will use the "client-api/user-controller/preview-contribution/{slug}"
+         * but other will use "coordinator-api/contribution-controller/preview-contribution/{slug}".
          */
 
         var mapper = _mapper.Map<GetPersonalContributionDetailBySlugQuery>(request);

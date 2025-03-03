@@ -7,6 +7,8 @@ using Server.Application.Features.ContributionApp.Commands.ApproveContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
+using Server.Application.Features.ContributionCommentApp.Commands.CreateComment;
+using Server.Contracts.ContributionComments.CreateComment;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.GetContributionBySlug;
@@ -81,13 +83,29 @@ public class ContributionsController : CoordinatorApiController
     {
         var mapper = _mapper.Map<GetContributionBySlugQuery>(request);
 
-        mapper.FacultyName = User.GetUserFacultyName();
         mapper.UserId = User.GetUserId();
+        mapper.FacultyName = User.GetUserFacultyName();
 
         var result = await _mediatorSender.Send(mapper);
 
         return result.Match(
             queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("comment/{ContributionId}")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> CreateContributionComment(CreateCommentRequest request)
+    {
+        var mapper = _mapper.Map<CreateCommentCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            createResult => Ok(createResult),
             errors => Problem(errors)
         );
     }

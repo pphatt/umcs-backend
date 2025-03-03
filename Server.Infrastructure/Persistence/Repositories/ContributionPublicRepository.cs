@@ -105,7 +105,7 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         };
     }
 
-    public async Task<PublicContributionDetailsDto> GetPublicContributionBySlug(string slug)
+    public async Task<PublicContributionDto> GetPublicContributionBySlug(string slug)
     {
         var query = from c in _context.ContributionPublics
                     where c.DateDeleted == null && c.Slug == slug
@@ -123,7 +123,7 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
 
         var files = await _context.Files.Where(x => x.ContributionId == contribution.c.Id).ToListAsync();
 
-        var result = new PublicContributionDetailsDto
+        var result = new PublicContributionDto
         {
             Id = contribution.c.Id,
             Title = contribution.c.Title,

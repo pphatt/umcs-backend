@@ -2,6 +2,7 @@
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.Faculty;
+using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Features.AcademicYearsApp.Commands.ActivateAcademicYear;
@@ -25,6 +26,7 @@ using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPag
 using Server.Application.Features.ContributionApp.Queries.GetAllUngradedContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
+using Server.Application.Features.ContributionCommentApp.Commands.CreateComment;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -49,6 +51,7 @@ using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFi
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
+using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
@@ -71,6 +74,7 @@ using Server.Contracts.Common.Media;
 using Server.Contracts.ContributionActivityLogs.GetAllContributionActivityLogsPagination;
 using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogById;
 using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogsByContributionId;
+using Server.Contracts.ContributionComments.CreateComment;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
@@ -94,6 +98,7 @@ using Server.Contracts.Identity.GetUserById;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
+using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.AllowGuest;
 using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
@@ -209,6 +214,11 @@ public class MapperProfiles : Profile
 
         CreateMap<GetPersonalContributionDetailBySlugRequest, GetPersonalContributionDetailBySlugQuery>();
 
+        CreateMap<ContributionDto, ContributionWithCommentDto>();
+
+        // Contribution Comment.
+        CreateMap<CreateCommentRequest, CreateCommentCommand>();
+
         // Public Contribution.
         CreateMap<AllowGuestRequest, AllowGuestCommand>();
         CreateMap<Contribution, ContributionPublic>();
@@ -224,6 +234,11 @@ public class MapperProfiles : Profile
 
         CreateMap<DownloadSingleFileRequest, DownloadSingleFileQuery>();
         CreateMap<DownloadAllFilesRequests, DownloadAllFilesQuery>();
+
+        CreateMap<PublicContributionDto, PublicContributionWithCommentsDto>();
+
+        // Public Contribution Comment.
+        CreateMap<CreatePublicCommentRequest, CreatePublicCommentCommand>();
 
         // Like.
         CreateMap<ToggleLikeContributionRequest, ToggleLikeContributionCommand>();

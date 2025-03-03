@@ -6,7 +6,7 @@ using Server.Application.Wrapper;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
 
-public class GetPersonalContributionDetailBySlugQuery : IRequest<ErrorOr<ResponseWrapper<ContributionDto>>>
+public class GetPersonalContributionDetailBySlugQuery : IRequest<ErrorOr<ResponseWrapper<ContributionWithCommentDto>>>
 {
     public string Slug { get; set; } = default!;
 
