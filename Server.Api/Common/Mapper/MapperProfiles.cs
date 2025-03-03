@@ -25,6 +25,7 @@ using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPag
 using Server.Application.Features.ContributionApp.Queries.GetAllUngradedContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
+using Server.Application.Features.ContributionCommentApp.Commands.CreateComment;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -71,6 +72,7 @@ using Server.Contracts.Common.Media;
 using Server.Contracts.ContributionActivityLogs.GetAllContributionActivityLogsPagination;
 using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogById;
 using Server.Contracts.ContributionActivityLogs.GetContributionActivityLogsByContributionId;
+using Server.Contracts.ContributionComments.CreateComment;
 using Server.Contracts.Contributions.ApproveContribution;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.CreateContribution;
@@ -208,6 +210,9 @@ public class MapperProfiles : Profile
         CreateMap<GetAllUngradedContributionsPaginationRequest, GetAllUngradedContributionsPaginationQuery>();
 
         CreateMap<GetPersonalContributionDetailBySlugRequest, GetPersonalContributionDetailBySlugQuery>();
+
+        // Contribution Comment.
+        CreateMap<CreateCommentRequest, CreateCommentCommand>();
 
         // Public Contribution.
         CreateMap<AllowGuestRequest, AllowGuestCommand>();
