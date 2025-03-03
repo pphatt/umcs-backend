@@ -2,6 +2,7 @@
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.Faculty;
+using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Features.AcademicYearsApp.Commands.ActivateAcademicYear;
@@ -233,6 +234,8 @@ public class MapperProfiles : Profile
 
         CreateMap<DownloadSingleFileRequest, DownloadSingleFileQuery>();
         CreateMap<DownloadAllFilesRequests, DownloadAllFilesQuery>();
+
+        CreateMap<PublicContributionDto, PublicContributionWithCommentsDto>();
 
         // Public Contribution Comment.
         CreateMap<CreatePublicCommentRequest, CreatePublicCommentCommand>();

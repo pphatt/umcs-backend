@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Constants.Authorization;
-using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;

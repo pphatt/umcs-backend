@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using AutoMapper;
+using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Dtos.Content.PublicContribution;
@@ -10,18 +11,20 @@ using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 
-public class GetPublicContributionBySlugQueryHandler : IRequestHandler<GetPublicContributionBySlugQuery, ErrorOr<ResponseWrapper<PublicContributionDetailsDto>>>
+public class GetPublicContributionBySlugQueryHandler : IRequestHandler<GetPublicContributionBySlugQuery, ErrorOr<ResponseWrapper<PublicContributionWithCommentsDto>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IMapper _mapper;
 
-    public GetPublicContributionBySlugQueryHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+    public GetPublicContributionBySlugQueryHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _mapper = mapper;
     }
 
-    public async Task<ErrorOr<ResponseWrapper<PublicContributionDetailsDto>>> Handle(GetPublicContributionBySlugQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<PublicContributionWithCommentsDto>>> Handle(GetPublicContributionBySlugQuery request, CancellationToken cancellationToken)
     {
         var publicContributionDto = await _unitOfWork.ContributionPublicRepository.GetPublicContributionBySlug(request.Slug);
 
@@ -55,10 +58,16 @@ public class GetPublicContributionBySlugQueryHandler : IRequestHandler<GetPublic
 
         await _unitOfWork.CompleteAsync();
 
-        return new ResponseWrapper<PublicContributionDetailsDto>
+        var comments = await _unitOfWork.ContributionPublicCommentRepository.GetCommentsByContributionId(publicContribution.Id);
+
+        var result = _mapper.Map<PublicContributionWithCommentsDto>(publicContributionDto);
+
+        result.Comments = comments;
+
+        return new ResponseWrapper<PublicContributionWithCommentsDto>
         {
             IsSuccessful = true,
-            ResponseData = publicContributionDto
+            ResponseData = result
         };
     }
 }

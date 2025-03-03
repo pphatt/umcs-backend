@@ -2,7 +2,7 @@
 
 namespace Server.Application.Common.Dtos.Content.PublicContribution;
 
-public class PublicContributionDetailsDto : PublicContributionInListDto
+public class PublicContributionDto : PublicContributionInListDto
 {
     public List<FileDto>? Files { get; set; }
 

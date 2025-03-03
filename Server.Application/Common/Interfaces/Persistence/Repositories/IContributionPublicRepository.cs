@@ -9,7 +9,7 @@ public interface IContributionPublicRepository : IRepository<ContributionPublic,
 {
     Task<PaginationResult<PublicContributionInListDto>> GetAllPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
 
-    Task<PublicContributionDetailsDto> GetPublicContributionBySlug(string slug);
+    Task<PublicContributionDto> GetPublicContributionBySlug(string slug);
 
     Task<PaginationResult<UserLikeInListDto>> GetAllUsersLikedContributionPagination(Guid contributionId, int pageIndex = 1, int pageSize = 10);
 }
