@@ -218,6 +218,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             PublicDate = contribution.c.PublicDate,
             SubmissionDate = contribution.c.SubmissionDate,
             DateUpdated = contribution.c.DateUpdated,
+            GuestAllowed = contribution.c.AllowedGuest,
             Avatar = contribution.u.Avatar,
             Status = contribution.c.Status.ToStringValue(),
         };
@@ -264,6 +265,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             PublicDate = contribution.c.PublicDate,
             SubmissionDate = contribution.c.SubmissionDate,
             DateUpdated = contribution.c.DateUpdated,
+            GuestAllowed = contribution.c.AllowedGuest,
             Avatar = contribution.u.Avatar,
             Status = contribution.c.Status.ToStringValue(),
         };

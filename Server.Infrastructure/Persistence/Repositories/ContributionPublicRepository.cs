@@ -91,6 +91,7 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
             SubmissionDate = x.c.SubmissionDate,
             DateEdited = x.c.DateUpdated,
             Avatar = x.u.Avatar,
+            GuestAllowed = x.c.AllowedGuest,
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,
