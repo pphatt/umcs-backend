@@ -9,4 +9,7 @@ namespace Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 
 public class GetAllUsersPaginationQuery : PaginationDto, IRequest<ErrorOr<ResponseWrapper<PaginationResult<UserDto>>>>
 {
+    public string? FacultyName { get; set; }
+
+    public string? RoleName { get; set; }
 }

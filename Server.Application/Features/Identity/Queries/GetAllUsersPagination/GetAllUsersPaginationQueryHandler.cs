@@ -39,6 +39,26 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
             );
         }
 
+        if (request.RoleName is not null)
+        {
+            var allUsersInRole = (await _userManager.GetUsersInRoleAsync(request.RoleName)).Select(x => x.Id);
+
+            if (allUsersInRole.Count() > 0)
+            {
+                allUserQuery = allUserQuery.Where(x => allUsersInRole.Contains(x.Id));
+            }
+        }
+
+        if (request.FacultyName is not null)
+        {
+            var faculty = await _unitOfWork.FacultyRepository.GetFacultyByNameAsync(request.FacultyName);
+
+            if (faculty is not null)
+            {
+                allUserQuery = allUserQuery.Where(x => x.FacultyId == faculty.Id);
+            }
+        }
+
         var count = await allUserQuery.CountAsync();
 
         var pageIndex = request.PageIndex < 0 ? 1 : request.PageIndex;
