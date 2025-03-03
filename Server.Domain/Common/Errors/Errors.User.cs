@@ -35,5 +35,10 @@ public static partial class Errors
             code: "User.NotOwnedContribution",
             description: "This is not your contribution"
         );
+
+        public static Error CannotDelete => Error.Forbidden(
+            code: "User.CannotDelete",
+            description: "Cannot delete this user."
+        );
     }
 }
