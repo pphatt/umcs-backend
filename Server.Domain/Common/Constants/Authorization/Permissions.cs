@@ -103,6 +103,15 @@ public static class Permissions
         public const string Manage = "Permissions.SettingGAC.Manage";
     }
 
+    public static class Guest
+    {
+        [Description("Create New Guest")]
+        public const string Create = "Permissions.Guest.Create";
+
+        [Description("View Guests")]
+        public const string View = "Permissions.Guest.View";
+    }
+
     public static class ActivityLogs
     {
         [Description("View Activity Logs")]

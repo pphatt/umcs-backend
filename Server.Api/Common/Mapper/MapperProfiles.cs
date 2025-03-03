@@ -34,6 +34,7 @@ using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
+using Server.Application.Features.Identity.Commands.CreateGuest;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
@@ -90,6 +91,7 @@ using Server.Contracts.Faculties.GetAllFacultiesPagination;
 using Server.Contracts.Faculties.GetFacultyById;
 using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.BulkDeleteUsers;
+using Server.Contracts.Identity.CreateGuest;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
 using Server.Contracts.Identity.ForgotPassword;
@@ -148,6 +150,9 @@ public class MapperProfiles : Profile
         CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
         CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
         CreateMap<ValidateForgotPasswordTokenRequest, ValidateForgotPasswordTokenCommand>();
+
+        CreateMap<CreateGuestRequest, CreateGuestCommand>();
+        CreateMap<CreateGuestCommand, AppUser>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();
