@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Contribution;
-using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
@@ -10,8 +9,6 @@ using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -186,6 +183,52 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
     {
         var query = from c in _context.Contributions
                     where c.Slug == slug && c.DateDeleted == null && c.UserId == userId
+                    join u in _context.Users on c.UserId equals u.Id
+                    join f in _context.Faculties on c.FacultyId equals f.Id
+                    join a in _context.AcademicYears on c.AcademicYearId equals a.Id
+                    select new { c, u, f, a };
+
+        var contribution = await query.FirstOrDefaultAsync();
+
+        if (contribution is null)
+        {
+            return null;
+        }
+
+        var files = await _fileRepository.GetByContributionIdAsync(contribution.c.Id);
+
+        var result = new ContributionDto
+        {
+            Id = contribution.c.Id,
+            Title = contribution.c.Title,
+            Slug = contribution.c.Slug,
+            Content = contribution.c.Content,
+            ShortDescription = contribution.c.ShortDescription,
+            Username = contribution.u.UserName is not null ? contribution.u.UserName.ToString() : $"{contribution.u.FirstName} {contribution.u.LastName}",
+            FacultyName = contribution.f.Name,
+            AcademicYear = contribution.a.Name,
+            Thumbnails = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.Thumbnail)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            Files = files
+                .Where(f => f.ContributionId == contribution.c.Id && f.Type == FileType.File)
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
+                .ToList(),
+            PublicDate = contribution.c.PublicDate,
+            SubmissionDate = contribution.c.SubmissionDate,
+            DateUpdated = contribution.c.DateUpdated,
+            Avatar = contribution.u.Avatar,
+            Status = contribution.c.Status.ToStringValue(),
+        };
+
+        return result;
+    }
+
+    public async Task<ContributionDto> GetContributionBySlug(string slug)
+    {
+        var query = from c in _context.Contributions
+                    where c.Slug == slug && c.DateDeleted == null
                     join u in _context.Users on c.UserId equals u.Id
                     join f in _context.Faculties on c.FacultyId equals f.Id
                     join a in _context.AcademicYears on c.AcademicYearId equals a.Id

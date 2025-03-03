@@ -211,6 +211,8 @@ public class MapperProfiles : Profile
 
         CreateMap<GetPersonalContributionDetailBySlugRequest, GetPersonalContributionDetailBySlugQuery>();
 
+        CreateMap<ContributionDto, ContributionWithCommentDto>();
+
         // Contribution Comment.
         CreateMap<CreateCommentRequest, CreateCommentCommand>();
 

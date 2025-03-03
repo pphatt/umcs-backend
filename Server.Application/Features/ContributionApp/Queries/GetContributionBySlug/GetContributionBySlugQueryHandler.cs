@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using AutoMapper;
+using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Dtos.Content.Contribution;
@@ -12,18 +13,20 @@ using System.Runtime.InteropServices;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 
-public class GetContributionBySlugQueryHandler : IRequestHandler<GetContributionBySlugQuery, ErrorOr<ResponseWrapper<ContributionDto>>>
+public class GetContributionBySlugQueryHandler : IRequestHandler<GetContributionBySlugQuery, ErrorOr<ResponseWrapper<ContributionWithCommentDto>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IMapper _mapper;
 
-    public GetContributionBySlugQueryHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+    public GetContributionBySlugQueryHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _mapper = mapper;
     }
 
-    public async Task<ErrorOr<ResponseWrapper<ContributionDto>>> Handle(GetContributionBySlugQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<ContributionWithCommentDto>>> Handle(GetContributionBySlugQuery request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.FacultyName))
         {
@@ -64,10 +67,16 @@ public class GetContributionBySlugQueryHandler : IRequestHandler<GetContribution
             return Errors.Contribution.NotPublicYet;
         }
 
-        return new ResponseWrapper<ContributionDto>
+        var comments = await _unitOfWork.ContributionCommentRepository.GetCommentsByContributionId(contribution.Id);
+
+        var result = _mapper.Map<ContributionWithCommentDto>(contribution);
+
+        result.Comments = comments;
+
+        return new ResponseWrapper<ContributionWithCommentDto>
         {
             IsSuccessful = true,
-            ResponseData = contribution
+            ResponseData = result
         };
     }
 }

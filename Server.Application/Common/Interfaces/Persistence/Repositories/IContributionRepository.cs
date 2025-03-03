@@ -15,6 +15,8 @@ public interface IContributionRepository : IRepository<Contribution, Guid>
 
     Task<ContributionDto> GetPersonalContributionBySlug(string slug, Guid userId);
 
+    Task<ContributionDto> GetContributionBySlug(string slug);
+
     Task SendToApproved(Guid contributionId, Guid studentId);
 
     Task ApproveContribution(Contribution contribution, Guid coordinatorId);

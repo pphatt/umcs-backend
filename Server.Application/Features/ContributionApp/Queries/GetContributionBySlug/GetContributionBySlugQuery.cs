@@ -7,7 +7,7 @@ using Server.Contracts.Common;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 
-public class GetContributionBySlugQuery : IRequest<ErrorOr<ResponseWrapper<ContributionDto>>>
+public class GetContributionBySlugQuery : IRequest<ErrorOr<ResponseWrapper<ContributionWithCommentDto>>>
 {
     public string Slug { get; set; } = default!;
 
