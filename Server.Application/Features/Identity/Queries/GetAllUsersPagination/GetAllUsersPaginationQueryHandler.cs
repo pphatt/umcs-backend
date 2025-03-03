@@ -39,23 +39,31 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
             );
         }
 
-        if (request.RoleName is not null)
+        var roleFlag = false;
+
+        if (!string.IsNullOrWhiteSpace(request.RoleName))
         {
             var allUsersInRole = (await _userManager.GetUsersInRoleAsync(request.RoleName)).Select(x => x.Id);
 
             if (allUsersInRole.Count() > 0)
             {
                 allUserQuery = allUserQuery.Where(x => allUsersInRole.Contains(x.Id));
+
+                roleFlag = true;
             }
         }
 
-        if (request.FacultyName is not null)
+        var facultyName = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(request.FacultyName))
         {
             var faculty = await _unitOfWork.FacultyRepository.GetFacultyByNameAsync(request.FacultyName);
 
             if (faculty is not null)
             {
                 allUserQuery = allUserQuery.Where(x => x.FacultyId == faculty.Id);
+
+                facultyName = faculty.Name;
             }
         }
 
@@ -81,8 +89,21 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
                 continue;
             }
 
-            var roles = await _userManager.GetRolesAsync(user);
-            userDto.Roles = roles;
+            if (!roleFlag)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userDto.Roles = roles;
+            }
+            else
+            {
+                userDto.Roles = new List<string> { request.RoleName! };
+            }
+
+            if (!string.IsNullOrEmpty(facultyName))
+            {
+                userDto.Faculty = facultyName;
+                continue;
+            }
 
             if (user.FacultyId is not null)
             {
