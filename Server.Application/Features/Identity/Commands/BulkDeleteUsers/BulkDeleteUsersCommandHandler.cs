@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
+using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
@@ -38,6 +39,11 @@ public class BulkDeleteUsersCommandHandler : IRequestHandler<BulkDeleteUsersComm
             if (!roles.Any())
             {
                 return Errors.Roles.CannotFound;
+            }
+
+            if (roles.Contains(Roles.Admin))
+            {
+                return Errors.User.CannotDelete;
             }
 
             var roleRemovalResult = await _userManager.RemoveFromRolesAsync(user, roles);
