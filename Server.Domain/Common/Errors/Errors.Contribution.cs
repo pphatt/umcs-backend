@@ -85,5 +85,10 @@ public static partial class Errors
             code: "Contribution.CannotCommentOnContributionAlreadyGraded",
             description: "Cannot comment on contribution that already graded."
         );
+
+        public static Error CannotCommentOnNotPublicContribution => Error.Validation(
+            code: "Contribution.CannotCommentOnNotPublicContribution",
+            description: "Cannot comment on contribution that not public."
+        );
     };
 }

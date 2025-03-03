@@ -19,8 +19,4 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\ContributionApp\Commands\CommentContribution\" />
-  </ItemGroup>
-
 </Project>

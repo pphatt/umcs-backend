@@ -31,11 +31,13 @@ public class UnitOfWork : IUnitOfWork
 
     public IContributionActivityLogRepository ContributionActivityLogRepository => new ContributionActivityLogRepository(_context, _mapper, FacultyRepository, AcademicYearRepository);
 
+    public IContributionCommentRepository ContributionCommentRepository => new ContributionCommentRepository(_context);
+
+    public IContributionPublicCommentRepository ContributionPublicCommentRepository => new ContributionPublicCommentRepository(_context);
+
     public IFileRepository FileRepository => new FileRepository(_context);
 
     public ILikeRepository LikeRepository => new LikeRepository(_context);
-
-    public IContributionCommentRepository ContributionCommentRepository => new ContributionCommentRepository(_context);
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 

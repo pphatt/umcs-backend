@@ -13,5 +13,6 @@ public class ContributionComment : BaseEntity
     public required Guid UserId { get; set; }
 
     [Required]
+    [MaxLength(500)]
     public required string Content { get; set; } = default!;
 }

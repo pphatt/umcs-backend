@@ -50,6 +50,7 @@ using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFi
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
+using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
@@ -96,6 +97,7 @@ using Server.Contracts.Identity.GetUserById;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
+using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.AllowGuest;
 using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
@@ -231,6 +233,9 @@ public class MapperProfiles : Profile
 
         CreateMap<DownloadSingleFileRequest, DownloadSingleFileQuery>();
         CreateMap<DownloadAllFilesRequests, DownloadAllFilesQuery>();
+
+        // Public Contribution Comment.
+        CreateMap<CreatePublicCommentRequest, CreatePublicCommentCommand>();
 
         // Like.
         CreateMap<ToggleLikeContributionRequest, ToggleLikeContributionCommand>();

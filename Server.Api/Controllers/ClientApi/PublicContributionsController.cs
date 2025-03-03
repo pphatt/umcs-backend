@@ -9,6 +9,8 @@ using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFi
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
+using Server.Application.Features.PublicContributionCommentApp.Commands;
+using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
@@ -116,6 +118,22 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("comment/{ContributionId}")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> CreatePublicComment(CreatePublicCommentRequest request)
+    {
+        var mapper = _mapper.Map<CreatePublicCommentCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            commentResult => Ok(commentResult),
             errors => Problem(errors)
         );
     }
