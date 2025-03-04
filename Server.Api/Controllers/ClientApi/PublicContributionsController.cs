@@ -7,6 +7,7 @@ using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContr
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContribution;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
@@ -15,6 +16,7 @@ using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
 using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
+using Server.Contracts.PublicContributions.GetLatestPublicContribution;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Domain.Common.Constants.Authorization;
@@ -151,6 +153,23 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             commentResult => Ok(commentResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("latest")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetLatestContribution([FromQuery] GetLatestPublicContributionRequest request)
+    {
+        var mapper = _mapper.Map<GetLatestPublicContributionQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+        mapper.AllowedGuest = null;
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }
