@@ -61,7 +61,7 @@ public static class StringExtension
     {
         switch (sortBy)
         {
-            case ContributionSortBy.Date:
+            case ContributionSortBy.PublicDate:
                 return "DATE";
             case ContributionSortBy.Like:
                 return "LIKE";

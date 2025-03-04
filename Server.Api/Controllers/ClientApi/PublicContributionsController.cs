@@ -168,7 +168,7 @@ public class PublicContributionsController : ClientApiController
         var mapper = _mapper.Map<GetLatestPublicContributionsQuery>(request);
 
         mapper.UserId = User.GetUserId();
-        mapper.SortBy = ContributionSortBy.Date.ToStringValue();
+        mapper.SortBy = ContributionSortBy.PublicDate.ToStringValue();
 
         var result = await _mediatorSender.Send(mapper);
 

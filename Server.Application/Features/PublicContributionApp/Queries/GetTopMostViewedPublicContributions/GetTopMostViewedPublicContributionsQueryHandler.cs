@@ -38,13 +38,13 @@ public class GetTopMostViewedPublicContributionsQueryHandler : IRequestHandler<G
         if (role.Contains(Roles.Student))
         {
             request.AllowedGuest = null;
-            request.SortBy = ContributionSortBy.Date.ToStringValue();
+            request.SortBy = ContributionSortBy.PublicDate.ToStringValue();
         }
 
         if (role.Contains(Roles.Guest))
         {
             request.AllowedGuest = true;
-            request.SortBy = ContributionSortBy.Date.ToStringValue();
+            request.SortBy = ContributionSortBy.PublicDate.ToStringValue();
         }
 
         var result = await _unitOfWork.ContributionPublicRepository.GetAllPublicContributionsPagination(

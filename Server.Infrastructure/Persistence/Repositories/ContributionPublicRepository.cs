@@ -63,7 +63,7 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         {
             if (Enum.TryParse<ContributionSortBy>(sortBy.ToUpperInvariant(), true, out var enumSort))
             {
-                if (enumSort == ContributionSortBy.Date)
+                if (enumSort == ContributionSortBy.PublicDate)
                 {
                     query = query.OrderByDescending(x => x.c.PublicDate);
                 }
