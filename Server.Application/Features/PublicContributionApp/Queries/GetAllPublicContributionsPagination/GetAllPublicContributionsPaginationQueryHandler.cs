@@ -38,6 +38,11 @@ public class GetAllPublicContributionsPaginationQueryHandler : IRequestHandler<G
             request.AllowedGuest = null;
         }
 
+        if (role.Contains(Roles.Guest))
+        {
+            request.AllowedGuest = true;
+        }
+
         var result = await _unitOfWork.ContributionPublicRepository.GetAllPublicContributionsPagination(
             keyword: request.Keyword,
             pageIndex: request.PageIndex,
