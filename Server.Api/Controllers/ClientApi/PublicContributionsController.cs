@@ -7,17 +7,19 @@ using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContr
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
-using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContribution;
+using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
 using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
-using Server.Contracts.PublicContributions.GetLatestPublicContribution;
+using Server.Contracts.PublicContributions.GetLatestPublicContributions;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
+using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Domain.Common.Constants.Authorization;
 using System.Runtime.InteropServices;
@@ -112,7 +114,7 @@ public class PublicContributionsController : ClientApiController
     }
 
     [HttpPost("toggle-like/{ContributionId}")]
-    [Authorize(Permissions.Contributions.Like)]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> ToggleLikeContribution([FromRoute] ToggleLikeContributionRequest request)
     {
         var mapper = _mapper.Map<ToggleLikeContributionCommand>(request);
@@ -128,7 +130,7 @@ public class PublicContributionsController : ClientApiController
     }
 
     [HttpGet("who-liked/{ContributionId}")]
-    [Authorize(Permissions.Contributions.Like)]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetAllUsersLikedContributionPagination(GetAllUsersLikedContributionPaginationRequest request)
     {
         var mapper = _mapper.Map<GetAllUsersLikedContributionPaginationQuery>(request);
@@ -159,12 +161,27 @@ public class PublicContributionsController : ClientApiController
 
     [HttpGet("latest")]
     [Authorize(Permissions.Contributions.View)]
-    public async Task<IActionResult> GetLatestContribution([FromQuery] GetLatestPublicContributionRequest request)
+    public async Task<IActionResult> GetLatestContribution([FromQuery] GetLatestPublicContributionsRequest request)
     {
-        var mapper = _mapper.Map<GetLatestPublicContributionQuery>(request);
+        var mapper = _mapper.Map<GetLatestPublicContributionsQuery>(request);
 
         mapper.UserId = User.GetUserId();
-        mapper.AllowedGuest = null;
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("top-most-liked-contributions")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetTopMostLikedPublicContributions([FromQuery] GetTopMostLikedPublicContributionsRequest request)
+    {
+        var mapper = _mapper.Map<GetTopMostLikedPublicContributionsQuery>(request);
+
+        mapper.UserId = User.GetUserId();
 
         var result = await _mediatorSender.Send(mapper);
 

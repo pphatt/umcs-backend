@@ -5,9 +5,9 @@ using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Wrapper;
 using Server.Application.Wrapper.Pagination;
 
-namespace Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContribution;
+namespace Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContributions;
 
-public class GetLatestPublicContributionQuery : PaginationDto, IRequest<ErrorOr<ResponseWrapper<PaginationResult<PublicContributionInListDto>>>>
+public class GetLatestPublicContributionsQuery : PaginationDto, IRequest<ErrorOr<ResponseWrapper<PaginationResult<PublicContributionInListDto>>>>
 {
     public Guid UserId { get; set; } = default!;
 

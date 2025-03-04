@@ -9,7 +9,9 @@ public interface IContributionPublicRepository : IRepository<ContributionPublic,
 {
     Task<PaginationResult<PublicContributionInListDto>> GetAllPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
 
-    Task<PaginationResult<PublicContributionInListDto>> GetLatestPublicContributionPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
+    Task<PaginationResult<PublicContributionInListDto>> GetLatestPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
+
+    Task<PaginationResult<PublicContributionInListDto>> GetTopMostLikedPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
 
     Task<PublicContributionDto> GetPublicContributionBySlug(string slug);
 

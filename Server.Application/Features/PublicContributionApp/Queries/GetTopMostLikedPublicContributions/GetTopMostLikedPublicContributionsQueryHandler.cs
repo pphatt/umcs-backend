@@ -8,22 +8,21 @@ using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContribution;
+namespace Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
 
-public class GetLatestPublicContributionQueryHandler : IRequestHandler<GetLatestPublicContributionQuery, ErrorOr<ResponseWrapper<PaginationResult<PublicContributionInListDto>>>>
+public class GetTopMostLikedPublicContributionsQueryHandler : IRequestHandler<GetTopMostLikedPublicContributionsQuery, ErrorOr<ResponseWrapper<PaginationResult<PublicContributionInListDto>>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
 
-    public GetLatestPublicContributionQueryHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+    public GetTopMostLikedPublicContributionsQueryHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
     }
 
-    public async Task<ErrorOr<ResponseWrapper<PaginationResult<PublicContributionInListDto>>>> Handle(GetLatestPublicContributionQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<PaginationResult<PublicContributionInListDto>>>> Handle(GetTopMostLikedPublicContributionsQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId.ToString());
 
@@ -32,14 +31,14 @@ public class GetLatestPublicContributionQueryHandler : IRequestHandler<GetLatest
             return Errors.User.CannotFound;
         }
 
-        var role = await _userManager.GetRolesAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
 
-        if (role.Contains(Roles.Student))
+        if (roles.Contains(Roles.Student))
         {
             request.AllowedGuest = null;
         }
 
-        var result = await _unitOfWork.ContributionPublicRepository.GetLatestPublicContributionPagination(
+        var result = await _unitOfWork.ContributionPublicRepository.GetTopMostLikedPublicContributionsPagination(
             keyword: request.Keyword,
             pageIndex: request.PageIndex,
             pageSize: request.PageSize,
