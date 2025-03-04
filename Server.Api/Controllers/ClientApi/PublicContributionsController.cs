@@ -11,6 +11,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicC
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopMostViewedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
@@ -20,9 +21,9 @@ using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPaginatio
 using Server.Contracts.PublicContributions.GetLatestPublicContributions;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
+using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Domain.Common.Constants.Authorization;
-using System.Runtime.InteropServices;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -180,6 +181,22 @@ public class PublicContributionsController : ClientApiController
     public async Task<IActionResult> GetTopMostLikedPublicContributions([FromQuery] GetTopMostLikedPublicContributionsRequest request)
     {
         var mapper = _mapper.Map<GetTopMostLikedPublicContributionsQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("top-most-viewed-contributions")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetTopMostViewedPublicContributions([FromQuery] GetTopMostViewedPublicContributionsRequest request)
+    {
+        var mapper = _mapper.Map<GetTopMostViewedPublicContributionsQuery>(request);
 
         mapper.UserId = User.GetUserId();
 

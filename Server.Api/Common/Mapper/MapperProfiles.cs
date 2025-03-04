@@ -54,6 +54,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicC
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopMostViewedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
@@ -112,6 +113,7 @@ using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPaginatio
 using Server.Contracts.PublicContributions.GetLatestPublicContributions;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
+using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
@@ -249,6 +251,8 @@ public class MapperProfiles : Profile
         CreateMap<GetLatestPublicContributionsRequest, GetLatestPublicContributionsQuery>();
 
         CreateMap<GetTopMostLikedPublicContributionsRequest, GetTopMostLikedPublicContributionsQuery>();
+
+        CreateMap<GetTopMostViewedPublicContributionsRequest, GetTopMostViewedPublicContributionsQuery>();
 
         // Public Contribution Comment.
         CreateMap<CreatePublicCommentRequest, CreatePublicCommentCommand>();
