@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Contracts.Common;
 
-namespace Server.Contracts.PublicContributions.GetLatestPublicContribution;
+namespace Server.Contracts.PublicContributions.GetLatestPublicContributions;
 
-public class GetLatestPublicContributionRequest : PaginationRequest
+public class GetLatestPublicContributionsRequest : PaginationRequest
 {
     [FromQuery]
     public string? FacultyName { get; set; }

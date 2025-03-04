@@ -50,9 +50,10 @@ using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContr
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
-using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContribution;
+using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
@@ -108,8 +109,9 @@ using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
 using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
-using Server.Contracts.PublicContributions.GetLatestPublicContribution;
+using Server.Contracts.PublicContributions.GetLatestPublicContributions;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
+using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
@@ -244,7 +246,9 @@ public class MapperProfiles : Profile
 
         CreateMap<PublicContributionDto, PublicContributionWithCommentsDto>();
 
-        CreateMap<GetLatestPublicContributionRequest, GetLatestPublicContributionQuery>();
+        CreateMap<GetLatestPublicContributionsRequest, GetLatestPublicContributionsQuery>();
+
+        CreateMap<GetTopMostLikedPublicContributionsRequest, GetTopMostLikedPublicContributionsQuery>();
 
         // Public Contribution Comment.
         CreateMap<CreatePublicCommentRequest, CreatePublicCommentCommand>();
