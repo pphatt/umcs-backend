@@ -49,7 +49,7 @@ public class GetAllPublicContributionsPaginationQueryHandler : IRequestHandler<G
 
         foreach (var item in result.Results)
         {
-            item.DidLike = await _unitOfWork.LikeRepository.AlreadyLike(item.Id, user.Id);
+            item.AlreadyLike = await _unitOfWork.LikeRepository.AlreadyLike(item.Id, user.Id);
         }
 
         return new ResponseWrapper<PaginationResult<PublicContributionInListDto>>
