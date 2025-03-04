@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ using Server.Infrastructure.Services.Media;
 using System.Net;
 using System.Net.Mime;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Server.Infrastructure;
 
@@ -44,6 +46,12 @@ public static class DependencyInjection
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
         services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
         services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
+        // Serialize enum variable from number to string value.
+        services.Configure<JsonOptions>(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
         services
             .AddDatabase(configuration)

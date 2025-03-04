@@ -5,9 +5,9 @@ namespace Server.Contracts.PublicContributions.GetTopMostViewedPublicContributio
 
 public class GetTopMostViewedPublicContributionsRequest : PaginationRequest
 {
-    [FromQuery]
+    [FromQuery(Name = "facultyName")]
     public string? FacultyName { get; set; }
 
-    [FromQuery]
+    [FromQuery(Name = "academicYearName")]
     public string? AcademicYearName { get; set; }
 }

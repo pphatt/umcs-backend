@@ -16,4 +16,6 @@ public class GetLatestPublicContributionsQuery : PaginationDto, IRequest<ErrorOr
     public string? FacultyName { get; set; }
 
     public bool? AllowedGuest { get; set; }
+
+    public string? SortBy { get; set; }
 }

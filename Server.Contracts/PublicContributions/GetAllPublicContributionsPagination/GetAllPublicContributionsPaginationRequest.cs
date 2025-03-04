@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Contracts.Common;
+using Server.Domain.Common.Constants.Content;
 
 namespace Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
 
@@ -13,4 +14,7 @@ public class GetAllPublicContributionsPaginationRequest : PaginationRequest
 
     [FromQuery(Name = "allowedGuest")]
     public bool? AllowedGuest { get; set; }
+
+    [FromQuery(Name = "sortBy")]
+    public ContributionSortBy? SortBy { get; set; }
 }
