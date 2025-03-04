@@ -38,6 +38,11 @@ public class GetLatestPublicContributionsQueryHandler : IRequestHandler<GetLates
             request.AllowedGuest = null;
         }
 
+        if (role.Contains(Roles.Guest))
+        {
+            request.AllowedGuest = true;
+        }
+
         var result = await _unitOfWork.ContributionPublicRepository.GetLatestPublicContributionsPagination(
             keyword: request.Keyword,
             pageIndex: request.PageIndex,

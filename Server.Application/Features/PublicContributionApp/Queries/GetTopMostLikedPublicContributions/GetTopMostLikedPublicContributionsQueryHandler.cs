@@ -31,11 +31,16 @@ public class GetTopMostLikedPublicContributionsQueryHandler : IRequestHandler<Ge
             return Errors.User.CannotFound;
         }
 
-        var roles = await _userManager.GetRolesAsync(user);
+        var role = await _userManager.GetRolesAsync(user);
 
-        if (roles.Contains(Roles.Student))
+        if (role.Contains(Roles.Student))
         {
             request.AllowedGuest = null;
+        }
+
+        if (role.Contains(Roles.Guest))
+        {
+            request.AllowedGuest = true;
         }
 
         var result = await _unitOfWork.ContributionPublicRepository.GetTopMostLikedPublicContributionsPagination(
