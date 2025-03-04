@@ -13,6 +13,8 @@ public interface IContributionPublicRepository : IRepository<ContributionPublic,
 
     Task<PaginationResult<PublicContributionInListDto>> GetTopMostLikedPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
 
+    Task<PaginationResult<PublicContributionInListDto>> GetTopMostViewedPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
+
     Task<PublicContributionDto> GetPublicContributionBySlug(string slug);
 
     Task<PaginationResult<UserLikeInListDto>> GetAllUsersLikedContributionPagination(Guid contributionId, int pageIndex = 1, int pageSize = 10);
