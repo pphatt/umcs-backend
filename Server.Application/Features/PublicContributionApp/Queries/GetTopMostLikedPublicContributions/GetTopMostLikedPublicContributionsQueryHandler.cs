@@ -8,6 +8,7 @@ using Server.Application.Wrapper;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
+using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
@@ -38,13 +39,15 @@ public class GetTopMostLikedPublicContributionsQueryHandler : IRequestHandler<Ge
         if (role.Contains(Roles.Student))
         {
             request.AllowedGuest = null;
-            request.SortBy = ContributionSortBy.PublicDate.ToStringValue();
+            request.SortBy = ContributionSortBy.Like.ToStringValue();
+            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
         }
 
         if (role.Contains(Roles.Guest))
         {
             request.AllowedGuest = true;
-            request.SortBy = ContributionSortBy.PublicDate.ToStringValue();
+            request.SortBy = ContributionSortBy.Like.ToStringValue();
+            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
         }
 
         var result = await _unitOfWork.ContributionPublicRepository.GetAllPublicContributionsPagination(
@@ -54,7 +57,8 @@ public class GetTopMostLikedPublicContributionsQueryHandler : IRequestHandler<Ge
             academicYearName: request.AcademicYearName,
             facultyName: request.FacultyName,
             allowedGuest: request.AllowedGuest,
-            sortBy: request.SortBy
+            sortBy: request.SortBy,
+            orderBy: request.OrderBy
         );
 
         foreach (var item in result.Results)

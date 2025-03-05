@@ -25,6 +25,7 @@ using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
+using Server.Domain.Common.Enums;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -169,6 +170,7 @@ public class PublicContributionsController : ClientApiController
 
         mapper.UserId = User.GetUserId();
         mapper.SortBy = ContributionSortBy.PublicDate.ToStringValue();
+        mapper.OrderBy = ContributionOrderBy.Descending.ToStringValue();
 
         var result = await _mediatorSender.Send(mapper);
 
@@ -186,6 +188,7 @@ public class PublicContributionsController : ClientApiController
 
         mapper.UserId = User.GetUserId();
         mapper.SortBy = ContributionSortBy.Like.ToStringValue();
+        mapper.OrderBy = ContributionOrderBy.Descending.ToStringValue();
 
         var result = await _mediatorSender.Send(mapper);
 
@@ -203,6 +206,7 @@ public class PublicContributionsController : ClientApiController
 
         mapper.UserId = User.GetUserId();
         mapper.SortBy = ContributionSortBy.View.ToStringValue();
+        mapper.OrderBy = ContributionOrderBy.Descending.ToStringValue();
 
         var result = await _mediatorSender.Send(mapper);
 

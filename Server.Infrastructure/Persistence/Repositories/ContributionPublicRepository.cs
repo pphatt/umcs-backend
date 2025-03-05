@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Like;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Media;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
+using System.Collections.Immutable;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -28,7 +30,8 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         string? academicYearName = null,
         string? facultyName = null,
         bool? allowedGuest = null,
-        string? sortBy = null)
+        string? sortBy = null,
+        string? orderBy = null)
     {
         var query = from c in _context.ContributionPublics
                     where c.DateDeleted == null
@@ -59,25 +62,30 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
             query = query.Where(x => x.c.AllowedGuest == allowedGuest);
         }
 
-        if (!string.IsNullOrWhiteSpace(sortBy))
+        bool isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
+                           Enum.TryParse<ContributionOrderBy>(orderBy.ToUpperInvariant(), true, out var enumOrder) &&
+                           enumOrder == ContributionOrderBy.Ascending;
+
+        if (string.IsNullOrWhiteSpace(sortBy))
         {
-            if (Enum.TryParse<ContributionSortBy>(sortBy.ToUpperInvariant(), true, out var enumSort))
+            query = (isAscending) switch
             {
-                if (enumSort == ContributionSortBy.PublicDate)
-                {
-                    query = query.OrderByDescending(x => x.c.PublicDate);
-                }
-
-                if (enumSort == ContributionSortBy.Like)
-                {
-                    query = query.OrderByDescending(x => x.c.LikeQuantity);
-                }
-
-                if (enumSort == ContributionSortBy.View)
-                {
-                    query = query.OrderByDescending(x => x.c.Views);
-                }
-            }
+                (true) => query.OrderBy(x => x.c.PublicDate),
+                _ => query.OrderByDescending(x => x.c.PublicDate),
+            };
+        }
+        else if (Enum.TryParse<ContributionSortBy>(sortBy.ToUpperInvariant(), true, out var enumSort))
+        {
+            query = (enumSort, isAscending) switch
+            {
+                (ContributionSortBy.PublicDate, true) => query.OrderBy(x => x.c.PublicDate),
+                (ContributionSortBy.PublicDate, false) => query.OrderByDescending(x => x.c.PublicDate),
+                (ContributionSortBy.Like, true) => query.OrderBy(x => x.c.LikeQuantity),
+                (ContributionSortBy.Like, false) => query.OrderByDescending(x => x.c.LikeQuantity),
+                (ContributionSortBy.View, true) => query.OrderBy(x => x.c.Views),
+                (ContributionSortBy.View, false) => query.OrderByDescending(x => x.c.Views),
+                _ => query.OrderByDescending(x => x.c.PublicDate)
+            };
         }
         else
         {

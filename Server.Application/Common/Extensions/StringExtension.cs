@@ -71,4 +71,17 @@ public static class StringExtension
                 return "UNKNOWN";
         }
     }
+
+    public static string ToStringValue(this ContributionOrderBy orderBy)
+    {
+        switch (orderBy)
+        {
+            case ContributionOrderBy.Descending:
+                return "DESCENDING";
+            case ContributionOrderBy.Ascending:
+                return "ASCENDING";
+            default:
+                return "UNKNOWN";
+        }
+    }
 }

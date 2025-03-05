@@ -18,4 +18,6 @@ public class GetTopMostViewedPublicContributionsQuery : PaginationDto, IRequest<
     public bool? AllowedGuest { get; set; }
 
     public string? SortBy { get; set; }
+
+    public string? OrderBy { get; set; }
 }

@@ -14,7 +14,8 @@ public interface IContributionPublicRepository : IRepository<ContributionPublic,
         string? academicYearName = null,
         string? facultyName = null,
         bool? allowedGuest = null,
-        string? sortBy = null);
+        string? sortBy = null,
+        string? orderBy = null);
 
     Task<PublicContributionDto> GetPublicContributionBySlug(string slug);
 
