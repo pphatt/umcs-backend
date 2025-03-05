@@ -1,4 +1,5 @@
-﻿using Server.Domain.Common.Enums;
+﻿using Server.Domain.Common.Constants.Content;
+using Server.Domain.Common.Enums;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -51,6 +52,34 @@ public static class StringExtension
                 return "APPROVED";
             case ContributionStatus.Reject:
                 return "REJECTED";
+            default:
+                return "UNKNOWN";
+        }
+    }
+
+    public static string ToStringValue(this ContributionSortBy sortBy)
+    {
+        switch (sortBy)
+        {
+            case ContributionSortBy.PublicDate:
+                return "DATE";
+            case ContributionSortBy.Like:
+                return "LIKE";
+            case ContributionSortBy.View:
+                return "VIEW";
+            default:
+                return "UNKNOWN";
+        }
+    }
+
+    public static string ToStringValue(this ContributionOrderBy orderBy)
+    {
+        switch (orderBy)
+        {
+            case ContributionOrderBy.Descending:
+                return "DESCENDING";
+            case ContributionOrderBy.Ascending:
+                return "ASCENDING";
             default:
                 return "UNKNOWN";
         }

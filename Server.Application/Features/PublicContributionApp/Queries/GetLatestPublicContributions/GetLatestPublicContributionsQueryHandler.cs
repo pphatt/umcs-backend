@@ -2,10 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Dtos.Content.PublicContribution;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Authorization;
+using Server.Domain.Common.Constants.Content;
+using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
@@ -36,20 +39,26 @@ public class GetLatestPublicContributionsQueryHandler : IRequestHandler<GetLates
         if (role.Contains(Roles.Student))
         {
             request.AllowedGuest = null;
+            request.SortBy = ContributionSortBy.PublicDate.ToStringValue();
+            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
         }
 
         if (role.Contains(Roles.Guest))
         {
             request.AllowedGuest = true;
+            request.SortBy = ContributionSortBy.PublicDate.ToStringValue();
+            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
         }
 
-        var result = await _unitOfWork.ContributionPublicRepository.GetLatestPublicContributionsPagination(
+        var result = await _unitOfWork.ContributionPublicRepository.GetAllPublicContributionsPagination(
             keyword: request.Keyword,
             pageIndex: request.PageIndex,
             pageSize: request.PageSize,
             academicYearName: request.AcademicYearName,
             facultyName: request.FacultyName,
-            allowedGuest: request.AllowedGuest
+            allowedGuest: request.AllowedGuest,
+            sortBy: request.SortBy,
+            orderBy: request.OrderBy
         );
 
         foreach (var item in result.Results)

@@ -16,4 +16,8 @@ public class GetTopMostViewedPublicContributionsQuery : PaginationDto, IRequest<
     public string? FacultyName { get; set; }
 
     public bool? AllowedGuest { get; set; }
+
+    public string? SortBy { get; set; }
+
+    public string? OrderBy { get; set; }
 }

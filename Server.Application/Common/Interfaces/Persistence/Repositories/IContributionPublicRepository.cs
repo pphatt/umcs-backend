@@ -7,13 +7,15 @@ namespace Server.Application.Common.Interfaces.Persistence.Repositories;
 
 public interface IContributionPublicRepository : IRepository<ContributionPublic, Guid>
 {
-    Task<PaginationResult<PublicContributionInListDto>> GetAllPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
-
-    Task<PaginationResult<PublicContributionInListDto>> GetLatestPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
-
-    Task<PaginationResult<PublicContributionInListDto>> GetTopMostLikedPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
-
-    Task<PaginationResult<PublicContributionInListDto>> GetTopMostViewedPublicContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 5, string? academicYearName = null, string? facultyName = null, bool? allowedGuest = null);
+    Task<PaginationResult<PublicContributionInListDto>> GetAllPublicContributionsPagination(
+        string? keyword,
+        int pageIndex = 1,
+        int pageSize = 10,
+        string? academicYearName = null,
+        string? facultyName = null,
+        bool? allowedGuest = null,
+        string? sortBy = null,
+        string? orderBy = null);
 
     Task<PublicContributionDto> GetPublicContributionBySlug(string slug);
 
