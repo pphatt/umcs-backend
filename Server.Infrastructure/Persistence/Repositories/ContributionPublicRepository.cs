@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.Like;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Media;
-using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
-using System.Collections.Immutable;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -137,6 +136,104 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
             PageSize = pageSize,
             Results = result
         };
+    }
+
+    public async Task<List<ContributorDto>> GetTopContributors(string? keyword,
+        int pageIndex = 1,
+        int pageSize = 10,
+        string? facultyName = null,
+        string? orderBy = null)
+    {
+        var query = from c in _context.ContributionPublics
+                    where c.DateDeleted == null
+                    join f in _context.Faculties on c.FacultyId equals f.Id
+                    group new { c, f } by new { c.UserId, f.Name, c.Avatar } into userGroup
+                    select new {
+                        Username = userGroup.FirstOrDefault().c.Username,
+                        FacultyName = userGroup.FirstOrDefault().c.FacultyName,
+                        Avatar = userGroup.FirstOrDefault().c.Avatar,
+                        TotalLikes = userGroup.Sum(x => x.c.LikeQuantity),
+                        TotalContributions = userGroup.Count()
+                    };
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(x => x.Username.Contains(keyword));
+        }
+
+        if (!string.IsNullOrWhiteSpace(facultyName))
+        {
+            query = query.Where(x => x.FacultyName == facultyName);
+        }
+
+        bool isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
+                          Enum.TryParse<ContributionOrderBy>(orderBy.ToUpperInvariant(), true, out var enumOrder) &&
+                          enumOrder == ContributionOrderBy.Ascending;
+
+        if (isAscending)
+        {
+            query = query
+                .OrderBy(x => x.TotalLikes)
+                .ThenBy(x => x.TotalContributions);
+        }
+        else
+        {
+            query = query
+                .OrderByDescending(x => x.TotalLikes)
+                .ThenByDescending(x => x.TotalContributions);
+        }
+
+        pageIndex = pageIndex - 1 < 0 ? 1 : pageIndex;
+
+        var skipPage = (pageIndex - 1) * pageSize;
+
+        var result = await query
+            .Skip(skipPage)
+            .Take(pageSize)
+            .Select(x => new ContributorDto
+            {
+                Username = x.Username,
+                FacultyName = x.FacultyName,
+                Avatar = x.Avatar,
+                TotalLikes = x.TotalLikes,
+                TotalContributions = x.TotalContributions
+            })
+            .ToListAsync();
+
+        //List<ContributorDto> result = _mapper.Map<List<ContributorDto>>(query);
+
+        //var contributions = await _context.ContributionPublics
+        //    .Where(x => x.DateDeleted == null)
+        //    .Select(x => new
+        //    {
+        //        x.Username,
+        //        x.Avatar,
+        //        x.LikeQuantity,
+        //        x.PublicDate
+        //    })
+        //    .ToListAsync();
+
+        //var result = contributions
+        //    .GroupBy(x => x.Username)
+        //    .Select(group => new
+        //    {
+        //        UserName = group.Key,
+        //        Avatar = group.FirstOrDefault().Avatar,
+        //        TotalLikes = group.Sum(c => c.LikeQuantity),
+        //        ContributionCount = group.Count()
+        //    })
+        //    .OrderByDescending(x => x.TotalLikes)
+        //    .ThenByDescending(x => x.ContributionCount)
+        //    .Take(pageSize)
+        //    .Select(x => new ContributorDto
+        //    {
+        //        Username = x.UserName,
+        //        Avatar = x.Avatar,
+        //        TotalLikes = x.TotalLikes,
+        //        TotalPublicContributionCount = x.ContributionCount
+        //    });
+
+        return result;
     }
 
     public async Task<PublicContributionDto> GetPublicContributionBySlug(string slug)

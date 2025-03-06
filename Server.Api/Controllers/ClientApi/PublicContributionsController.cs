@@ -10,6 +10,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicCont
 using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopContributors;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostViewedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
@@ -20,6 +21,7 @@ using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
 using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
 using Server.Contracts.PublicContributions.GetLatestPublicContributions;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
+using Server.Contracts.PublicContributions.GetTopContributors;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
@@ -207,6 +209,22 @@ public class PublicContributionsController : ClientApiController
         mapper.UserId = User.GetUserId();
         mapper.SortBy = ContributionSortBy.View.ToStringValue();
         mapper.OrderBy = ContributionOrderBy.Descending.ToStringValue();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("top-contributors")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetTopContributors([FromQuery] GetTopContributorsRequest request)
+    {
+        var mapper = _mapper.Map<GetTopContributorsQuery>(request);
+
+        mapper.UserId = User.GetUserId();
 
         var result = await _mediatorSender.Send(mapper);
 
