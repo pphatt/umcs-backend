@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContribution;
+using Server.Application.Features.PublicContributionApp.Commands.ToggleReadLater;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
@@ -25,6 +26,7 @@ using Server.Contracts.PublicContributions.GetTopContributors;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
+using Server.Contracts.PublicContributions.ToggleReadLater;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
@@ -160,6 +162,22 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             commentResult => Ok(commentResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("toggle-read-later/{ContributionId}")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> ToggleReadLaterContribution([FromRoute] ToggleReadLaterRequest request)
+    {
+        var mapper = _mapper.Map<ToggleReadLaterCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            toggleResult => Ok(toggleResult),
             errors => Problem(errors)
         );
     }

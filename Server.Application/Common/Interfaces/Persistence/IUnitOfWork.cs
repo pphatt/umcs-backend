@@ -14,6 +14,7 @@ public interface IUnitOfWork
     IContributionActivityLogRepository ContributionActivityLogRepository { get; }
     IContributionPublicCommentRepository ContributionPublicCommentRepository { get; }
     IContributionCommentRepository ContributionCommentRepository { get; }
+    IContributionPublicReadLaterRepository ContributionPublicReadLaterRepository { get; }
     IFileRepository FileRepository { get; }
     ILikeRepository LikeRepository { get; }
 }
