@@ -5,6 +5,7 @@ using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
+using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
@@ -12,7 +13,7 @@ using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.PublicContributionApp.Queries.GetTopContributors;
 
-public class GetTopContributorsQueryHandler : IRequestHandler<GetTopContributorsQuery, ErrorOr<ResponseWrapper<List<ContributorDto>>>>
+public class GetTopContributorsQueryHandler : IRequestHandler<GetTopContributorsQuery, ErrorOr<ResponseWrapper<PaginationResult<ContributorDto>>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
@@ -23,7 +24,7 @@ public class GetTopContributorsQueryHandler : IRequestHandler<GetTopContributors
         _userManager = userManager;
     }
 
-    public async Task<ErrorOr<ResponseWrapper<List<ContributorDto>>>> Handle(GetTopContributorsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ResponseWrapper<PaginationResult<ContributorDto>>>> Handle(GetTopContributorsQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId.ToString());
 
@@ -52,7 +53,7 @@ public class GetTopContributorsQueryHandler : IRequestHandler<GetTopContributors
             orderBy: request.OrderBy
         );
 
-        return new ResponseWrapper<List<ContributorDto>>
+        return new ResponseWrapper<PaginationResult<ContributorDto>>
         {
             IsSuccessful = true,
             ResponseData = result

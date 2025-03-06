@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Contracts.Common;
-using Server.Domain.Common.Constants.Content;
+using Server.Domain.Common.Enums;
 
 namespace Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 
@@ -11,4 +11,7 @@ public class GetTopMostLikedPublicContributionsRequest : PaginationRequest
 
     [FromQuery(Name = "academicYearName")]
     public string? AcademicYearName { get; set; }
+
+    [FromQuery(Name = "orderBy")]
+    public ContributionOrderBy OrderBy { get; set; }
 }
