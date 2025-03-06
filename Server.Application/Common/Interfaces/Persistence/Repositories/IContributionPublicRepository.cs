@@ -17,6 +17,14 @@ public interface IContributionPublicRepository : IRepository<ContributionPublic,
         string? sortBy = null,
         string? orderBy = null);
 
+    Task<List<ContributorDto>> GetTopContributors(
+        string? keyword,
+        int pageIndex = 1,
+        int pageSize = 10,
+        string? facultyName = null,
+        string? orderBy = null
+    );
+
     Task<PublicContributionDto> GetPublicContributionBySlug(string slug);
 
     Task<PaginationResult<UserLikeInListDto>> GetAllUsersLikedContributionPagination(Guid contributionId, int pageIndex = 1, int pageSize = 10);
