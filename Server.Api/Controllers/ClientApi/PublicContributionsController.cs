@@ -172,7 +172,6 @@ public class PublicContributionsController : ClientApiController
 
         mapper.UserId = User.GetUserId();
         mapper.SortBy = ContributionSortBy.PublicDate.ToStringValue();
-        mapper.OrderBy = ContributionOrderBy.Descending.ToStringValue();
 
         var result = await _mediatorSender.Send(mapper);
 
@@ -190,7 +189,6 @@ public class PublicContributionsController : ClientApiController
 
         mapper.UserId = User.GetUserId();
         mapper.SortBy = ContributionSortBy.Like.ToStringValue();
-        mapper.OrderBy = ContributionOrderBy.Descending.ToStringValue();
 
         var result = await _mediatorSender.Send(mapper);
 
@@ -208,7 +206,6 @@ public class PublicContributionsController : ClientApiController
 
         mapper.UserId = User.GetUserId();
         mapper.SortBy = ContributionSortBy.View.ToStringValue();
-        mapper.OrderBy = ContributionOrderBy.Descending.ToStringValue();
 
         var result = await _mediatorSender.Send(mapper);
 
