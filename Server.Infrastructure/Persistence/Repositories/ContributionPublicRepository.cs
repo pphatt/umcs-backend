@@ -138,7 +138,7 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         };
     }
 
-    public async Task<List<ContributorDto>> GetTopContributors(string? keyword,
+    public async Task<PaginationResult<ContributorDto>> GetTopContributors(string? keyword,
         int pageIndex = 1,
         int pageSize = 10,
         string? facultyName = null,
@@ -182,6 +182,8 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
                 .OrderByDescending(x => x.TotalLikes)
                 .ThenByDescending(x => x.TotalContributions);
         }
+
+        var rowCount = await query.CountAsync();
 
         pageIndex = pageIndex - 1 < 0 ? 1 : pageIndex;
 
@@ -233,7 +235,13 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         //        TotalPublicContributionCount = x.ContributionCount
         //    });
 
-        return result;
+        return new PaginationResult<ContributorDto>
+        {
+            CurrentPage = pageIndex,
+            RowCount = rowCount,
+            PageSize = pageSize,
+            Results = result
+        };
     }
 
     public async Task<PublicContributionDto> GetPublicContributionBySlug(string slug)

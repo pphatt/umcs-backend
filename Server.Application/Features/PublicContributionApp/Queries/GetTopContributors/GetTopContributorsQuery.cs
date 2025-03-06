@@ -3,11 +3,12 @@ using MediatR;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Wrapper;
+using Server.Application.Wrapper.Pagination;
 using Server.Domain.Entity.Content;
 
 namespace Server.Application.Features.PublicContributionApp.Queries.GetTopContributors;
 
-public class GetTopContributorsQuery : PaginationDto, IRequest<ErrorOr<ResponseWrapper<List<ContributorDto>>>>
+public class GetTopContributorsQuery : PaginationDto, IRequest<ErrorOr<ResponseWrapper<PaginationResult<ContributorDto>>>>
 {
     public Guid UserId { get; set; } = default!;
 

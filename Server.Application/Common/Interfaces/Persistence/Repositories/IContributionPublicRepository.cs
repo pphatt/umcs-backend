@@ -17,7 +17,7 @@ public interface IContributionPublicRepository : IRepository<ContributionPublic,
         string? sortBy = null,
         string? orderBy = null);
 
-    Task<List<ContributorDto>> GetTopContributors(
+    Task<PaginationResult<ContributorDto>> GetTopContributors(
         string? keyword,
         int pageIndex = 1,
         int pageSize = 10,
