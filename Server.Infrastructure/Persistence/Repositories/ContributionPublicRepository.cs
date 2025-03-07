@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.Like;
 using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Dtos.Media;

@@ -71,4 +71,6 @@ public class ContributionPublic : BaseEntity
     public int LikeQuantity { get; set; } = 0;
 
     public int Views { get; set; } = 0;
+
+    public ICollection<ContributionPublicReadLater> ReadLaters { get; set; }
 }

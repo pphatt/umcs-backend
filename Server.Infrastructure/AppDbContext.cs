@@ -23,6 +23,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     internal DbSet<ContributionPublic> ContributionPublics { get; set; }
     internal DbSet<ContributionComment> ContributionComments { get; set; }
     internal DbSet<ContributionPublicComment> ContributionPublicComments { get; set; }
+    internal DbSet<ContributionPublicReadLater> ContributionPublicReadLaters { get; set; }
     internal DbSet<Like> Likes { get; set; }
     internal DbSet<ContributionTag> ContributionTags { get; set; }
     internal DbSet<Faculty> Faculties { get; set; }
@@ -73,6 +74,19 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithOne(c => c.Faculty)
             .HasForeignKey(c => c.FacultyId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // ReadLater relationship
+        modelBuilder.Entity<ContributionPublicReadLater>()
+            .HasOne(cprl => cprl.ContributionPublic)
+            .WithMany(c => c.ReadLaters)
+            .HasForeignKey(cprl => cprl.ContributionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ContributionPublicReadLater>()
+            .HasOne(cprl => cprl.User)
+            .WithMany(u => u.ReadLaters)
+            .HasForeignKey(cprl => cprl.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Contribution relationships
         modelBuilder.Entity<Contribution>()
