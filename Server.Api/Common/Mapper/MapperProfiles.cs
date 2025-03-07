@@ -51,6 +51,7 @@ using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContr
 using Server.Application.Features.PublicContributionApp.Commands.ToggleReadLater;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
+using Server.Application.Features.PublicContributionApp.Queries.GetAllBookmarkPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllUserLikePublicContributionsPagination;
@@ -113,6 +114,7 @@ using Server.Contracts.PublicContributions.AllowGuest;
 using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
+using Server.Contracts.PublicContributions.GetAllBookmarkPagination;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
 using Server.Contracts.PublicContributions.GetAllReadLaterPagination;
 using Server.Contracts.PublicContributions.GetAllUserLikePublicContributionsPagination;
@@ -283,6 +285,8 @@ public class MapperProfiles : Profile
 
         // Bookmark.
         CreateMap<ToggleBookmarkContributionRequest, ToggleBookmarkContributionCommand>();
+
+        CreateMap<GetAllBookmarkPaginationRequest, GetAllBookmarkPaginationQuery>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();
