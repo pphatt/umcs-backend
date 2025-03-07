@@ -29,7 +29,6 @@ using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.PublicContributions.ToggleReadLater;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
-using Server.Domain.Common.Enums;
 
 namespace Server.Api.Controllers.ClientApi;
 

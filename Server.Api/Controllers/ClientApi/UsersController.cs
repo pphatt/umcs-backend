@@ -8,11 +8,13 @@ using Server.Application.Features.ContributionApp.Queries.GetPersonalContributio
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
+using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterPagination;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
+using Server.Contracts.PublicContributions.GetAllReadLaterPagination;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -126,6 +128,22 @@ public class UsersController : ClientApiController
          */
 
         var mapper = _mapper.Map<GetPersonalContributionDetailBySlugQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("read-later")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetAllReadLaterPagination([FromQuery] GetAllReadLaterPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllReadLaterPaginationQuery>(request);
 
         mapper.UserId = User.GetUserId();
 

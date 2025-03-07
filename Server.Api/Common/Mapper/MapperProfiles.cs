@@ -51,6 +51,7 @@ using Server.Application.Features.PublicContributionApp.Commands.ToggleReadLater
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionsPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetLatestPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetPublicContributionBySlug;
@@ -111,6 +112,7 @@ using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
 using Server.Contracts.PublicContributions.DownloadSingleFile;
 using Server.Contracts.PublicContributions.GetAllPublicContributionsPagination;
+using Server.Contracts.PublicContributions.GetAllReadLaterPagination;
 using Server.Contracts.PublicContributions.GetAllUsersLikedContributionPagination;
 using Server.Contracts.PublicContributions.GetLatestPublicContributions;
 using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
@@ -270,6 +272,8 @@ public class MapperProfiles : Profile
 
         // Read Later.
         CreateMap<ToggleReadLaterRequest, ToggleReadLaterCommand>();
+
+        CreateMap<GetAllReadLaterPaginationRequest, GetAllReadLaterPaginationQuery>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();
