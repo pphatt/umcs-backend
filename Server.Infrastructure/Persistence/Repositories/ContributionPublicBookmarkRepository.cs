@@ -30,6 +30,7 @@ public class ContributionPublicBookmarkRepository : RepositoryBase<ContributionP
         var query = from bm in _context.ContributionPublicBookmarks
                     where bm.UserId == userId
                     join c in _context.ContributionPublics on bm.ContributionId equals c.Id
+                    where c.DateDeleted == null
                     join u in _context.Users on bm.UserId equals u.Id
                     join f in _context.Faculties on c.FacultyId equals f.Id
                     join a in _context.AcademicYears on c.AcademicYearId equals a.Id
@@ -100,6 +101,7 @@ public class ContributionPublicBookmarkRepository : RepositoryBase<ContributionP
             GuestAllowed = x.c.AllowedGuest,
             AlreadyLike = _context.Likes.AnyAsync(l => l.ContributionId == x.c.Id && l.UserId == x.bm.UserId).GetAwaiter().GetResult(),
             AlreadySaveReadLater = _context.ContributionPublicReadLaters.AnyAsync(rl => rl.ContributionId == x.c.Id && rl.UserId == x.bm.UserId).GetAwaiter().GetResult(),
+            AlreadyBookmark = AlreadyBookmark(x.c.Id, x.bm.UserId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,

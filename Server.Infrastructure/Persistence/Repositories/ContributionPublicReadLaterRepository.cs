@@ -106,6 +106,7 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
             GuestAllowed = x.c.AllowedGuest,
             AlreadyLike = _context.Likes.AnyAsync(l => l.ContributionId == x.c.Id && l.UserId == x.rl.UserId).GetAwaiter().GetResult(),
             AlreadySaveReadLater = AlreadySave(x.c.Id, x.rl.UserId).GetAwaiter().GetResult(),
+            AlreadyBookmark = _context.ContributionPublicBookmarks.AnyAsync(bm => bm.ContributionId == x.c.Id && bm.UserId == x.rl.UserId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,
