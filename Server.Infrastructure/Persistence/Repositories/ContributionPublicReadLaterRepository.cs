@@ -7,7 +7,6 @@ using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
-using static Server.Domain.Common.Constants.Authorization.Permissions;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
@@ -15,17 +14,20 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
-    
-    public ContributionPublicReadLaterRepository(AppDbContext context, IMapper mapper) : base(context)
+    private readonly ILikeRepository _likeRepository;
+
+    public ContributionPublicReadLaterRepository(AppDbContext context, IMapper mapper, ILikeRepository likeRepository) : base(context)
     {
         _context = context;
         _mapper = mapper;
+        _likeRepository = likeRepository;
     }
 
-    public async Task<PaginationResult<PublicContributionInListDto>> GetAllReadLaterPublicContributionPagination(Guid userId,
+    public async Task<PaginationResult<PublicContributionInListDto>> GetAllReadLaterPublicContributionPagination(
         string? keyword,
         int pageIndex = 1,
         int pageSize = 10,
+        Guid userId = default!,
         string? facultyName = null,
         string? academicYearName = null,
         string? orderBy = null)
@@ -104,6 +106,8 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
             DateEdited = x.c.DateUpdated,
             Avatar = x.u.Avatar,
             GuestAllowed = x.c.AllowedGuest,
+            AlreadyLike = _likeRepository.AlreadyLike(x.c.Id, x.rl.UserId).GetAwaiter().GetResult(),
+            AlreadySaveReadLater = AlreadySave(x.c.Id, x.rl.UserId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,

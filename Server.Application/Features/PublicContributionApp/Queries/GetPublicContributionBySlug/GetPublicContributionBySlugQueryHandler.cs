@@ -55,6 +55,7 @@ public class GetPublicContributionBySlugQueryHandler : IRequestHandler<GetPublic
         publicContribution.Views += 1;
         publicContributionDto.View = publicContribution.Views;
         publicContributionDto.AlreadyLike = await _unitOfWork.LikeRepository.AlreadyLike(publicContributionDto.Id, user.Id);
+        publicContributionDto.AlreadySaveReadLater = await _unitOfWork.ContributionPublicReadLaterRepository.AlreadySave(publicContributionDto.Id, user.Id);
 
         await _unitOfWork.CompleteAsync();
 

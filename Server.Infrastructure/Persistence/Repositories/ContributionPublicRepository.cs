@@ -15,16 +15,24 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ILikeRepository _likeRepository;
+    private readonly IContributionPublicReadLaterRepository _contributionPublicReadLaterRepository;
 
-    public ContributionPublicRepository(AppDbContext context, IMapper mapper) : base(context)
+    public ContributionPublicRepository(AppDbContext context,
+        IMapper mapper,
+        ILikeRepository likeRepository,
+        IContributionPublicReadLaterRepository contributionPublicReadLaterRepository) : base(context)
     {
         _context = context;
         _mapper = mapper;
+        _likeRepository = likeRepository;
+        _contributionPublicReadLaterRepository = contributionPublicReadLaterRepository;
     }
 
     public async Task<PaginationResult<PublicContributionInListDto>> GetAllPublicContributionsPagination(string? keyword,
         int pageIndex = 1,
         int pageSize = 10,
+        Guid userId = default!,
         string? academicYearName = null,
         string? facultyName = null,
         bool? allowedGuest = null,
@@ -123,6 +131,8 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
             DateEdited = x.c.DateUpdated,
             Avatar = x.u.Avatar,
             GuestAllowed = x.c.AllowedGuest,
+            AlreadyLike = _likeRepository.AlreadyLike(x.c.Id, userId).GetAwaiter().GetResult(),
+            AlreadySaveReadLater = _contributionPublicReadLaterRepository.AlreadySave(x.c.Id, userId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,
