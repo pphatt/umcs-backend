@@ -54,17 +54,13 @@ public class GetTopMostLikedPublicContributionsQueryHandler : IRequestHandler<Ge
             keyword: request.Keyword,
             pageIndex: request.PageIndex,
             pageSize: request.PageSize,
+            userId: request.UserId,
             academicYearName: request.AcademicYearName,
             facultyName: request.FacultyName,
             allowedGuest: request.AllowedGuest,
             sortBy: request.SortBy,
             orderBy: request.OrderBy
         );
-
-        foreach (var item in result.Results)
-        {
-            item.AlreadyLike = await _unitOfWork.LikeRepository.AlreadyLike(item.Id, user.Id);
-        }
 
         return new ResponseWrapper<PaginationResult<PublicContributionInListDto>>
         {

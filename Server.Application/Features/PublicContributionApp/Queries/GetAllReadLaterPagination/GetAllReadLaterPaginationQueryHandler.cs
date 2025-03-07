@@ -40,11 +40,6 @@ public class GetAllReadLaterPaginationQueryHandler : IRequestHandler<GetAllReadL
             orderBy: request.OrderBy
         );
 
-        foreach (var item in result.Results)
-        {
-            item.AlreadyLike = await _unitOfWork.LikeRepository.AlreadyLike(item.Id, user.Id);
-        }
-
         return new ResponseWrapper<PaginationResult<PublicContributionInListDto>>
         {
             IsSuccessful = true,
