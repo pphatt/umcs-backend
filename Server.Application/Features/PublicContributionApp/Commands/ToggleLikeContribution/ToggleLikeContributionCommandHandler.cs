@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
+using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
@@ -34,6 +35,13 @@ public class ToggleLikeContributionCommandHandler : IRequestHandler<ToggleLikeCo
         if (user is null)
         {
             return Errors.User.CannotFound;
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        if (roles.Contains(Roles.Guest) && !contribution.AllowedGuest)
+        {
+            return Errors.Contribution.NotAllowYet;
         }
 
         var alreadyLike = await _unitOfWork.LikeRepository.AlreadyLike(contribution.Id, user.Id);
