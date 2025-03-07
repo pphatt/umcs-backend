@@ -99,7 +99,7 @@ public class LikeRepository : RepositoryBase<Like, Guid>, ILikeRepository
             Avatar = x.u.Avatar,
             GuestAllowed = x.c.AllowedGuest,
             AlreadyLike = AlreadyLike(x.c.Id, x.l.UserId).GetAwaiter().GetResult(),
-            AlreadySaveReadLater = _context.ContributionPublicReadLaters.AnyAsync(rl => rl.ContributionId == x.c.Id && rl.UserId == userId).GetAwaiter().GetResult(),
+            AlreadySaveReadLater = _context.ContributionPublicReadLaters.AnyAsync(rl => rl.ContributionId == x.c.Id && rl.UserId == x.l.UserId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,
