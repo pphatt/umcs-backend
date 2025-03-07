@@ -14,13 +14,11 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
-    private readonly ILikeRepository _likeRepository;
 
-    public ContributionPublicReadLaterRepository(AppDbContext context, IMapper mapper, ILikeRepository likeRepository) : base(context)
+    public ContributionPublicReadLaterRepository(AppDbContext context, IMapper mapper) : base(context)
     {
         _context = context;
         _mapper = mapper;
-        _likeRepository = likeRepository;
     }
 
     public async Task<PaginationResult<PublicContributionInListDto>> GetAllReadLaterPublicContributionPagination(
@@ -106,7 +104,7 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
             DateEdited = x.c.DateUpdated,
             Avatar = x.u.Avatar,
             GuestAllowed = x.c.AllowedGuest,
-            AlreadyLike = _likeRepository.AlreadyLike(x.c.Id, x.rl.UserId).GetAwaiter().GetResult(),
+            AlreadyLike = _context.Likes.AnyAsync(l => l.ContributionId == x.c.Id && l.UserId == x.rl.UserId).GetAwaiter().GetResult(),
             AlreadySaveReadLater = AlreadySave(x.c.Id, x.rl.UserId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,

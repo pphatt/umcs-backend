@@ -35,7 +35,7 @@ public class UnitOfWork : IUnitOfWork
 
     public IContributionPublicCommentRepository ContributionPublicCommentRepository => new ContributionPublicCommentRepository(_context);
 
-    public IContributionPublicReadLaterRepository ContributionPublicReadLaterRepository => new ContributionPublicReadLaterRepository(_context, _mapper, LikeRepository);
+    public IContributionPublicReadLaterRepository ContributionPublicReadLaterRepository => new ContributionPublicReadLaterRepository(_context, _mapper);
 
     public IFileRepository FileRepository => new FileRepository(_context);
 

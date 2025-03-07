@@ -9,12 +9,14 @@ using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterPagination;
+using Server.Application.Features.PublicContributionApp.Queries.GetAllUserLikePublicContributionsPagination;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.PublicContributions.GetAllReadLaterPagination;
+using Server.Contracts.PublicContributions.GetAllUserLikePublicContributionsPagination;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -128,6 +130,22 @@ public class UsersController : ClientApiController
          */
 
         var mapper = _mapper.Map<GetPersonalContributionDetailBySlugQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("like-contributions-pagination")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetAllUserLikePublicContributionsPagination([FromQuery] GetAllUserLikePublicContributionsPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllUserLikePublicContributionsPaginationQuery>(request);
 
         mapper.UserId = User.GetUserId();
 
