@@ -27,7 +27,7 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
         string? keyword,
         int pageIndex = 1,
         int pageSize = 10,
-        Guid userId = default!, // temporary
+        Guid userId = default!,
         string? facultyName = null,
         string? academicYearName = null,
         string? orderBy = null)
@@ -107,6 +107,7 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
             Avatar = x.u.Avatar,
             GuestAllowed = x.c.AllowedGuest,
             AlreadyLike = _likeRepository.AlreadyLike(x.c.Id, x.rl.UserId).GetAwaiter().GetResult(),
+            AlreadySaveReadLater = AlreadySave(x.c.Id, x.rl.UserId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,

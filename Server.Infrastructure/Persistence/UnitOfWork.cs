@@ -27,7 +27,7 @@ public class UnitOfWork : IUnitOfWork
 
     public IContributionRepository ContributionRepository => new ContributionRepository(_context, _mapper, _dateTimeProvider, FileRepository);
 
-    public IContributionPublicRepository ContributionPublicRepository => new ContributionPublicRepository(_context, _mapper, LikeRepository);
+    public IContributionPublicRepository ContributionPublicRepository => new ContributionPublicRepository(_context, _mapper, LikeRepository, ContributionPublicReadLaterRepository);
 
     public IContributionActivityLogRepository ContributionActivityLogRepository => new ContributionActivityLogRepository(_context, _mapper, FacultyRepository, AcademicYearRepository);
 
