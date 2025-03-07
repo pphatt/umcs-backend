@@ -46,6 +46,7 @@ using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuestWithManyContributions;
+using Server.Application.Features.PublicContributionApp.Commands.ToggleBookmarkContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleReadLater;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
@@ -123,6 +124,7 @@ using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
+using Server.Contracts.PublicContributions.ToggleBookmarkContribution;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.PublicContributions.ToggleReadLater;
 using Server.Contracts.Roles.BulkDeleteRoles;
@@ -278,6 +280,9 @@ public class MapperProfiles : Profile
         CreateMap<ToggleReadLaterRequest, ToggleReadLaterCommand>();
 
         CreateMap<GetAllReadLaterPaginationRequest, GetAllReadLaterPaginationQuery>();
+
+        // Bookmark.
+        CreateMap<ToggleBookmarkContributionRequest, ToggleBookmarkContributionCommand>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();
