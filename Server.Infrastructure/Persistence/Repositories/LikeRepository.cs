@@ -53,7 +53,7 @@ public class LikeRepository : RepositoryBase<Like, Guid>, ILikeRepository
         }
 
         var isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
-                         Enum.TryParse<ContributionOrderBy>(orderBy, true, out var enumOrderBy) &&
+                         Enum.TryParse<ContributionOrderBy>(orderBy.ToUpperInvariant(), true, out var enumOrderBy) &&
                          enumOrderBy == ContributionOrderBy.Ascending;
 
         if (isAscending)
