@@ -13,5 +13,5 @@ public class GetAllReadLaterPaginationRequest : PaginationRequest
     public string? AcademicYearName { get; set; }
 
     [FromQuery(Name = "orderBy")]
-    public ContributionOrderBy OrderBy { get; set; }
+    public OrderByEnum OrderBy { get; set; }
 }

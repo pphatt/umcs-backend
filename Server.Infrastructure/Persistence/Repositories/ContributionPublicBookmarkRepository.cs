@@ -54,8 +54,8 @@ public class ContributionPublicBookmarkRepository : RepositoryBase<ContributionP
         }
 
         var isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
-                          Enum.TryParse<ContributionOrderBy>(orderBy.ToUpperInvariant(), true, out var enumOrderBy) &&
-                          enumOrderBy == ContributionOrderBy.Ascending;
+                          Enum.TryParse<OrderByEnum>(orderBy.ToUpperInvariant(), true, out var enumOrderBy) &&
+                          enumOrderBy == OrderByEnum.Ascending;
 
         if (isAscending)
         {

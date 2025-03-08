@@ -10,5 +10,5 @@ public class GetTopContributorsRequest : PaginationRequest
     public string? FacultyName { get; set; }
 
     [FromQuery(Name = "orderBy")]
-    public ContributionOrderBy OrderBy { get; set; }
+    public OrderByEnum OrderBy { get; set; }
 }
