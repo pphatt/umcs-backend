@@ -90,5 +90,10 @@ public static partial class Errors
             code: "Contribution.CannotCommentOnNotPublicContribution",
             description: "Cannot comment on contribution that not public."
         );
+
+        public static Error CannotRateYourOwnContribution => Error.Forbidden(
+            code: "Contribution.CannotRateYourOwnContribution",
+            description: "Cannot rate your own contribution."
+        );
     };
 }

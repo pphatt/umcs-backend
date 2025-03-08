@@ -44,6 +44,11 @@ public class RatePublicContributionCommandHandler : IRequestHandler<RatePublicCo
             return Errors.Contribution.NotAllowYet;
         }
 
+        if (user.Id == contribution.UserId)
+        {
+            return Errors.Contribution.CannotRateYourOwnContribution;
+        }
+
         var alreadyRate = await _unitOfWork.ContributionPublicRatingRepository.AlreadyRate(contributionId: contribution.Id, userId: user.Id);
         var averageRating = 0.0;
 
