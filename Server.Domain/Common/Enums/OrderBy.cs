@@ -1,6 +1,6 @@
 ﻿namespace Server.Domain.Common.Enums;
 
-public enum ContributionOrderBy
+public enum OrderByEnum
 {
     Descending,
     Ascending

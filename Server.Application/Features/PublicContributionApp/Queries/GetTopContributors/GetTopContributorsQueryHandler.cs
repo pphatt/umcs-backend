@@ -37,12 +37,12 @@ public class GetTopContributorsQueryHandler : IRequestHandler<GetTopContributors
 
         if (role.Contains(Roles.Student))
         {
-            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
+            request.OrderBy = OrderByEnum.Descending.ToStringValue();
         }
 
         if (role.Contains(Roles.Guest))
         {
-            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
+            request.OrderBy = OrderByEnum.Descending.ToStringValue();
         }
 
         var result = await _unitOfWork.ContributionPublicRepository.GetTopContributors(

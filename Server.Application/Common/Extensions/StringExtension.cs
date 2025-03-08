@@ -72,13 +72,13 @@ public static class StringExtension
         }
     }
 
-    public static string ToStringValue(this ContributionOrderBy orderBy)
+    public static string ToStringValue(this OrderByEnum orderBy)
     {
         switch (orderBy)
         {
-            case ContributionOrderBy.Descending:
+            case OrderByEnum.Descending:
                 return "DESCENDING";
-            case ContributionOrderBy.Ascending:
+            case OrderByEnum.Ascending:
                 return "ASCENDING";
             default:
                 return "UNKNOWN";

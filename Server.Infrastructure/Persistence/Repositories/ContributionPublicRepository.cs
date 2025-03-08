@@ -69,8 +69,8 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         }
 
         bool isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
-                           Enum.TryParse<ContributionOrderBy>(orderBy.ToUpperInvariant(), true, out var enumOrder) &&
-                           enumOrder == ContributionOrderBy.Ascending;
+                           Enum.TryParse<OrderByEnum>(orderBy.ToUpperInvariant(), true, out var enumOrder) &&
+                           enumOrder == OrderByEnum.Ascending;
 
         if (string.IsNullOrWhiteSpace(sortBy))
         {
@@ -177,8 +177,8 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
         }
 
         bool isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
-                          Enum.TryParse<ContributionOrderBy>(orderBy.ToUpperInvariant(), true, out var enumOrder) &&
-                          enumOrder == ContributionOrderBy.Ascending;
+                          Enum.TryParse<OrderByEnum>(orderBy.ToUpperInvariant(), true, out var enumOrder) &&
+                          enumOrder == OrderByEnum.Ascending;
 
         if (isAscending)
         {

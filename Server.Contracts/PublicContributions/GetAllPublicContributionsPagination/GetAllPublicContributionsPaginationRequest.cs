@@ -20,5 +20,5 @@ public class GetAllPublicContributionsPaginationRequest : PaginationRequest
     public ContributionSortBy? SortBy { get; set; }
 
     [FromQuery(Name = "orderBy")]
-    public ContributionOrderBy OrderBy { get; set; }
+    public OrderByEnum OrderBy { get; set; }
 }

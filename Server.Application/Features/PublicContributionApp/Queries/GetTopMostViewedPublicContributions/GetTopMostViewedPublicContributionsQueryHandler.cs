@@ -40,14 +40,14 @@ public class GetTopMostViewedPublicContributionsQueryHandler : IRequestHandler<G
         {
             request.AllowedGuest = null;
             request.SortBy = ContributionSortBy.View.ToStringValue();
-            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
+            request.OrderBy = OrderByEnum.Descending.ToStringValue();
         }
 
         if (role.Contains(Roles.Guest))
         {
             request.AllowedGuest = true;
             request.SortBy = ContributionSortBy.View.ToStringValue();
-            request.OrderBy = ContributionOrderBy.Descending.ToStringValue();
+            request.OrderBy = OrderByEnum.Descending.ToStringValue();
         }
 
         var result = await _unitOfWork.ContributionPublicRepository.GetAllPublicContributionsPagination(
