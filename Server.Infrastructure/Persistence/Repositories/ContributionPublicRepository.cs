@@ -90,6 +90,8 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
                 (ContributionSortBy.Like, false) => query.OrderByDescending(x => x.c.LikeQuantity),
                 (ContributionSortBy.View, true) => query.OrderBy(x => x.c.Views),
                 (ContributionSortBy.View, false) => query.OrderByDescending(x => x.c.Views),
+                (ContributionSortBy.Rating, true) => query.OrderBy(x => x.c.AverageRating),
+                (ContributionSortBy.Rating, false) => query.OrderByDescending(x => x.c.AverageRating),
                 _ => query.OrderByDescending(x => x.c.PublicDate)
             };
         }
