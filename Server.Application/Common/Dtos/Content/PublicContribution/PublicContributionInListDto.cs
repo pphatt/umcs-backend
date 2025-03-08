@@ -23,6 +23,7 @@ public class PublicContributionInListDto
     public string? WhoApproved { get; set; }
     public bool AlreadyLike { get; set; } = false;
     public bool AlreadySaveReadLater { get; set; } = false;
+    public bool AlreadyBookmark { get; set; } = false;
     public bool? GuestAllowed { get; set; }
 
     public string? Status { get; set; } = ContributionStatus.Approve.ToStringValue();

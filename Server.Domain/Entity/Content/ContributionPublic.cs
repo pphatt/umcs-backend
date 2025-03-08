@@ -73,4 +73,5 @@ public class ContributionPublic : BaseEntity
     public int Views { get; set; } = 0;
 
     public ICollection<ContributionPublicReadLater> ReadLaters { get; set; }
+    public ICollection<ContributionPublicBookmark> Bookmarks { get; set; }
 }
