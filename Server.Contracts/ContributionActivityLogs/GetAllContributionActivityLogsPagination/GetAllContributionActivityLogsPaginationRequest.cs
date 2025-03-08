@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Server.Contracts.Common;
+using Server.Domain.Common.Enums;
 
 namespace Server.Contracts.ContributionActivityLogs.GetAllContributionActivityLogsPagination;
 
@@ -16,4 +16,7 @@ public class GetAllContributionActivityLogsPaginationRequest
 
     [FromQuery(Name = "academicYearName")]
     public string? AcademicYearName { get; set; }
+
+    [FromQuery(Name = "orderBy")]
+    public OrderByEnum? OrderBy { get; set; }
 }

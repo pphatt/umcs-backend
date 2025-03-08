@@ -4,6 +4,7 @@ using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
+using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
 
 namespace Server.Infrastructure.Persistence.Repositories;
@@ -27,7 +28,8 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
         int pageIndex = 1,
         int pageSize = 10,
         string? facultyName = null,
-        string? academicYearName = null)
+        string? academicYearName = null,
+        string? orderBy = null)
     {
         var query = _context.ContributionActivityLogs
             .Where(x => x.DateDeleted == null)
@@ -55,6 +57,19 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
                 .Contains(x.ContributionId));
         }
 
+        var isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
+                          Enum.TryParse<OrderByEnum>(orderBy, true, out var enumOrderBy) &&
+                          enumOrderBy == OrderByEnum.Ascending;
+
+        if (isAscending)
+        {
+            query = query.OrderBy(x => x.DateCreated);
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.DateCreated);
+        }
+
         var rowCount = await query.CountAsync();
 
         pageIndex = pageIndex - 1 < 0 ? 1 : pageIndex;
@@ -62,7 +77,6 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
         var skipPage = (pageIndex - 1) * pageSize;
 
         var activityList = await query
-            .OrderByDescending(x => x.DateCreated)
             .Skip(skipPage)
             .Take(pageSize)
             .ToListAsync();
