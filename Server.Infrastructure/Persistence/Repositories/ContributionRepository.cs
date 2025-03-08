@@ -392,7 +392,13 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         return reason is not null ? reason.Reason : string.Empty;
     }
 
-    public async Task<PaginationResult<UngradedContributionDto>> GetAllUngradedContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYearName = null, string? facultyName = null)
+    public async Task<PaginationResult<UngradedContributionDto>> GetAllUngradedContributionsPagination(
+        string? keyword,
+        int pageIndex = 1,
+        int pageSize = 10,
+        string? academicYearName = null,
+        string? facultyName = null,
+        string? orderBy = null)
     {
         var query = from c in _context.Contributions
                     where c.DateDeleted == null && c.Status == ContributionStatus.Pending && c.IsCoordinatorCommented == false
@@ -416,6 +422,19 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             query = query.Where(x => x.a.Name == academicYearName);
         }
 
+        var isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
+                          Enum.TryParse<OrderByEnum>(orderBy, true, out var enumOrderBy) &&
+                          enumOrderBy == OrderByEnum.Ascending;
+
+        if (isAscending)
+        {
+            query = query.OrderBy(x => x.c.DateCreated);
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.c.DateCreated);
+        }
+
         var rowCount = await query.CountAsync();
 
         pageIndex = pageIndex - 1 < 0 ? 1 : pageIndex;
@@ -423,7 +442,6 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         var skipPage = (pageIndex - 1) * pageSize;
 
         var contributions = await query
-            .OrderByDescending(x => x.c.DateCreated)
             .Skip(skipPage)
             .Take(pageSize)
             .ToListAsync();

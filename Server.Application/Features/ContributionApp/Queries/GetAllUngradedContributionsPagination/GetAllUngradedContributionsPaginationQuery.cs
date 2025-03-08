@@ -12,4 +12,6 @@ public class GetAllUngradedContributionsPaginationQuery : PaginationDto, IReques
     public string? AcademicYear { get; set; }
 
     public string? Faculty { get; set; }
+
+    public string? OrderBy { get; set; }
 }
