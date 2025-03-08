@@ -99,6 +99,7 @@ public class ContributionPublicBookmarkRepository : RepositoryBase<ContributionP
             DateEdited = x.c.DateUpdated,
             Avatar = x.u.Avatar,
             GuestAllowed = x.c.AllowedGuest,
+            AverageRating = x.c.AverageRating,
             AlreadyLike = _context.Likes.AnyAsync(l => l.ContributionId == x.c.Id && l.UserId == x.bm.UserId).GetAwaiter().GetResult(),
             AlreadySaveReadLater = _context.ContributionPublicReadLaters.AnyAsync(rl => rl.ContributionId == x.c.Id && rl.UserId == x.bm.UserId).GetAwaiter().GetResult(),
             AlreadyBookmark = AlreadyBookmark(x.c.Id, x.bm.UserId).GetAwaiter().GetResult(),

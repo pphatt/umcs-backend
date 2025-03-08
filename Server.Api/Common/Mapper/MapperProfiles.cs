@@ -44,6 +44,7 @@ using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
+using Server.Application.Features.PublicContributionApp.Commands.RatePublicContribution;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.RevokeAllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleBookmarkContribution;
@@ -124,6 +125,7 @@ using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetTopContributors;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
+using Server.Contracts.PublicContributions.RatePublicContribution;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
 using Server.Contracts.PublicContributions.ToggleBookmarkContribution;
@@ -287,6 +289,9 @@ public class MapperProfiles : Profile
         CreateMap<ToggleBookmarkContributionRequest, ToggleBookmarkContributionCommand>();
 
         CreateMap<GetAllBookmarkPaginationRequest, GetAllBookmarkPaginationQuery>();
+
+        // Rate.
+        CreateMap<RatePublicContributionRequest, RatePublicContributionCommand>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();

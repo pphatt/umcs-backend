@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.PublicContributionApp.Commands.RatePublicContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleBookmarkContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleReadLater;
@@ -26,12 +27,12 @@ using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetTopContributors;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
+using Server.Contracts.PublicContributions.RatePublicContribution;
 using Server.Contracts.PublicContributions.ToggleBookmarkContribution;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.PublicContributions.ToggleReadLater;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
-using System.Runtime.InteropServices;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -263,6 +264,22 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("rate/{ContributionId}")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> RatePublicContribution([FromRoute] RatePublicContributionRequest request)
+    {
+        var mapper = _mapper.Map<RatePublicContributionCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            rateResult => Ok(rateResult),
             errors => Problem(errors)
         );
     }
