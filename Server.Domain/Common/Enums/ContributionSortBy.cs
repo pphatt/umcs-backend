@@ -4,5 +4,6 @@ public enum ContributionSortBy
 {
     PublicDate,
     Like,
-    View
+    View,
+    Rating
 }
