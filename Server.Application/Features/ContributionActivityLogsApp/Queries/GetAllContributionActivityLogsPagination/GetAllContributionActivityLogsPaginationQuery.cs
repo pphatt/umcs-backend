@@ -15,4 +15,6 @@ public class GetAllContributionActivityLogsPaginationQuery : IRequest<ErrorOr<Re
     public string? FacultyName { get; set; }
 
     public string? AcademicYearName { get; set; }
+
+    public string? OrderBy { get; set; }
 }

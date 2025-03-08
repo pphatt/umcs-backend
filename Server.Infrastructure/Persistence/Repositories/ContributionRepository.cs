@@ -37,7 +37,16 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         return await _context.Contributions.AnyAsync(x => x.Slug == slug);
     }
 
-    public async Task<PaginationResult<ContributionInListDto>> GetAllContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, Guid? userId = null, string? academicYear = null, string? faculty = null, string? status = null, bool? allowedGuest = null)
+    public async Task<PaginationResult<ContributionInListDto>> GetAllContributionsPagination(
+        string? keyword,
+        int pageIndex = 1,
+        int pageSize = 10,
+        Guid? userId = null,
+        string? facultyName = null,
+        string? academicYearName = null,
+        bool? allowedGuest = null,
+        string? status = null,
+        string? orderBy = null)
     {
         var query = from c in _context.Contributions
                     where c.DateDeleted == null
@@ -52,14 +61,14 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             //query = query.Where(x => EF.Functions.Like(x.c.Title, $"%{keyword}%") || EF.Functions.Like(x.c.ShortDescription, $"%{keyword}%"));
         }
 
-        if (academicYear is not null)
+        if (!string.IsNullOrWhiteSpace(academicYearName))
         {
-            query = query.Where(x => x.a.Name == academicYear);
+            query = query.Where(x => x.a.Name == academicYearName);
         }
 
-        if (faculty is not null)
+        if (!string.IsNullOrWhiteSpace(facultyName))
         {
-            query = query.Where(x => x.f.Name == faculty);
+            query = query.Where(x => x.f.Name == facultyName);
         }
 
         if (userId is not null)
@@ -67,7 +76,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             query = query.Where(x => x.u.Id == userId);
         }
 
-        if (status is not null)
+        if (!string.IsNullOrWhiteSpace(status))
         {
             if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var requestStatus))
             {
@@ -75,7 +84,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             }
             else
             {
-                throw new Exception("Invalid status param.");
+                query = query.Where(x => x.c.Status == ContributionStatus.Pending);
             }
         }
 
@@ -84,13 +93,25 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             query = query.Where(x => x.c.AllowedGuest == (bool)allowedGuest);
         }
 
+        var isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
+                          Enum.TryParse<OrderByEnum>(orderBy, true, out var enumOrderBy) &&
+                          enumOrderBy == OrderByEnum.Ascending;
+
+        if (isAscending)
+        {
+            query = query.OrderBy(x => x.c.DateCreated);
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.c.DateCreated);
+        }
+
         var totalRow = await query.CountAsync();
 
         pageIndex = pageIndex < 0 ? 1 : pageIndex;
         var skipPage = (pageIndex - 1) * pageSize;
 
         var contributions = await query
-            .OrderByDescending(x => x.c.DateCreated)
             .Skip(skipPage)
             .Take(pageSize)
             .ToListAsync();
@@ -392,7 +413,13 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         return reason is not null ? reason.Reason : string.Empty;
     }
 
-    public async Task<PaginationResult<UngradedContributionDto>> GetAllUngradedContributionsPagination(string? keyword, int pageIndex = 1, int pageSize = 10, string? academicYearName = null, string? facultyName = null)
+    public async Task<PaginationResult<UngradedContributionDto>> GetAllUngradedContributionsPagination(
+        string? keyword,
+        int pageIndex = 1,
+        int pageSize = 10,
+        string? academicYearName = null,
+        string? facultyName = null,
+        string? orderBy = null)
     {
         var query = from c in _context.Contributions
                     where c.DateDeleted == null && c.Status == ContributionStatus.Pending && c.IsCoordinatorCommented == false
@@ -416,6 +443,19 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
             query = query.Where(x => x.a.Name == academicYearName);
         }
 
+        var isAscending = !string.IsNullOrWhiteSpace(orderBy) &&
+                          Enum.TryParse<OrderByEnum>(orderBy, true, out var enumOrderBy) &&
+                          enumOrderBy == OrderByEnum.Ascending;
+
+        if (isAscending)
+        {
+            query = query.OrderBy(x => x.c.DateCreated);
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.c.DateCreated);
+        }
+
         var rowCount = await query.CountAsync();
 
         pageIndex = pageIndex - 1 < 0 ? 1 : pageIndex;
@@ -423,7 +463,6 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
         var skipPage = (pageIndex - 1) * pageSize;
 
         var contributions = await query
-            .OrderByDescending(x => x.c.DateCreated)
             .Skip(skipPage)
             .Take(pageSize)
             .ToListAsync();

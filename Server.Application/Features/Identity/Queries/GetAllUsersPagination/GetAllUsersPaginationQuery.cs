@@ -12,4 +12,6 @@ public class GetAllUsersPaginationQuery : PaginationDto, IRequest<ErrorOr<Respon
     public string? FacultyName { get; set; }
 
     public string? RoleName { get; set; }
+
+    public string? OrderBy { get; set; }
 }

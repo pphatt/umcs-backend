@@ -10,7 +10,8 @@ public interface IContributionActivityLogRepository : IRepository<ContributionAc
         int pageIndex = 1,
         int pageSize = 10,
         string? facultyName = null,
-        string? academicYearName = null);
+        string? academicYearName = null,
+        string? orderBy = null);
 
     Task<List<ContributionActivityLogDto>> GetContributionActivityLogsByContribution(Contribution contribution);
 }

@@ -34,7 +34,7 @@ public class ContributionsController : CoordinatorApiController
     {
         var mapper = _mapper.Map<GetAllContributionsPaginationQuery>(request);
 
-        mapper.Faculty = User.GetUserFacultyName();
+        mapper.FacultyName = User.GetUserFacultyName();
 
         var result = await _mediatorSender.Send(mapper);
 

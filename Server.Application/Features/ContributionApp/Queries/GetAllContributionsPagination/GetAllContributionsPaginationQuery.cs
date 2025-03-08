@@ -11,11 +11,13 @@ public class GetAllContributionsPaginationQuery : PaginationDto, IRequest<ErrorO
 {
     public Guid? UserId { get; set; }
 
-    public string? AcademicYear { get; set; }
+    public string FacultyName { get; set; } = default!;
 
-    public string Faculty { get; set; } = default!;
+    public string? AcademicYearName { get; set; }
+
+    public bool? AllowedGuest { get; set; }
 
     public string? Status { get; set; }
 
-    public bool? AllowedGuest { get; set; }
+    public string? OrderBy { get; set; }
 }

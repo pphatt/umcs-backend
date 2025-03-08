@@ -25,7 +25,8 @@ public class GetAllContributionActivityLogsPaginationQueryHandler : IRequestHand
             pageIndex: request.PageIndex,
             pageSize: request.PageSize,
             facultyName: request.FacultyName,
-            academicYearName: request.AcademicYearName);
+            academicYearName: request.AcademicYearName,
+            orderBy: request.OrderBy);
 
         return new ResponseWrapper<PaginationResult<ContributionActivityLogDto>>
         {

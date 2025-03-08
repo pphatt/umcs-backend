@@ -7,6 +7,7 @@ using Server.Application.Common.Dtos.Identity.Users;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
 using Server.Application.Wrapper.Pagination;
+using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.Identity.Queries.GetAllUsersPagination;
@@ -26,11 +27,11 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
 
     public async Task<ErrorOr<ResponseWrapper<PaginationResult<UserDto>>>> Handle(GetAllUsersPaginationQuery request, CancellationToken cancellationToken)
     {
-        var allUserQuery = _userManager.Users;
+        var query = _userManager.Users;
 
         if (!string.IsNullOrWhiteSpace(request.Keyword))
         {
-            allUserQuery = allUserQuery.Where(
+            query = query.Where(
                 user => user.Email!.Contains(request.Keyword) ||
                         user.UserName!.Contains(request.Keyword) ||
                         user.FirstName!.Contains(request.Keyword) ||
@@ -47,7 +48,7 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
 
             if (allUsersInRole.Count() > 0)
             {
-                allUserQuery = allUserQuery.Where(x => allUsersInRole.Contains(x.Id));
+                query = query.Where(x => allUsersInRole.Contains(x.Id));
 
                 roleFlag = true;
             }
@@ -61,24 +62,35 @@ public class GetAllUsersPaginationQueryHandler : IRequestHandler<GetAllUsersPagi
 
             if (faculty is not null)
             {
-                allUserQuery = allUserQuery.Where(x => x.FacultyId == faculty.Id);
+                query = query.Where(x => x.FacultyId == faculty.Id);
 
                 facultyName = faculty.Name;
             }
         }
 
-        var count = await allUserQuery.CountAsync();
+        var isAscending = !string.IsNullOrWhiteSpace(request.OrderBy) &&
+                          Enum.TryParse<OrderByEnum>(request.OrderBy, true, out var enumOrderBy) &&
+                          enumOrderBy == OrderByEnum.Ascending;
+
+        if (isAscending)
+        {
+            query = query.OrderBy(x => x.DateCreated);
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.DateCreated);
+        }
+
+        var count = await query.CountAsync();
 
         var pageIndex = request.PageIndex < 0 ? 1 : request.PageIndex;
         var skipPages = (pageIndex - 1) * request.PageSize;
 
-        allUserQuery =
-            allUserQuery
-                .OrderBy(x => x.DateCreated)
-                .Skip(skipPages)
-                .Take(request.PageSize);
+        query = query
+            .Skip(skipPages)
+            .Take(request.PageSize);
 
-        var result = await _mapper.ProjectTo<UserDto>(allUserQuery).ToListAsync(cancellationToken);
+        var result = await _mapper.ProjectTo<UserDto>(query).ToListAsync(cancellationToken);
 
         foreach (var userDto in result)
         {

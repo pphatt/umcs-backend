@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
@@ -23,7 +24,8 @@ public class GetAllUngradedContributionsPaginationQueryHandler : IRequestHandler
             pageIndex: request.PageIndex,
             pageSize: request.PageSize,
             academicYearName: request.AcademicYear,
-            facultyName: request.Faculty
+            facultyName: request.Faculty,
+            orderBy: request.OrderBy
         );
 
         return new ResponseWrapper<PaginationResult<UngradedContributionDto>>

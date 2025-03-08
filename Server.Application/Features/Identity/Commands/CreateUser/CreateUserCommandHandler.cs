@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Application.Wrapper;
@@ -24,8 +25,16 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IMediaService _mediaService;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public CreateUserCommandHandler(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IUnitOfWork unitOfWork, IMapper mapper, IMediaService mediaService)
+    public CreateUserCommandHandler(
+        UserManager<AppUser> userManager,
+        RoleManager<AppRole> roleManager,
+        IEmailService emailService,
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        IMediaService mediaService,
+        IDateTimeProvider dateTimeProvider)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -33,6 +42,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _mediaService = mediaService;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -67,6 +77,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
 
         newUser.Id = Guid.NewGuid();
         newUser.FacultyId = faculty is not null ? faculty.Id : null;
+        newUser.DateCreated = _dateTimeProvider.UtcNow;
 
         string password = GenerateRandomPassword(12);
         newUser.PasswordHash = new PasswordHasher<AppUser>().HashPassword(newUser, password);
