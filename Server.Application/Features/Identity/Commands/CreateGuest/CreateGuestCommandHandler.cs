@@ -3,6 +3,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Wrapper;
 using Server.Contracts.Common.Email;
@@ -19,14 +20,22 @@ public class CreateGuestCommandHandler : IRequestHandler<CreateGuestCommand, Err
     private readonly IEmailService _emailService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public CreateGuestCommandHandler(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateGuestCommandHandler(
+        UserManager<AppUser> userManager,
+        RoleManager<AppRole> roleManager,
+        IEmailService emailService,
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        IDateTimeProvider dateTimeProvider)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _emailService = emailService;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(CreateGuestCommand request, CancellationToken cancellationToken)
@@ -61,6 +70,7 @@ public class CreateGuestCommandHandler : IRequestHandler<CreateGuestCommand, Err
 
         newUser.Id = Guid.NewGuid();
         newUser.FacultyId = faculty is not null ? faculty.Id : null;
+        newUser.DateCreated = _dateTimeProvider.UtcNow;
 
         string password = GenerateRandomPassword(12);
         newUser.PasswordHash = new PasswordHasher<AppUser>().HashPassword(newUser, password);
