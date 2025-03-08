@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.PublicContributionApp.Commands.ToggleBookmarkContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleLikeContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ToggleReadLater;
 using Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
@@ -25,10 +26,12 @@ using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetTopContributors;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
+using Server.Contracts.PublicContributions.ToggleBookmarkContribution;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.PublicContributions.ToggleReadLater;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
+using System.Runtime.InteropServices;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -170,6 +173,22 @@ public class PublicContributionsController : ClientApiController
     public async Task<IActionResult> ToggleReadLaterContribution([FromRoute] ToggleReadLaterRequest request)
     {
         var mapper = _mapper.Map<ToggleReadLaterCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            toggleResult => Ok(toggleResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("toggle-bookmark/{ContributionId}")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> ToggleBookmarkContribution([FromRoute] ToggleBookmarkContributionRequest request)
+    {
+        var mapper = _mapper.Map<ToggleBookmarkContributionCommand>(request);
 
         mapper.UserId = User.GetUserId();
 

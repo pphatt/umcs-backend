@@ -37,6 +37,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IContributionPublicReadLaterRepository ContributionPublicReadLaterRepository => new ContributionPublicReadLaterRepository(_context, _mapper);
 
+    public IContributionPublicBookmarkRepository ContributionPublicBookmarkRepository => new ContributionPublicBookmarkRepository(_context);
+
     public IFileRepository FileRepository => new FileRepository(_context);
 
     public ILikeRepository LikeRepository => new LikeRepository(_context);
