@@ -78,10 +78,12 @@ public class UsersController : ClientApiController
     [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetRecentContribution(GetAllContributionsPaginationRequest request)
     {
+        /* This is personal contribution pagination */
+
         var mapper = _mapper.Map<GetAllContributionsPaginationQuery>(request);
 
         mapper.UserId = User.GetUserId();
-        mapper.Faculty = User.GetUserFacultyName();
+        mapper.FacultyName = User.GetUserFacultyName();
 
         var result = await _mediatorSender.Send(mapper);
 

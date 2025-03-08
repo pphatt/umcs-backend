@@ -4,6 +4,7 @@ using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
 using Server.Application.Wrapper.Pagination;
+using Server.Domain.Common.Enums;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 
@@ -23,10 +24,11 @@ public class GetAllContributionsPaginationQueryHandler : IRequestHandler<GetAllC
             pageIndex: request.PageIndex,
             pageSize: request.PageSize,
             userId: request.UserId,
-            academicYear: request.AcademicYear,
-            faculty: request.Faculty,
+            facultyName: request.FacultyName,
+            academicYearName: request.AcademicYearName,
+            allowedGuest: request.AllowedGuest,
             status: request.Status,
-            allowedGuest: request.AllowedGuest
+            orderBy: request.OrderBy
         );
 
         return new ResponseWrapper<PaginationResult<ContributionInListDto>>
