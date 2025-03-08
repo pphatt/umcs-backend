@@ -133,6 +133,7 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
             GuestAllowed = x.c.AllowedGuest,
             AlreadyLike = _likeRepository.AlreadyLike(x.c.Id, userId).GetAwaiter().GetResult(),
             AlreadySaveReadLater = _contributionPublicReadLaterRepository.AlreadySave(x.c.Id, userId).GetAwaiter().GetResult(),
+            AlreadyBookmark = _context.ContributionPublicBookmarks.AnyAsync(bm => bm.ContributionId == x.c.Id && bm.UserId == userId).GetAwaiter().GetResult(),
             WhoApproved = _context.Users.FindAsync(x.c.CoordinatorApprovedId).GetAwaiter().GetResult()!.UserName,
             Like = x.c.LikeQuantity,
             View = x.c.Views,

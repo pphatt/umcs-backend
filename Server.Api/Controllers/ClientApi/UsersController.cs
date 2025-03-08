@@ -8,6 +8,7 @@ using Server.Application.Features.ContributionApp.Queries.GetPersonalContributio
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
+using Server.Application.Features.PublicContributionApp.Queries.GetAllBookmarkPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllUserLikePublicContributionsPagination;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
@@ -15,6 +16,7 @@ using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
+using Server.Contracts.PublicContributions.GetAllBookmarkPagination;
 using Server.Contracts.PublicContributions.GetAllReadLaterPagination;
 using Server.Contracts.PublicContributions.GetAllUserLikePublicContributionsPagination;
 using Server.Domain.Common.Constants.Authorization;
@@ -162,6 +164,22 @@ public class UsersController : ClientApiController
     public async Task<IActionResult> GetAllReadLaterPagination([FromQuery] GetAllReadLaterPaginationRequest request)
     {
         var mapper = _mapper.Map<GetAllReadLaterPaginationQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("bookmark-pagination")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetAllBookmarkPagination([FromQuery] GetAllBookmarkPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetAllBookmarkPaginationQuery>(request);
 
         mapper.UserId = User.GetUserId();
 
