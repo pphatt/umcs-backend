@@ -24,6 +24,7 @@ public class PublicContributionInListDto
     public bool AlreadyLike { get; set; } = false;
     public bool AlreadySaveReadLater { get; set; } = false;
     public bool AlreadyBookmark { get; set; } = false;
+    public double AverageRating { get; set; } = 0;
     public bool? GuestAllowed { get; set; }
 
     public string? Status { get; set; } = ContributionStatus.Approve.ToStringValue();

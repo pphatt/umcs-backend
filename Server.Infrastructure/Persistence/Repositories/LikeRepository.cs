@@ -98,6 +98,7 @@ public class LikeRepository : RepositoryBase<Like, Guid>, ILikeRepository
             DateEdited = x.c.DateUpdated,
             Avatar = x.u.Avatar,
             GuestAllowed = x.c.AllowedGuest,
+            AverageRating = x.c.AverageRating,
             AlreadyLike = AlreadyLike(x.c.Id, x.l.UserId).GetAwaiter().GetResult(),
             AlreadySaveReadLater = _context.ContributionPublicReadLaters.AnyAsync(rl => rl.ContributionId == x.c.Id && rl.UserId == x.l.UserId).GetAwaiter().GetResult(),
             AlreadyBookmark = _context.ContributionPublicBookmarks.AnyAsync(bm => bm.ContributionId == x.c.Id && bm.UserId == x.l.UserId).GetAwaiter().GetResult(),

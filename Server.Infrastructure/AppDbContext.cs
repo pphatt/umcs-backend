@@ -22,6 +22,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     internal DbSet<ContributionActivityLog> ContributionActivityLogs { get; set; }
     internal DbSet<ContributionPublic> ContributionPublics { get; set; }
     internal DbSet<ContributionComment> ContributionComments { get; set; }
+    internal DbSet<ContributionPublicRating> ContributionPublicRatings { get; set; }
     internal DbSet<ContributionPublicComment> ContributionPublicComments { get; set; }
     internal DbSet<ContributionPublicReadLater> ContributionPublicReadLaters { get; set; }
     internal DbSet<ContributionPublicBookmark> ContributionPublicBookmarks { get; set; }
@@ -99,6 +100,19 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         modelBuilder.Entity<ContributionPublicBookmark>()
             .HasOne(cprl => cprl.User)
             .WithMany(u => u.Bookmarks)
+            .HasForeignKey(cprl => cprl.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Rating relationship
+        modelBuilder.Entity<ContributionPublicRating>()
+            .HasOne(cprl => cprl.ContributionPublic)
+            .WithMany(c => c.Ratings)
+            .HasForeignKey(cprl => cprl.ContributionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ContributionPublicRating>()
+            .HasOne(cprl => cprl.User)
+            .WithMany(u => u.Ratings)
             .HasForeignKey(cprl => cprl.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
