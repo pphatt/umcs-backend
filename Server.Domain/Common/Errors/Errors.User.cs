@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Server.Domain.Common.Errors;
 
@@ -41,9 +42,14 @@ public static partial class Errors
             description: "Cannot delete this user."
         );
 
-        public static Error AvatarNotFound => Error.Forbidden(
+        public static Error AvatarNotFound => Error.NotFound(
             code: "User.AvatarNotFound",
             description: "User avatar not found"
+        );
+
+        public static Error AvatarAlreadyExist => Error.Validation(
+            code: "User.AvatarAlreadyExist",
+            description: "User avatar already exists."
         );
     }
 }

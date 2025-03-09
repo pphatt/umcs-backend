@@ -10,6 +10,7 @@ using Server.Application.Features.Identity.Commands.DeleteUserAvatar;
 using Server.Application.Features.Identity.Commands.EditUserProfile;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
+using Server.Application.Features.Identity.Commands.UploadUserAvatar;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetUserProfile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllBookmarkPagination;
@@ -22,6 +23,7 @@ using Server.Contracts.Identity.EditUserProfile;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.GetUserProfile;
 using Server.Contracts.Identity.ResetPassword;
+using Server.Contracts.Identity.UploadUserAvatar;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.PublicContributions.GetAllBookmarkPagination;
 using Server.Contracts.PublicContributions.GetAllReadLaterPagination;
@@ -114,6 +116,22 @@ public class UsersController : ClientApiController
 
         return result.Match(
             resultQuery => Ok(resultQuery),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("upload-avatar")]
+    [Authorize]
+    public async Task<IActionResult> UploadUserAvatar([FromForm] UploadUserAvatarRequest request)
+    {
+        var mapper = _mapper.Map<UploadUserAvatarCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            uploadResult => Ok(uploadResult),
             errors => Problem(errors)
         );
     }
