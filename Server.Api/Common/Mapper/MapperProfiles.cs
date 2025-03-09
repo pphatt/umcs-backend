@@ -62,6 +62,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetPublicContrib
 using Server.Application.Features.PublicContributionApp.Queries.GetTopContributors;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostViewedPublicContributions;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopRatedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
@@ -125,6 +126,7 @@ using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetTopContributors;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
+using Server.Contracts.PublicContributions.GetTopRatedPublicContributions;
 using Server.Contracts.PublicContributions.RatePublicContribution;
 using Server.Contracts.PublicContributions.RevokeAllowGuest;
 using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions;
@@ -292,6 +294,8 @@ public class MapperProfiles : Profile
 
         // Rate.
         CreateMap<RatePublicContributionRequest, RatePublicContributionCommand>();
+
+        CreateMap<GetTopRatedPublicContributionsRequest, GetTopRatedPublicContributionsQuery>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();

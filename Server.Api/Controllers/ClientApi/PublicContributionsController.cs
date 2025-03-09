@@ -16,6 +16,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetPublicContrib
 using Server.Application.Features.PublicContributionApp.Queries.GetTopContributors;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostViewedPublicContributions;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopRatedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.DownloadAllFiles;
@@ -27,6 +28,7 @@ using Server.Contracts.PublicContributions.GetPublicContributionBySlug;
 using Server.Contracts.PublicContributions.GetTopContributors;
 using Server.Contracts.PublicContributions.GetTopMostLikedPublicContributions;
 using Server.Contracts.PublicContributions.GetTopMostViewedPublicContributions;
+using Server.Contracts.PublicContributions.GetTopRatedPublicContributions;
 using Server.Contracts.PublicContributions.RatePublicContribution;
 using Server.Contracts.PublicContributions.ToggleBookmarkContribution;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
@@ -280,6 +282,23 @@ public class PublicContributionsController : ClientApiController
 
         return result.Match(
             rateResult => Ok(rateResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("top-rated-contributions")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetTopRatedPublicContributions([FromQuery] GetTopRatedPublicContributionsRequest request)
+    {
+        var mapper = _mapper.Map<GetTopRatedPublicContributionsQuery>(request);
+
+        mapper.UserId = User.GetUserId();
+        mapper.SortBy = ContributionSortBy.Rating.ToStringValue();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }
