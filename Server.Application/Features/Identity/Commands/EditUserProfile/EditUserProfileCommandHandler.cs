@@ -33,10 +33,25 @@ public class EditUserProfileCommandHandler : IRequestHandler<EditUserProfileComm
             return Errors.User.CannotFound;
         }
 
-        user.FirstName = request.FirstName;
-        user.LastName = request.LastName;
-        user.Dob = request.Dob;
-        user.PhoneNumber = request.PhoneNumber;
+        if (!string.IsNullOrWhiteSpace(request.FirstName))
+        {
+            user.FirstName = request.FirstName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.LastName))
+        {
+            user.LastName = request.LastName;
+        }
+
+        if (request.Dob is not null)
+        {
+            user.Dob = request.Dob;
+        }
+
+        if (!string.IsNullOrWhiteSpace(user.PhoneNumber))
+        {
+            user.PhoneNumber = request.PhoneNumber;
+        }
 
         // if user change avatar, remove and add to cloudinary.
         if (request.Avatar is not null)
