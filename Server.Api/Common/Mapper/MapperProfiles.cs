@@ -34,14 +34,18 @@ using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
+using Server.Application.Features.Identity.Commands.ChangeUserAvatar;
 using Server.Application.Features.Identity.Commands.CreateGuest;
 using Server.Application.Features.Identity.Commands.DeleteUser;
+using Server.Application.Features.Identity.Commands.EditUserProfile;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.UpdateUser;
+using Server.Application.Features.Identity.Commands.UploadUserAvatar;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
+using Server.Application.Features.Identity.Queries.GetUserProfile;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Commands.RatePublicContribution;
@@ -102,14 +106,18 @@ using Server.Contracts.Faculties.GetAllFacultiesPagination;
 using Server.Contracts.Faculties.GetFacultyById;
 using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.BulkDeleteUsers;
+using Server.Contracts.Identity.ChangeUserAvatar;
 using Server.Contracts.Identity.CreateGuest;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
+using Server.Contracts.Identity.EditUserProfile;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.GetAllUsersPagination;
 using Server.Contracts.Identity.GetUserById;
+using Server.Contracts.Identity.GetUserProfile;
 using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
+using Server.Contracts.Identity.UploadUserAvatar;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.AllowGuest;
@@ -175,6 +183,15 @@ public class MapperProfiles : Profile
 
         CreateMap<CreateGuestRequest, CreateGuestCommand>();
         CreateMap<CreateGuestCommand, AppUser>();
+
+        CreateMap<GetUserProfileRequest, GetUserProfileQuery>();
+        CreateMap<AppUser, UserProfileDto>();
+
+        CreateMap<UploadUserAvatarRequest, UploadUserAvatarCommand>();
+
+        CreateMap<EditUserProfileRequest, EditUserProfileCommand>();
+
+        CreateMap<ChangeUserAvatarRequest, ChangeUserAvatarCommand>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();

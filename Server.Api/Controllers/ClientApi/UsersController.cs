@@ -5,21 +5,31 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
+using Server.Application.Features.Identity.Commands.ChangeUserAvatar;
+using Server.Application.Features.Identity.Commands.DeleteUserAvatar;
+using Server.Application.Features.Identity.Commands.EditUserProfile;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
+using Server.Application.Features.Identity.Commands.UploadUserAvatar;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
+using Server.Application.Features.Identity.Queries.GetUserProfile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllBookmarkPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterPagination;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllUserLikePublicContributionsPagination;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
+using Server.Contracts.Identity.ChangeUserAvatar;
+using Server.Contracts.Identity.EditUserProfile;
 using Server.Contracts.Identity.ForgotPassword;
+using Server.Contracts.Identity.GetUserProfile;
 using Server.Contracts.Identity.ResetPassword;
+using Server.Contracts.Identity.UploadUserAvatar;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.PublicContributions.GetAllBookmarkPagination;
 using Server.Contracts.PublicContributions.GetAllReadLaterPagination;
 using Server.Contracts.PublicContributions.GetAllUserLikePublicContributionsPagination;
 using Server.Domain.Common.Constants.Authorization;
+using System.ComponentModel;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -70,6 +80,88 @@ public class UsersController : ClientApiController
 
         return result.Match(
             validateResult => Ok(validateResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("profile")]
+    [Authorize]
+    [Description("This api is for current user and other user can view other's profile, not just only the owner.")]
+    public async Task<IActionResult> GetUserProfile([FromQuery] GetUserProfileRequest request)
+    {
+        if (request.UserId is null)
+        {
+            request.UserId = User.GetUserId();
+        }
+
+        var mapper = _mapper.Map<GetUserProfileQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("edit-profile")]
+    [Authorize]
+    public async Task<IActionResult> EditUserProfile([FromForm] EditUserProfileRequest request)
+    {
+        var mapper = _mapper.Map<EditUserProfileCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            resultQuery => Ok(resultQuery),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("upload-avatar")]
+    [Authorize]
+    public async Task<IActionResult> UploadUserAvatar([FromForm] UploadUserAvatarRequest request)
+    {
+        var mapper = _mapper.Map<UploadUserAvatarCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            uploadResult => Ok(uploadResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("delete-avatar")]
+    [Authorize]
+    public async Task<IActionResult> DeleteUserAvatar()
+    {
+        var mapper = new DeleteUserAvatarCommand { UserId = User.GetUserId() };
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("change-avatar")]
+    [Authorize]
+    public async Task<IActionResult> ChangeUserAvatar([FromForm] ChangeUserAvatarRequest request)
+    {
+        var mapper = _mapper.Map<ChangeUserAvatarCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            changeResult => Ok(changeResult),
             errors => Problem(errors)
         );
     }
