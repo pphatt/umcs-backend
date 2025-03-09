@@ -40,5 +40,10 @@ public static partial class Errors
             code: "User.CannotDelete",
             description: "Cannot delete this user."
         );
+
+        public static Error AvatarNotFound => Error.Forbidden(
+            code: "User.AvatarNotFound",
+            description: "User avatar not found"
+        );
     }
 }

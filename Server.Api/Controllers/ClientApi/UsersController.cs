@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
+using Server.Application.Features.Identity.Commands.DeleteUserAvatar;
 using Server.Application.Features.Identity.Commands.EditUserProfile;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
@@ -111,6 +112,20 @@ public class UsersController : ClientApiController
 
         return result.Match(
             resultQuery => Ok(resultQuery),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("delete-avatar")]
+    [Authorize]
+    public async Task<IActionResult> DeleteUserAvatar()
+    {
+        var mapper = new DeleteUserAvatarCommand { UserId = User.GetUserId() };
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
             errors => Problem(errors)
         );
     }
