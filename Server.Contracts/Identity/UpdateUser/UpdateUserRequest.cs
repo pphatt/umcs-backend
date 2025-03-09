@@ -15,7 +15,7 @@ public class UpdateUserRequest
 
     public Guid RoleId { get; set; }
 
-    DateTime? Dob { get; set; }
+    public DateTime? Dob { get; set; }
 
-    bool IsActive { get; set; }
+    public bool IsActive { get; set; }
 };

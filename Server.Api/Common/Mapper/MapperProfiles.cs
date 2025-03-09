@@ -36,6 +36,7 @@ using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
 using Server.Application.Features.Identity.Commands.CreateGuest;
 using Server.Application.Features.Identity.Commands.DeleteUser;
+using Server.Application.Features.Identity.Commands.EditUserProfile;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.UpdateUser;
@@ -106,6 +107,7 @@ using Server.Contracts.Identity.BulkDeleteUsers;
 using Server.Contracts.Identity.CreateGuest;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
+using Server.Contracts.Identity.EditUserProfile;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.GetAllUsersPagination;
 using Server.Contracts.Identity.GetUserById;
@@ -180,6 +182,8 @@ public class MapperProfiles : Profile
 
         CreateMap<GetUserProfileRequest, GetUserProfileQuery>();
         CreateMap<AppUser, UserProfileDto>();
+
+        CreateMap<EditUserProfileRequest, EditUserProfileCommand>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();

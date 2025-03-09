@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
+using Server.Application.Features.Identity.Commands.EditUserProfile;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Commands.ResetPassword;
 using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
@@ -14,6 +15,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterP
 using Server.Application.Features.PublicContributionApp.Queries.GetAllUserLikePublicContributionsPagination;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
+using Server.Contracts.Identity.EditUserProfile;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.GetUserProfile;
 using Server.Contracts.Identity.ResetPassword;
@@ -78,7 +80,7 @@ public class UsersController : ClientApiController
     }
 
     [HttpGet("profile")]
-    [Authorize(Permissions.Users.View)]
+    [Authorize]
     [Description("This api is for current user and other user can view other's profile, not just only the owner.")]
     public async Task<IActionResult> GetUserProfile([FromQuery] GetUserProfileRequest request)
     {
@@ -93,6 +95,22 @@ public class UsersController : ClientApiController
 
         return result.Match(
             queryResult => Ok(queryResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("edit-profile")]
+    [Authorize]
+    public async Task<IActionResult> EditUserProfile([FromForm] EditUserProfileRequest request)
+    {
+        var mapper = _mapper.Map<EditUserProfileCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            resultQuery => Ok(resultQuery),
             errors => Problem(errors)
         );
     }
