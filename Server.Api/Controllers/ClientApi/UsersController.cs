@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
+using Server.Application.Features.Identity.Commands.ChangeUserAvatar;
 using Server.Application.Features.Identity.Commands.DeleteUserAvatar;
 using Server.Application.Features.Identity.Commands.EditUserProfile;
 using Server.Application.Features.Identity.Commands.ForgotPassword;
@@ -16,6 +17,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetAllReadLaterP
 using Server.Application.Features.PublicContributionApp.Queries.GetAllUserLikePublicContributionsPagination;
 using Server.Contracts.Contributions.CoordinatorGetAllContributionsPagination;
 using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
+using Server.Contracts.Identity.ChangeUserAvatar;
 using Server.Contracts.Identity.EditUserProfile;
 using Server.Contracts.Identity.ForgotPassword;
 using Server.Contracts.Identity.GetUserProfile;
@@ -126,6 +128,22 @@ public class UsersController : ClientApiController
 
         return result.Match(
             deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("change-avatar")]
+    [Authorize]
+    public async Task<IActionResult> ChangeUserAvatar([FromForm] ChangeUserAvatarRequest request)
+    {
+        var mapper = _mapper.Map<ChangeUserAvatarCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            changeResult => Ok(changeResult),
             errors => Problem(errors)
         );
     }

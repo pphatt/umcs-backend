@@ -34,6 +34,7 @@ using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 using Server.Application.Features.FacultyApp.Queries.GetAllFacultiesPagination;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyById;
 using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
+using Server.Application.Features.Identity.Commands.ChangeUserAvatar;
 using Server.Application.Features.Identity.Commands.CreateGuest;
 using Server.Application.Features.Identity.Commands.DeleteUser;
 using Server.Application.Features.Identity.Commands.EditUserProfile;
@@ -104,6 +105,7 @@ using Server.Contracts.Faculties.GetAllFacultiesPagination;
 using Server.Contracts.Faculties.GetFacultyById;
 using Server.Contracts.Faculties.UpdateFaculty;
 using Server.Contracts.Identity.BulkDeleteUsers;
+using Server.Contracts.Identity.ChangeUserAvatar;
 using Server.Contracts.Identity.CreateGuest;
 using Server.Contracts.Identity.CreateUser;
 using Server.Contracts.Identity.DeleteUser;
@@ -184,6 +186,8 @@ public class MapperProfiles : Profile
         CreateMap<AppUser, UserProfileDto>();
 
         CreateMap<EditUserProfileRequest, EditUserProfileCommand>();
+
+        CreateMap<ChangeUserAvatarRequest, ChangeUserAvatarCommand>();
 
         // Role.
         CreateMap<AppRole, RoleDto>().ReverseMap();
