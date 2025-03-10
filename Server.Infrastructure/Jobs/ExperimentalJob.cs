@@ -4,6 +4,7 @@ using Server.Application.Common.Interfaces.Services;
 
 namespace Server.Infrastructure.Jobs;
 
+[DisallowConcurrentExecution]
 public class ExperimentalJob : IJob
 {
     private readonly ILogger<ExperimentalJob> _logger;

@@ -17,6 +17,7 @@ using Server.Application.Common.Interfaces.Services.Media;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
 using Server.Infrastructure.Jobs;
+using Server.Infrastructure.Jobs.JobSetup;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
@@ -63,20 +64,14 @@ public static class DependencyInjection
         services.AddQuartz(options =>
         {
             options.UseMicrosoftDependencyInjectionJobFactory();
-
-            var jobKey = JobKey.Create(nameof(ExperimentalJob));
-
-            options
-                .AddJob<ExperimentalJob>(jobKey)
-                .AddTrigger(trigger => 
-                    trigger
-                        .ForJob(jobKey)
-                        //.WithCronSchedule("*/1 * * * *")
-                        .WithSimpleSchedule(schedule =>
-                            schedule.WithIntervalInSeconds(5).RepeatForever()));
         });
 
-        services.AddQuartzHostedService();
+        services.AddQuartzHostedService(options =>
+        {
+            options.WaitForJobsToComplete = true;
+        });
+
+        services.ConfigureOptions<JobSetup>();
 
         return services;
     }
