@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Quartz;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
@@ -15,6 +16,7 @@ using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
+using Server.Infrastructure.Jobs;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
@@ -57,6 +59,24 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddDbIdentity()
             .AddAuthentication(configuration);
+
+        services.AddQuartz(options =>
+        {
+            options.UseMicrosoftDependencyInjectionJobFactory();
+
+            var jobKey = JobKey.Create(nameof(ExperimentalJob));
+
+            options
+                .AddJob<ExperimentalJob>(jobKey)
+                .AddTrigger(trigger => 
+                    trigger
+                        .ForJob(jobKey)
+                        //.WithCronSchedule("*/1 * * * *")
+                        .WithSimpleSchedule(schedule =>
+                            schedule.WithIntervalInSeconds(5).RepeatForever()));
+        });
+
+        services.AddQuartzHostedService();
 
         return services;
     }
