@@ -30,5 +30,16 @@ public class JobSetup : IConfigureOptions<QuartzOptions>
                     .ForJob(mailManagerJobKey)
                     .WithSimpleSchedule(schedule => 
                         schedule.WithIntervalInMinutes(60).RepeatForever()));
+
+        // Reject Contribution Job (10 seconds).
+        var rejectContributionJobKey = JobKey.Create(nameof(RejectContributionJob));
+
+        options
+            .AddJob<RejectContributionJob>(jobBuilder => jobBuilder.WithIdentity(rejectContributionJobKey))
+            .AddTrigger(trigger =>
+                trigger
+                    .ForJob(rejectContributionJobKey)
+                    .WithSimpleSchedule(schedule =>
+                        schedule.WithIntervalInSeconds(10).RepeatForever()));
     }
 }

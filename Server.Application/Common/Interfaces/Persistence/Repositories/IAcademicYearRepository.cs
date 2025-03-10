@@ -15,4 +15,6 @@ public interface IAcademicYearRepository : IRepository<AcademicYear, Guid>
     Task<bool> CanSubmitAsync(DateTime date);
 
     Task<AcademicYear?> GetAcademicYearByDateAsync(DateTime date);
+
+    Task<AcademicYear?> GetAcademicYearByYearAsync(DateTime date);
 }

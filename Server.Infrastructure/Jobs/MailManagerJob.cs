@@ -12,6 +12,7 @@ using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure.Jobs;
 
+[DisallowConcurrentExecution]
 public class MailManagerJob : IJob
 {
     private readonly AppDbContext _context;
