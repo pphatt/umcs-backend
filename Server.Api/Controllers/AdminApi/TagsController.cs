@@ -3,12 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.ContributionTagApp.Commands.CreateTag;
+using Server.Application.Features.ContributionTagApp.Commands.UpdateTag;
 using Server.Contracts.ContributionTags.CreateTag;
+using Server.Contracts.ContributionTags.UpdateTag;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.AdminApi;
 
-[Tags("Tags")]
 public class TagsController : AdminApiController
 {
     private readonly IMapper _mapper;
@@ -28,6 +29,20 @@ public class TagsController : AdminApiController
 
         return result.Match(
             createResult => Ok(createResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPut("{Id}")]
+    [Authorize(Permissions.Tags.Edit)]
+    public async Task<IActionResult> UpdateTag([FromRoute] UpdateTagRequest request)
+    {
+        var mapper = _mapper.Map<UpdateTagCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            updateResult => Ok(updateResult),
             errors => Problem(errors)
         );
     }
