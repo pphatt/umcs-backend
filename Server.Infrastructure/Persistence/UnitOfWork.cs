@@ -45,7 +45,7 @@ public class UnitOfWork : IUnitOfWork
 
     public ILikeRepository LikeRepository => new LikeRepository(_context);
 
-    public ITagRepository TagRepository => new TagRepository(_context);
+    public ITagRepository TagRepository => new TagRepository(_context, _mapper);
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 

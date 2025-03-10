@@ -81,6 +81,7 @@ using Server.Application.Features.TagApp.Commands.BulkDeleteTags;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
+using Server.Application.Features.TagApp.Queries.GetAllTagsPagination;
 using Server.Application.Features.TagApp.Queries.GetTagById;
 using Server.Application.Features.Users.Commands.CreateUser;
 using Server.Contracts.AcademicYears.ActivateAcademicYear;
@@ -157,6 +158,7 @@ using Server.Contracts.Roles.UpdateRole;
 using Server.Contracts.Tags.BulkDeleteTags;
 using Server.Contracts.Tags.CreateTag;
 using Server.Contracts.Tags.DeleteTag;
+using Server.Contracts.Tags.GetAllTagsPagination;
 using Server.Contracts.Tags.GetTagById;
 using Server.Contracts.Tags.UpdateTag;
 using Server.Domain.Entity.Content;
@@ -327,6 +329,7 @@ public class MapperProfiles : Profile
 
         // Tag.
         CreateMap<Tag, TagDto>();
+        CreateMap<Tag, TagInListDto>();
 
         CreateMap<CreateTagRequest, CreateTagCommand>();
 
@@ -337,6 +340,8 @@ public class MapperProfiles : Profile
         CreateMap<BulkDeleteTagsRequest, BulkDeleteTagsCommand>();
 
         CreateMap<GetTagByIdRequest, GetTagByIdQuery>();
+
+        CreateMap<GetAllTagsPaginationRequest, GetAllTagsPaginationQuery>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();
