@@ -28,6 +28,7 @@ using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
 using Server.Application.Features.ContributionCommentApp.Commands.CreateComment;
 using Server.Application.Features.ContributionTagApp.Commands.CreateTag;
+using Server.Application.Features.ContributionTagApp.Commands.DeleteTag;
 using Server.Application.Features.ContributionTagApp.Commands.UpdateTag;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
@@ -102,6 +103,7 @@ using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
 using Server.Contracts.Contributions.RejectContribution;
 using Server.Contracts.Contributions.UpdateContribution;
 using Server.Contracts.ContributionTags.CreateTag;
+using Server.Contracts.ContributionTags.DeleteTag;
 using Server.Contracts.ContributionTags.UpdateTag;
 using Server.Contracts.Faculties.BulkDeleteFaculties;
 using Server.Contracts.Faculties.CreateFaculty;
@@ -322,6 +324,8 @@ public class MapperProfiles : Profile
         CreateMap<CreateTagRequest, CreateTagCommand>();
 
         CreateMap<UpdateTagRequest, UpdateTagCommand>();
+
+        CreateMap<DeleteTagRequest, DeleteTagCommand>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();

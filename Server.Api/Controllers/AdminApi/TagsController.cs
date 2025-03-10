@@ -3,8 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.ContributionTagApp.Commands.CreateTag;
+using Server.Application.Features.ContributionTagApp.Commands.DeleteTag;
 using Server.Application.Features.ContributionTagApp.Commands.UpdateTag;
 using Server.Contracts.ContributionTags.CreateTag;
+using Server.Contracts.ContributionTags.DeleteTag;
 using Server.Contracts.ContributionTags.UpdateTag;
 using Server.Domain.Common.Constants.Authorization;
 
@@ -43,6 +45,20 @@ public class TagsController : AdminApiController
 
         return result.Match(
             updateResult => Ok(updateResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("{Id}")]
+    [Authorize(Permissions.Tags.Delete)]
+    public async Task<IActionResult> DeleteTag([FromRoute] DeleteTagRequest request)
+    {
+        var mapper = _mapper.Map<DeleteTagCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
             errors => Problem(errors)
         );
     }
