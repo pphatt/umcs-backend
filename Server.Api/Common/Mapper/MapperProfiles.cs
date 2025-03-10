@@ -27,6 +27,7 @@ using Server.Application.Features.ContributionApp.Queries.GetAllUngradedContribu
 using Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 using Server.Application.Features.ContributionApp.Queries.GetPersonalContributionDetailBySlug;
 using Server.Application.Features.ContributionCommentApp.Commands.CreateComment;
+using Server.Application.Features.ContributionTagApp.Commands.CreateTag;
 using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -99,6 +100,7 @@ using Server.Contracts.Contributions.GetContributionBySlug;
 using Server.Contracts.Contributions.GetPersonalContributionDetailBySlug;
 using Server.Contracts.Contributions.RejectContribution;
 using Server.Contracts.Contributions.UpdateContribution;
+using Server.Contracts.ContributionTags.CreateTag;
 using Server.Contracts.Faculties.BulkDeleteFaculties;
 using Server.Contracts.Faculties.CreateFaculty;
 using Server.Contracts.Faculties.DeleteFaculty;
@@ -313,6 +315,9 @@ public class MapperProfiles : Profile
         CreateMap<RatePublicContributionRequest, RatePublicContributionCommand>();
 
         CreateMap<GetTopRatedPublicContributionsRequest, GetTopRatedPublicContributionsQuery>();
+
+        // Tag.
+        CreateMap<CreateTagRequest, CreateTagCommand>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();

@@ -19,4 +19,5 @@ public interface IUnitOfWork
     IContributionPublicRatingRepository ContributionPublicRatingRepository { get; }
     IFileRepository FileRepository { get; }
     ILikeRepository LikeRepository { get; }
+    ITagRepository TagRepository { get; }
 }
