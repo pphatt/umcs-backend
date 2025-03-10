@@ -6,9 +6,11 @@ using Server.Application.Features.TagApp.Commands.BulkDeleteTags;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
+using Server.Application.Features.TagApp.Queries.GetTagById;
 using Server.Contracts.Tags.BulkDeleteTags;
 using Server.Contracts.Tags.CreateTag;
 using Server.Contracts.Tags.DeleteTag;
+using Server.Contracts.Tags.GetTagById;
 using Server.Contracts.Tags.UpdateTag;
 using Server.Domain.Common.Constants.Authorization;
 
@@ -75,6 +77,20 @@ public class TagsController : AdminApiController
 
         return result.Match(
             deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("{Id}")]
+    [Authorize(Permissions.Tags.View)]
+    public async Task<IActionResult> GetTagById([FromRoute] GetTagByIdRequest request)
+    {
+        var mapper = _mapper.Map<GetTagByIdQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            queryResult => Ok(queryResult),
             errors => Problem(errors)
         );
     }
