@@ -91,6 +91,21 @@ public static class Permissions
         public const string Like = "Permissions.Contributions.Like";
     }
 
+    public static class Tags
+    {
+        [Description("Create New Tag")]
+        public const string Create = "Permissions.Tags.Create";
+
+        [Description("View Tags")]
+        public const string View = "Permissions.Tags.View";
+
+        [Description("Update Tag")]
+        public const string Edit = "Permissions.Tags.Edit";
+
+        [Description("Delete Tag")]
+        public const string Delete = "Permissions.Tags.Delete";
+    }
+
     public static class ManageContributions
     {
         [Description("View Manage Contributions")]
