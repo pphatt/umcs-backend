@@ -76,6 +76,7 @@ using Server.Application.Features.Role.Commands.UpdateRole;
 using Server.Application.Features.Role.Queries.GetAllRolePermissions;
 using Server.Application.Features.Role.Queries.GetAllRolesPagination;
 using Server.Application.Features.Role.Queries.GetRoleById;
+using Server.Application.Features.TagApp.Commands.BulkDeleteTags;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
@@ -151,6 +152,7 @@ using Server.Contracts.Roles.GetAllRolePermissions;
 using Server.Contracts.Roles.GetAllRolesPagination;
 using Server.Contracts.Roles.GetRoleById;
 using Server.Contracts.Roles.UpdateRole;
+using Server.Contracts.Tags.BulkDeleteTags;
 using Server.Contracts.Tags.CreateTag;
 using Server.Contracts.Tags.DeleteTag;
 using Server.Contracts.Tags.UpdateTag;
@@ -326,6 +328,8 @@ public class MapperProfiles : Profile
         CreateMap<UpdateTagRequest, UpdateTagCommand>();
 
         CreateMap<DeleteTagRequest, DeleteTagCommand>();
+
+        CreateMap<BulkDeleteTagsRequest, BulkDeleteTagsCommand>();
 
         // Contribution Activity.
         CreateMap<ContributionActivityLog, ContributionActivityLogDto>();

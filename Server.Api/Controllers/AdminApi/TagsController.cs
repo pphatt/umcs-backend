@@ -2,9 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Features.TagApp.Commands.BulkDeleteTags;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
+using Server.Contracts.Tags.BulkDeleteTags;
 using Server.Contracts.Tags.CreateTag;
 using Server.Contracts.Tags.DeleteTag;
 using Server.Contracts.Tags.UpdateTag;
@@ -54,6 +56,20 @@ public class TagsController : AdminApiController
     public async Task<IActionResult> DeleteTag([FromRoute] DeleteTagRequest request)
     {
         var mapper = _mapper.Map<DeleteTagCommand>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("bulk-delete")]
+    [Authorize(Permissions.Tags.Delete)]
+    public async Task<IActionResult> BulkDeleteTags(BulkDeleteTagsRequest request)
+    {
+        var mapper = _mapper.Map<BulkDeleteTagsCommand>(request);
 
         var result = await _mediatorSender.Send(mapper);
 
