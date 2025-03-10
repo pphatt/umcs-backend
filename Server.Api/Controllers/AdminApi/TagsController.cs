@@ -2,12 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.Features.ContributionTagApp.Commands.CreateTag;
-using Server.Application.Features.ContributionTagApp.Commands.DeleteTag;
-using Server.Application.Features.ContributionTagApp.Commands.UpdateTag;
-using Server.Contracts.ContributionTags.CreateTag;
-using Server.Contracts.ContributionTags.DeleteTag;
-using Server.Contracts.ContributionTags.UpdateTag;
+using Server.Application.Features.TagApp.Commands.CreateTag;
+using Server.Application.Features.TagApp.Commands.DeleteTag;
+using Server.Application.Features.TagApp.Commands.UpdateTag;
+using Server.Contracts.Tags.CreateTag;
+using Server.Contracts.Tags.DeleteTag;
+using Server.Contracts.Tags.UpdateTag;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.AdminApi;

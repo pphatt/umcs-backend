@@ -1,4 +1,4 @@
-﻿namespace Server.Contracts.ContributionTags.DeleteTag;
+﻿namespace Server.Contracts.Tags.DeleteTag;
 
 public class DeleteTagRequest
 {

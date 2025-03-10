@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Server.Application.Features.ContributionTagApp.Commands.DeleteTag;
+namespace Server.Application.Features.TagApp.Commands.DeleteTag;
 
 public class DeleteTagCommandValidator : AbstractValidator<DeleteTagCommand>
 {

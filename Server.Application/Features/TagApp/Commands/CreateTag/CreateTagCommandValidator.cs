@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Server.Application.Features.ContributionTagApp.Commands.CreateTag;
+namespace Server.Application.Features.TagApp.Commands.CreateTag;
 
 public class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
 {

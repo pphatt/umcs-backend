@@ -2,7 +2,7 @@
 using MediatR;
 using Server.Application.Wrapper;
 
-namespace Server.Application.Features.ContributionTagApp.Commands.CreateTag;
+namespace Server.Application.Features.TagApp.Commands.CreateTag;
 
 public class CreateTagCommand : IRequest<ErrorOr<ResponseWrapper>>
 {

@@ -5,7 +5,7 @@ using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
-namespace Server.Application.Features.ContributionTagApp.Commands.UpdateTag;
+namespace Server.Application.Features.TagApp.Commands.UpdateTag;
 
 public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, ErrorOr<ResponseWrapper>>
 {

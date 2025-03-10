@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Server.Contracts.ContributionTags.UpdateTag;
+namespace Server.Contracts.Tags.UpdateTag;
 
 public class UpdateTagRequest
 {

@@ -2,7 +2,7 @@
 using MediatR;
 using Server.Application.Wrapper;
 
-namespace Server.Application.Features.ContributionTagApp.Commands.UpdateTag;
+namespace Server.Application.Features.TagApp.Commands.UpdateTag;
 
 public class UpdateTagCommand : IRequest<ErrorOr<ResponseWrapper>>
 {

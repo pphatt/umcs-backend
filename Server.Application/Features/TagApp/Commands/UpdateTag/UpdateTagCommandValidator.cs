@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Server.Application.Features.ContributionTagApp.Commands.UpdateTag;
+namespace Server.Application.Features.TagApp.Commands.UpdateTag;
 
 public class UpdateTagCommandValidator : AbstractValidator<UpdateTagCommand>
 {

@@ -5,7 +5,7 @@ using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
-namespace Server.Application.Features.ContributionTagApp.Commands.DeleteTag;
+namespace Server.Application.Features.TagApp.Commands.DeleteTag;
 
 public class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, ErrorOr<ResponseWrapper>>
 {

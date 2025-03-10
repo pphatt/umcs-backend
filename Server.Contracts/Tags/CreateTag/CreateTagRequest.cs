@@ -1,4 +1,4 @@
-﻿namespace Server.Contracts.ContributionTags.CreateTag;
+﻿namespace Server.Contracts.Tags.CreateTag;
 
 public class CreateTagRequest
 {
