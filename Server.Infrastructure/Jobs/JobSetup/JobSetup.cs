@@ -20,7 +20,7 @@ public class JobSetup : IConfigureOptions<QuartzOptions>
                     .WithSimpleSchedule(schedule =>
                         schedule.WithIntervalInSeconds(5).RepeatForever()));
 
-        // Mail Manager Job (24 hours).
+        // Mail Manager Job (run at 00:00:00 every day).
         var mailManagerJobKey = JobKey.Create(nameof(MailManagerJob));
 
         options
@@ -28,8 +28,7 @@ public class JobSetup : IConfigureOptions<QuartzOptions>
             .AddTrigger(trigger => 
                 trigger
                     .ForJob(mailManagerJobKey)
-                    .WithSimpleSchedule(schedule => 
-                        schedule.WithIntervalInMinutes(60).RepeatForever()));
+                    .WithCronSchedule("0 0 0 * * ?"));
 
         // Reject Contribution Job (10 seconds).
         var rejectContributionJobKey = JobKey.Create(nameof(RejectContributionJob));
