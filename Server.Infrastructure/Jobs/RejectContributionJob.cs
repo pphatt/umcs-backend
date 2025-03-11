@@ -65,7 +65,7 @@ public class RejectContributionJob : IJob
 
         if (!pendingContributionsInCurrentYear.Any())
         {
-            _logger.LogInformation("No pending contributions found for academic year {YearId}", currentAcademicYear.Id);
+            _logger.LogInformation("No pending contributions found for academic year {YearId}", currentAcademicYear.Name);
             return;
         }
 

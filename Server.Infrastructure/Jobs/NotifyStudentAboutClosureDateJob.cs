@@ -11,22 +11,22 @@ using Server.Domain.Entity.Identity;
 namespace Server.Infrastructure.Jobs;
 
 [DisallowConcurrentExecution]
-public class NotifyStudentAboutClosureDate : IJob
+public class NotifyStudentAboutClosureDateJob : IJob
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
     private readonly IEmailService _emailService;
     private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly ILogger<NotifyStudentAboutClosureDate> _logger;
+    private readonly ILogger<NotifyStudentAboutClosureDateJob> _logger;
 
     private readonly int[] _reminderDays = new int[] { 7, 3, 1 };
 
-    public NotifyStudentAboutClosureDate(
+    public NotifyStudentAboutClosureDateJob(
         IUnitOfWork unitOfWork,
         UserManager<AppUser> userManager,
         IEmailService emailService,
         IDateTimeProvider dateTimeProvider,
-        ILogger<NotifyStudentAboutClosureDate> logger)
+        ILogger<NotifyStudentAboutClosureDateJob> logger)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
