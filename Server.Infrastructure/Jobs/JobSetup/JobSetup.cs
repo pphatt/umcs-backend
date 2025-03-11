@@ -30,6 +30,16 @@ public class JobSetup : IConfigureOptions<QuartzOptions>
                     .ForJob(mailManagerJobKey)
                     .WithCronSchedule("0 0 0 * * ?"));
 
+        // Notify Student About Closure Date (run at 00:00:00 every day).
+        var notifyStudentAboutCloseDateJobKey = JobKey.Create(nameof(NotifyStudentAboutClosureDate));
+
+        options
+            .AddJob<NotifyStudentAboutClosureDate>(jobBuilder => jobBuilder.WithIdentity(notifyStudentAboutCloseDateJobKey))
+            .AddTrigger(trigger =>
+                trigger
+                    .ForJob(notifyStudentAboutCloseDateJobKey)
+                    .WithCronSchedule("0 0 0 * * ?"));
+
         // Reject Contribution Job (10 seconds).
         var rejectContributionJobKey = JobKey.Create(nameof(RejectContributionJob));
 
