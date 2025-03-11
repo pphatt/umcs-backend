@@ -46,38 +46,48 @@ public class RejectContributionJob : IJob
         var currentAcademicYear = await _unitOfWork.AcademicYearRepository.GetAcademicYearByYearAsync(date);
         const string rejectReason = "Academic year is already closed, your contribution is rejected";
 
-        if (currentAcademicYear is not null && currentAcademicYear.FinalClosureDate < date)
+        if (currentAcademicYear is null || !currentAcademicYear.IsActive)
         {
-            if (currentAcademicYear.IsActive)
+            _logger.LogInformation($"----- Current academic year is already inactive ----- {_dateTimeProvider.UtcNow}");
+            return;
+        }
+
+        if (currentAcademicYear.IsActive && currentAcademicYear.FinalClosureDate < date)
+        {
+            currentAcademicYear.IsActive = false;
+        }
+
+        await _unitOfWork.CompleteAsync();
+
+        var pendingContributionsInCurrentYear = _unitOfWork.ContributionRepository
+            .FindByCondition(x => x.AcademicYearId == currentAcademicYear.Id && x.Status == ContributionStatus.Pending)
+            .ToList();
+
+        if (!pendingContributionsInCurrentYear.Any())
+        {
+            _logger.LogInformation("No pending contributions found for academic year {YearId}", currentAcademicYear.Id);
+            return;
+        }
+
+        var admins = await _userManager.GetUsersInRoleAsync(Roles.Admin);
+
+        foreach (var contribution in pendingContributionsInCurrentYear)
+        {
+            foreach (var admin in admins)
             {
-                currentAcademicYear.IsActive = false;
-            }
+                await _unitOfWork.ContributionRepository.RejectContribution(contribution, admin.Id, rejectReason);
 
-            await _unitOfWork.CompleteAsync();
+                var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
+                var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(student!.FacultyId!.Value);
 
-            var pendingContributionsInCurrentYear = _unitOfWork.ContributionRepository
-                .FindByCondition(x => x.AcademicYearId == currentAcademicYear.Id && x.Status == ContributionStatus.Pending)
-                .ToList();
+                var baseUrl = _configuration["ApplicationSettings:FrontendUrl"];
+                var blogUrl = $"{baseUrl}/contribution/${contribution.Id}";
 
-            var admins = await _userManager.GetUsersInRoleAsync(Roles.Admin);
-
-            foreach (var contribution in pendingContributionsInCurrentYear)
-            {
-                foreach (var admin in admins)
+                var mail = new MailRequest
                 {
-                    await _unitOfWork.ContributionRepository.RejectContribution(contribution, admin.Id, rejectReason);
-
-                    var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
-                    var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(student!.FacultyId!.Value);
-
-                    var baseUrl = _configuration["ApplicationSettings:FrontendUrl"];
-                    var blogUrl = $"{baseUrl}/contribution/${contribution.Id}";
-
-                    var mail = new MailRequest
-                    {
-                        ToEmail = student.Email,
-                        Subject = "REJECT CONTRIBUTION",
-                        Body = $@"
+                    ToEmail = student.Email,
+                    Subject = "REJECT CONTRIBUTION",
+                    Body = $@"
                                 <!DOCTYPE html>
                                 <html>
                                 <head>
@@ -139,14 +149,13 @@ public class RejectContributionJob : IJob
                                 </div>
                                 </body>
                                 </html>"
-                    };
+                };
 
-                    await _emailService.SendEmailAsync(mail);
-                }
+                await _emailService.SendEmailAsync(mail);
             }
-
-            await _unitOfWork.CompleteAsync();
         }
+
+        await _unitOfWork.CompleteAsync();
 
         _logger.LogInformation($"----- Finish checking current academic year expired and rejecting contribution in that academic year ----- {_dateTimeProvider.UtcNow}");
     }
