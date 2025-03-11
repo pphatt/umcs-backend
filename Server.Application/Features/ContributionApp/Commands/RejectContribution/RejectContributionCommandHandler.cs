@@ -93,14 +93,14 @@ public class RejectContributionCommandHandler : IRequestHandler<RejectContributi
         var emailRequest = new MailRequest
         {
             ToEmail = student.Email!,
-            Subject = "Approve Contribution",
+            Subject = "Reject Contribution",
             Body = $@"
                     <!DOCTYPE html>
                     <html>
                     <head>
                     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-                    <title>Contribution Approved</title>
+                    <title>Contribution Rejected</title>
                     <style>
                         @media only screen and (max-width: 600px) {{
                             .container {{
