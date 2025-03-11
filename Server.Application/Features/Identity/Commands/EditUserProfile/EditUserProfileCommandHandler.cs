@@ -67,7 +67,7 @@ public class EditUserProfileCommandHandler : IRequestHandler<EditUserProfileComm
             }
 
             var uploadResult = await _mediaService.UploadFilesToCloudinary(
-                new List<IFormFile> { request.Avatar }, 
+                new List<IFormFile> { request.Avatar },
                 new FileRequiredParamsDto { type = FileType.Avatar, userId = request.UserId }
             );
 

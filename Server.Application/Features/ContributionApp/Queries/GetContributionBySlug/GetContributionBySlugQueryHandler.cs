@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
-using Server.Application.Wrapper.Pagination;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
-using System.Runtime.InteropServices;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 

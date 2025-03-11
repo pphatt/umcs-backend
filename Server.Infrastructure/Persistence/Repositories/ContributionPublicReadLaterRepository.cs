@@ -42,8 +42,8 @@ public class ContributionPublicReadLaterRepository : RepositoryBase<Contribution
 
         if (!string.IsNullOrWhiteSpace(keyword))
         {
-            query = query.Where(x => x.c.Title.Contains(keyword) || 
-                                     x.c.Content.Contains(keyword) || 
+            query = query.Where(x => x.c.Title.Contains(keyword) ||
+                                     x.c.Content.Contains(keyword) ||
                                      x.c.ShortDescription.Contains(keyword));
         }
 

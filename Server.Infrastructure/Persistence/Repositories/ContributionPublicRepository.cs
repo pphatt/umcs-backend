@@ -161,7 +161,8 @@ public class ContributionPublicRepository : RepositoryBase<ContributionPublic, G
                     where c.DateDeleted == null
                     join f in _context.Faculties on c.FacultyId equals f.Id
                     group new { c, f } by new { c.UserId, f.Name, c.Avatar } into userGroup
-                    select new {
+                    select new
+                    {
                         Username = userGroup.FirstOrDefault().c.Username,
                         FacultyName = userGroup.FirstOrDefault().c.FacultyName,
                         Avatar = userGroup.FirstOrDefault().c.Avatar,

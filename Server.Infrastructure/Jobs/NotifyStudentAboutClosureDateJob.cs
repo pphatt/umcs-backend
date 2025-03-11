@@ -85,14 +85,14 @@ public class NotifyStudentAboutClosureDateJob : IJob
     private string CreateReminderMessage(int daysRemaining, DateTime closureDate)
     {
         string urgency;
-        
-        if (daysRemaining == 7) 
+
+        if (daysRemaining == 7)
             urgency = "Please note";
         else if (daysRemaining == 3)
             urgency = "Important reminder";
         else if (daysRemaining == 1)
             urgency = "Final reminder";
-        else 
+        else
             urgency = "Reminder";
 
         return $@"<html>

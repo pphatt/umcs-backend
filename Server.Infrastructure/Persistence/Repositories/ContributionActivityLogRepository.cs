@@ -107,7 +107,7 @@ public class ContributionActivityLogRepository : RepositoryBase<ContributionActi
         // I think the logs of a single contribution is not that many so no need to paginate this.
         // contribution activity logs.
         var cals = await _context.ContributionActivityLogs.Where(x => x.ContributionId == contribution.Id).ToListAsync();
-        
+
         var result = new List<ContributionActivityLogDto>();
 
         foreach (var log in cals)

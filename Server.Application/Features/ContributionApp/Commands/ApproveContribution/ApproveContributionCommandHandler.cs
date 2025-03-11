@@ -9,7 +9,6 @@ using Server.Application.Wrapper;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
-using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.ContributionApp.Commands.ApproveContribution;

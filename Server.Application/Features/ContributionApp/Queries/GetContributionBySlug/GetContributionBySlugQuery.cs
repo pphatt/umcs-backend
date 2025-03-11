@@ -2,8 +2,6 @@
 using MediatR;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Wrapper;
-using Server.Application.Wrapper.Pagination;
-using Server.Contracts.Common;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetContributionBySlug;
 

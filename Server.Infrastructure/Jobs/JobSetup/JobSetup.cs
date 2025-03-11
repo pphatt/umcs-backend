@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Quartz;
 
 namespace Server.Infrastructure.Jobs.JobSetup;
@@ -25,7 +24,7 @@ public class JobSetup : IConfigureOptions<QuartzOptions>
 
         options
             .AddJob<MailManagerJob>(jobBuilder => jobBuilder.WithIdentity(mailManagerJobKey))
-            .AddTrigger(trigger => 
+            .AddTrigger(trigger =>
                 trigger
                     .ForJob(mailManagerJobKey)
                     .WithCronSchedule("0 0 0 * * ?"));

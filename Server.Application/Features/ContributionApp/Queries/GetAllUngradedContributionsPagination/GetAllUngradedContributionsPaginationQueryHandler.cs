@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;

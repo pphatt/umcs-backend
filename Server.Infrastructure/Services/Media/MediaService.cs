@@ -283,7 +283,7 @@ public class MediaService : IMediaService
 
         var path = publicIds[0];
 
-        if (path.EndsWith(AllowFileExtension.PDF) || 
+        if (path.EndsWith(AllowFileExtension.PDF) ||
             path.EndsWith(AllowFileExtension.DOC) ||
             path.EndsWith(AllowFileExtension.DOCS) ||
             path.EndsWith(AllowFileExtension.DOCX))

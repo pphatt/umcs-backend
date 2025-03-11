@@ -16,7 +16,6 @@ using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
-using Server.Infrastructure.Jobs;
 using Server.Infrastructure.Jobs.JobSetup;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;

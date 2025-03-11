@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.Content.Comment;
-using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Domain.Entity.Content;
 

@@ -4,7 +4,6 @@ using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrapper;
 using Server.Application.Wrapper.Pagination;
-using Server.Domain.Common.Enums;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetAllContributionsPagination;
 

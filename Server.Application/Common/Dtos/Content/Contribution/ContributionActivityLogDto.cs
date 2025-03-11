@@ -1,6 +1,4 @@
-﻿using Server.Domain.Common.Enums;
-
-namespace Server.Application.Common.Dtos.Content.Contribution;
+﻿namespace Server.Application.Common.Dtos.Content.Contribution;
 
 public class ContributionActivityLogDto
 {

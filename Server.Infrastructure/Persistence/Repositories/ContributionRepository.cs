@@ -131,7 +131,7 @@ public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContr
                 .ToList(),
             Files = files
                 .Where(f => f.ContributionId == x.c.Id && f.Type == FileType.File)
-                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension})
+                .Select(f => new FileDto { Path = f.Path, Name = f.Name, Type = f.Type, PublicId = f.PublicId, Extension = f.Extension })
                 .ToList(),
             Status = x.c.Status.ToStringValue(),
             Username = x.u.UserName is not null ? x.u.UserName.ToString() : $"{x.u.FirstName} {x.u.LastName}",

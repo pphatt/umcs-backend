@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Server.Contracts.Identity.CreateGuest;
+﻿namespace Server.Contracts.Identity.CreateGuest;
 
 public class CreateGuestRequest
 {

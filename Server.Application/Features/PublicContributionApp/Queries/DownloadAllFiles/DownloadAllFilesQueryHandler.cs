@@ -3,7 +3,6 @@ using MediatR;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Application.Wrapper;
-using Server.Domain.Common.Constants.Content;
 using Server.Domain.Common.Errors;
 
 namespace Server.Application.Features.PublicContributionApp.Queries.DownloadAllFiles;
