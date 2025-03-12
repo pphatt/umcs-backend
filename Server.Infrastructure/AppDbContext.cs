@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Runtime.CompilerServices;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 using Server.Domain.Entity.Token;
 
+[assembly: InternalsVisibleTo("Server.Infrastructure.Tests")]
 namespace Server.Infrastructure;
 
 using File = Domain.Entity.Content.File;
