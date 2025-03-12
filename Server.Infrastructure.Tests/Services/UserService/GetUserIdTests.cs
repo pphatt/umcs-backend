@@ -12,7 +12,7 @@ using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Infrastructure.Tests.Services.UserService;
 
-using UserService = UserService;
+using UserService = Server.Infrastructure.Services.UserService;
 
 public class GetUserIdTests
 {
