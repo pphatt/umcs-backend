@@ -10,23 +10,23 @@ using Moq;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Common.Constants.Authorization;
 
-namespace Server.Infrastructure.Tests.UserService;
+namespace Server.Infrastructure.Tests.Services.UserService;
 
-using UserService = Services.UserService;
+using UserService = UserService;
 
-public class IsAuthenticatedTests
+public class GetUserIdTests
 {
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     private readonly IUserService _userService;
 
-    public IsAuthenticatedTests()
+    public GetUserIdTests()
     {
         _httpContextAccessor = new Mock<IHttpContextAccessor>();
         _userService = new UserService(_httpContextAccessor.Object);
     }
 
     [Fact]
-    public void IsAuthenticated_Authenticated_ShouldReturnTrue()
+    public void GetUserId_Authenticated_ShouldReturnUserId()
     {
         // arrange
         var claims = new[]
@@ -47,15 +47,18 @@ public class IsAuthenticatedTests
         });
 
         // act
-        var isAuthenticated = _userService.IsAuthenticated();
+        var userId = _userService.GetUserId();
 
         // assert
-        isAuthenticated.Should().BeTrue();
+        userId.Should().NotBeEmpty();
+        userId.Should().Be("613DA9F6-FC5A-4E7F-AB2E-7FC89258A596");
     }
 
     [Fact]
-    public void IsAuthenticated_NotAuthenticated_ShouldReturnFalse()
+    public void GetUserId_NotAuthenticated_ShouldReturnNull()
     {
+        // cannot pass this case because GetUserId is just only use when authenticated,
+        // and the authentication can only be validate in the Authenticate Pipeline by ASP.NET Core and here cannot be replicated that.
         // arrange
         var user = new ClaimsPrincipal(new ClaimsIdentity());
 
@@ -65,22 +68,9 @@ public class IsAuthenticatedTests
         });
 
         // act
-        var isAuthenticated = _userService.IsAuthenticated();
+        var userId = _userService.GetUserId();
 
         // assert
-        isAuthenticated.Should().BeFalse();
-    }
-
-    [Fact]
-    public void IsAuthenticated_NullHttpContext_ShouldReturnNull()
-    {
-        // arrange
-        _httpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext?)null);
-
-        // act
-        var isAuthenticated = _userService.IsAuthenticated();
-
-        // assert
-        isAuthenticated.Should().BeNull();
+        userId.Should().BeEmpty();
     }
 }
