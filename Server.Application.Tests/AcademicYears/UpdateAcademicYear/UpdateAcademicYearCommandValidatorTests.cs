@@ -4,7 +4,7 @@ using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 
 namespace Server.Application.Tests.AcademicYears.UpdateAcademicYear;
 
-[Trait("AcademicYear", "Update")]
+[Trait("Academic Year", "Update")]
 public class UpdateAcademicYearCommandValidatorTests : BaseTest
 {
     private readonly UpdateAcademicYearCommandValidator _validator;

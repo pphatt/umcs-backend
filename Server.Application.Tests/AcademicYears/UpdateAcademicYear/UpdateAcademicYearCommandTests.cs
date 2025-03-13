@@ -5,11 +5,11 @@ using Server.Contracts.AcademicYears.UpdateAcademicYear;
 
 namespace Server.Application.Tests.AcademicYears.UpdateAcademicYear;
 
-[Trait("AcademicYear", "Update")]
+[Trait("Academic Year", "Update")]
 public class UpdateAcademicYearCommandTests : BaseTest
 {
     [Fact]
-    public void UpdateAcademicYearCommand_UpdateAcademicYear_MapsCorrectly()
+    public void UpdateAcademicYearCommand_UpdateAcademicYear_MapCorrectly()
     {
         // Arrange
         var request = new UpdateAcademicYearRequest

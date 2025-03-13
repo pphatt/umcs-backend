@@ -10,7 +10,7 @@ namespace Server.Application.Tests.AcademicYears.CreateAcademicYear;
 
 using AcademicYear = Server.Domain.Entity.Content.AcademicYear;
 
-[Trait("AcademicYear", "Create")]
+[Trait("Academic Year", "Create")]
 public class CreateAcademicYearCommandHandlerTests : BaseTest
 {
     private readonly CreateAcademicYearCommandHandler _commandHandler;

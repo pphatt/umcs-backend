@@ -10,7 +10,7 @@ namespace Server.Application.Tests.AcademicYears.UpdateAcademicYear;
 
 using AcademicYear = Server.Domain.Entity.Content.AcademicYear;
 
-[Trait("AcademicYear", "Update")]
+[Trait("Academic Year", "Update")]
 public class UpdateAcademicYearCommandHandlerTests : BaseTest
 {
     private readonly Guid _academicYearId = Guid.NewGuid();
