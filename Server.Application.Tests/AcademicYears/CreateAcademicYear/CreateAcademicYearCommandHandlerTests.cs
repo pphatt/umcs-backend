@@ -3,14 +3,23 @@
 using Moq;
 
 using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
+using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
 namespace Server.Application.Tests.AcademicYears.CreateAcademicYear;
 
 using AcademicYear = Server.Domain.Entity.Content.AcademicYear;
 
+[Trait("AcademicYear", "Create")]
 public class CreateAcademicYearCommandHandlerTests : BaseTest
 {
+    private readonly CreateAcademicYearCommandHandler _commandHandler;
+
+    public CreateAcademicYearCommandHandlerTests()
+    {
+        _commandHandler = new CreateAcademicYearCommandHandler(_mockUnitOfWork.Object, _userService);
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData(null)]
@@ -27,9 +36,7 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
         };
 
         // Act
-        var commandHandler = new CreateAcademicYearCommandHandler(_mockUnitOfWork.Object, _userService);
-
-        var result = await commandHandler.Handle(command, CancellationToken.None);
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -52,9 +59,7 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
         };
 
         // Act
-        var commandHandler = new CreateAcademicYearCommandHandler(_mockUnitOfWork.Object, _userService);
-
-        var firstResultExecution = await commandHandler.Handle(command, CancellationToken.None);
+        var firstResultExecution = await _commandHandler.Handle(command, CancellationToken.None);
 
         // the reason why need to check this.
         // - https://grok.com/share/bGVnYWN5_2987e7d3-c13e-41d7-a9ea-bef18ea1f35a
@@ -72,7 +77,7 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
             .Setup(repo => repo.GetAcademicYearByNameAsync(name))
             .ReturnsAsync(existingAcademicYear);
 
-        var secondResultExecution = await commandHandler.Handle(command, CancellationToken.None);
+        var secondResultExecution = await _commandHandler.Handle(command, CancellationToken.None);
 
         // Assert
         firstResultExecution.IsError.Should().BeFalse();
@@ -96,12 +101,13 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
         };
 
         // Act
-        var commandHandler = new CreateAcademicYearCommandHandler(_mockUnitOfWork.Object, _userService);
-
-        var result = await commandHandler.Handle(command, CancellationToken.None);
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
+        result.Value.Should().BeOfType<ResponseWrapper>();
+        result.Value.IsSuccessful.Should().BeTrue();
+        result.Value.Message.Should().Be("Create new academic year successfully.");
 
         _mockAcademicYearRepository.Verify(
             repo => repo.Add(It.IsAny<AcademicYear>()),

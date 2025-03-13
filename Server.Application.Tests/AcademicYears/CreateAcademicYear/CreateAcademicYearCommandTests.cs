@@ -5,6 +5,7 @@ using Server.Contracts.AcademicYears.CreateAcademicYear;
 
 namespace Server.Application.Tests.AcademicYears.CreateAcademicYear;
 
+[Trait("AcademicYear", "Create")]
 public class CreateAcademicYearCommandTests : BaseTest
 {
     [Fact]
