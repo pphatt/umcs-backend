@@ -31,12 +31,6 @@ public class DeleteFacultyCommandHandlerTests : BaseTest
             .Setup(repo => repo.GetByIdAsync(_facultyId))
             .ReturnsAsync(faculty);
 
-        var users = new List<AppUser>();
-        var mockUsersQueryable = users.AsQueryable().BuildMock();
-        _mockUserManager
-            .Setup(m => m.Users)
-            .Returns(mockUsersQueryable);
-
         _commandHandler = new DeleteFacultyCommandHandler(_mockUnitOfWork.Object, _dateTimeProvider, _mockUserManager.Object);
     }
 

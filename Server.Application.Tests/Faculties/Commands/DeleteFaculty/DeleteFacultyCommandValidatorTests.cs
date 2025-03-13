@@ -1,8 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using FluentValidation.TestHelper;
 
-using FluentValidation.TestHelper;
-
-using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 
 namespace Server.Application.Tests.Faculties.Commands.DeleteFaculty;
