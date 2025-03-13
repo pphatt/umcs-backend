@@ -4,6 +4,7 @@ using System.Security.Claims;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 using Moq;
 
@@ -12,6 +13,7 @@ using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Common.Constants.Authorization;
+using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Services;
 
 namespace Server.Application.Tests;
@@ -19,6 +21,7 @@ namespace Server.Application.Tests;
 public class BaseTest
 {
     internal Mock<IUnitOfWork> _mockUnitOfWork;
+    internal Mock<UserManager<AppUser>> _mockUserManager;
 
     internal IMapper _mapper;
     internal IDateTimeProvider _dateTimeProvider;
@@ -46,6 +49,10 @@ public class BaseTest
     {
         // Initialize mock unit of work
         _mockUnitOfWork = new Mock<IUnitOfWork>();
+
+        // Initialize mock user manager
+        var store = new Mock<IUserStore<AppUser>>();
+        _mockUserManager = new Mock<UserManager<AppUser>>(store.Object, null, null, null, null, null, null, null, null);
 
         // Initialize mapper
         var configuration = new MapperConfiguration(cfg =>
