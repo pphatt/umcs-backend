@@ -59,7 +59,7 @@ public class GetAllAcademicYearsPaginationQueryHandlerTests : BaseTest
     }
 
     [Fact]
-    public async Task GetAllAcademicYearsPaginationQueryHandler_GetAllAcademicYearsPaginationQuery_WithNoKeyword_ShouldReturnAllActiveAcademicYearsPaginated()
+    public async Task GetAllAcademicYearsPaginationQueryHandler_GetAllAcademicYearsPaginationQuery_WithNoQueryParams_ShouldReturnAllActiveAcademicYearsPaginated()
     {
         // Arrange
         var query = new GetAllAcademicYearsPaginationQuery
