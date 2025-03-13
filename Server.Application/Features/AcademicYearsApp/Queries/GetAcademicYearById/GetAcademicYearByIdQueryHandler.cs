@@ -8,12 +8,12 @@ using Server.Domain.Common.Errors;
 
 namespace Server.Application.Features.AcademicYearsApp.Queries.GetAcademicYearById;
 
-public class GetAcademicYearByIdQueryCommand : IRequestHandler<GetAcademicYearByIdQuery, ErrorOr<ResponseWrapper<AcademicYearDto>>>
+public class GetAcademicYearByIdQueryHandler : IRequestHandler<GetAcademicYearByIdQuery, ErrorOr<ResponseWrapper<AcademicYearDto>>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetAcademicYearByIdQueryCommand(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetAcademicYearByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;

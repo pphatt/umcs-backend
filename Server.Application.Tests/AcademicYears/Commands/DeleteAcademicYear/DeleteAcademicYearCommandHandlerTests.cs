@@ -14,7 +14,6 @@ namespace Server.Application.Tests.AcademicYears.Commands.DeleteAcademicYear;
 public class DeleteAcademicYearCommandHandlerTests : BaseTest
 {
     private readonly Guid _academicYearId = Guid.NewGuid();
-    private readonly string _academicYearName = "2025-2026";
     private readonly DeleteAcademicYearCommandHandler _commandHandler;
 
     public DeleteAcademicYearCommandHandlerTests()
@@ -22,7 +21,7 @@ public class DeleteAcademicYearCommandHandlerTests : BaseTest
         var academicYear = new AcademicYear
         {
             Id = _academicYearId,
-            Name = _academicYearName,
+            Name = "2025-2026",
             IsActive = true,
             UserIdCreated = Guid.NewGuid(),
             StartClosureDate = _dateTimeProvider.UtcNow,
