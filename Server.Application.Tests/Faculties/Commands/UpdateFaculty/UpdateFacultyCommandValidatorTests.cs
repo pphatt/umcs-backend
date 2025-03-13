@@ -1,26 +1,26 @@
 ﻿using FluentValidation.TestHelper;
 
-using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
+using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 
-namespace Server.Application.Tests.Faculties.Commands.CreateFaculty;
+namespace Server.Application.Tests.Faculties.Commands.UpdateFaculty;
 
-[Trait("Faculty", "Create")]
-public class CreateFacultyCommandValidatorTests : BaseTest
+[Trait("Faculty", "Update")]
+public class UpdateFacultyCommandValidatorTests : BaseTest
 {
-    private readonly CreateFacultyCommandValidator _validator;
+    private readonly UpdateFacultyCommandValidator _validator;
 
-    public CreateFacultyCommandValidatorTests()
+    public UpdateFacultyCommandValidatorTests()
     {
-        _validator = new CreateFacultyCommandValidator();
+        _validator = new UpdateFacultyCommandValidator();
     }
 
     [Theory]
     [InlineData("IT")]
     [InlineData("Business")]
-    public async Task CreateFacultyCommandValidator_ShouldNot_ReturnError_WhenCommandIsValid(string name)
+    public async Task UpdateFacultyCommandValidator_ShouldNot_ReturnError_WhenCommandIsValid(string name)
     {
         // Arrange
-        var command = new CreateFacultyCommand
+        var command = new UpdateFacultyCommand
         {
             Name = name,
         };
@@ -41,10 +41,10 @@ public class CreateFacultyCommandValidatorTests : BaseTest
                 "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz" +
                 "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz" +
                 "abcdefghijklmnopqrstuvwxyz", "Name must not exceed 256 characters")]
-    public async Task CreateFacultyCommandValidator_Should_ReturnError_WhenInvalidName(string? name, string expectedErrorMessage)
+    public async Task UpdateFacultyCommandValidator_Should_ReturnError_WhenInvalidName(string? name, string expectedErrorMessage)
     {
         // Arrange
-        var command = new CreateFacultyCommand { Name = name };
+        var command = new UpdateFacultyCommand { Name = name };
 
         // Act
         var result = await _validator.TestValidateAsync(command);

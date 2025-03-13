@@ -73,7 +73,7 @@ public class CreateFacultyCommandHandlerTests : BaseTest
     [Theory]
     [InlineData("IT")]
     [InlineData("Business")]
-    public async Task CreateFacultyCommandHandler_CreatFaculty_ShouldCreateSuccessfully(string name)
+    public async Task CreateFacultyCommandHandler_CreateFaculty_ShouldCreateSuccessfully(string name)
     {
         // Arrange
         var command = new CreateFacultyCommand
