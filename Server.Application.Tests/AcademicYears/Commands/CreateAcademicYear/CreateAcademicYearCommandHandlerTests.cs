@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using ErrorOr;
+
+using FluentAssertions;
 
 using Moq;
 
@@ -40,6 +42,7 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
 
         // Assert
         result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(Errors.AcademicYears.InvalidName);
         result.FirstError.Code.Should().Be(Errors.AcademicYears.InvalidName.Code);
         result.FirstError.Description.Should().Be(Errors.AcademicYears.InvalidName.Description);
     }
@@ -83,6 +86,7 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
         firstResultExecution.IsError.Should().BeFalse();
 
         secondResultExecution.IsError.Should().BeTrue();
+        secondResultExecution.FirstError.Should().Be(Errors.AcademicYears.DuplicateName);
         secondResultExecution.FirstError.Code.Should().Be(Errors.AcademicYears.DuplicateName.Code);
         secondResultExecution.FirstError.Description.Should().Be(Errors.AcademicYears.DuplicateName.Description);
     }

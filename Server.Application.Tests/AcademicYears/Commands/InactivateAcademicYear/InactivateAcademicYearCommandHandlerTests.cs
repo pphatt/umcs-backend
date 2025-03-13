@@ -49,6 +49,7 @@ public class InactivateAcademicYearCommandHandlerTests : BaseTest
 
         // Assert
         result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(Errors.AcademicYears.CannotFound);
         result.FirstError.Code.Should().Be(Errors.AcademicYears.CannotFound.Code);
         result.FirstError.Description.Should().Be(Errors.AcademicYears.CannotFound.Description);
     }

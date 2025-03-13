@@ -61,6 +61,7 @@ public class UpdateAcademicYearCommandHandlerTests : BaseTest
 
         // Assert
         result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(Errors.AcademicYears.CannotFound);
         result.FirstError.Code.Should().Be(Errors.AcademicYears.CannotFound.Code);
         result.FirstError.Description.Should().Be(Errors.AcademicYears.CannotFound.Description);
     }
@@ -104,6 +105,7 @@ public class UpdateAcademicYearCommandHandlerTests : BaseTest
 
         // Assert
         result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(Errors.AcademicYears.DuplicateName);
         result.FirstError.Code.Should().Be(Errors.AcademicYears.DuplicateName.Code);
         result.FirstError.Description.Should().Be(Errors.AcademicYears.DuplicateName.Description);
     }

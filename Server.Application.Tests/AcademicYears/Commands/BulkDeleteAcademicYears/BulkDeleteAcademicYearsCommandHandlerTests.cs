@@ -72,6 +72,7 @@ public class BulkDeleteAcademicYearsCommandHandlerTests : BaseTest
 
         // Assert
         result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(Errors.AcademicYears.CannotFound);
         result.FirstError.Code.Should().Be(Errors.AcademicYears.CannotFound.Code);
         result.FirstError.Description.Should().Be(Errors.AcademicYears.CannotFound.Description);
     }
@@ -94,6 +95,7 @@ public class BulkDeleteAcademicYearsCommandHandlerTests : BaseTest
 
         // Assert
         result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(Errors.AcademicYears.HasContributions);
         result.FirstError.Code.Should().Be(Errors.AcademicYears.HasContributions.Code);
         result.FirstError.Description.Should().Be(Errors.AcademicYears.HasContributions.Description);
     }
