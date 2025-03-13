@@ -6,11 +6,11 @@ using Server.Application.Features.FacultyApp.Commands.BulkDeleteFaculty;
 namespace Server.Application.Tests.Faculties.Commands.BulkDeleteFaculties;
 
 [Trait("Faculty", "Bulk Delete")]
-public class BulkDeleteFacultiesValidatorTests
+public class BulkDeleteFacultiesCommandValidatorTests
 {
     private readonly BulkDeleteFacultiesCommandValidator _validator;
 
-    public BulkDeleteFacultiesValidatorTests()
+    public BulkDeleteFacultiesCommandValidatorTests()
     {
         _validator = new BulkDeleteFacultiesCommandValidator();
     }
