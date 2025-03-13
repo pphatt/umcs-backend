@@ -99,7 +99,7 @@ public class BulkDeleteAcademicYearsCommandHandlerTests : BaseTest
     }
 
     [Fact]
-    public async Task BulkDeleteAcademicYearsCommandHandler_BulkDeleteAcademicYears_ShouldUpdateSuccessfully()
+    public async Task BulkDeleteAcademicYearsCommandHandler_BulkDeleteAcademicYears_ShouldBulkDeleteSuccessfully()
     {
         // Arrange
         var command = new BulkDeleteAcademicYearsCommand

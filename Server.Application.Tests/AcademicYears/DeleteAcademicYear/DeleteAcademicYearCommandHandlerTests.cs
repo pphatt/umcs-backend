@@ -84,7 +84,7 @@ public class DeleteAcademicYearCommandHandlerTests : BaseTest
     }
 
     [Fact]
-    public async Task DeleteAcademicYearCommandHandler_DeleteAcademicYear_ShouldUpdateSuccessfully()
+    public async Task DeleteAcademicYearCommandHandler_DeleteAcademicYear_ShouldDeleteSuccessfully()
     {
         // Arrange
         var command = new DeleteAcademicYearCommand
