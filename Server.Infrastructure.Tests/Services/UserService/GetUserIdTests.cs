@@ -28,7 +28,7 @@ public class GetUserIdTests
     [Fact]
     public void GetUserId_Authenticated_ShouldReturnUserId()
     {
-        // arrange
+        // Arrange
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, "613DA9F6-FC5A-4E7F-AB2E-7FC89258A596"),
@@ -46,10 +46,10 @@ public class GetUserIdTests
             User = user
         });
 
-        // act
+        // Act
         var userId = _userService.GetUserId();
 
-        // assert
+        // Assert
         userId.Should().NotBeEmpty();
         userId.Should().Be("613DA9F6-FC5A-4E7F-AB2E-7FC89258A596");
     }
@@ -59,7 +59,7 @@ public class GetUserIdTests
     {
         // cannot pass this case because GetUserId is just only use when authenticated,
         // and the authentication can only be validate in the Authenticate Pipeline by ASP.NET Core and here cannot be replicated that.
-        // arrange
+        // Arrange
         var user = new ClaimsPrincipal(new ClaimsIdentity());
 
         _httpContextAccessor.Setup(x => x.HttpContext).Returns(new DefaultHttpContext()
@@ -67,10 +67,10 @@ public class GetUserIdTests
             User = user
         });
 
-        // act
+        // Act
         var userId = _userService.GetUserId();
 
-        // assert
+        // Assert
         userId.Should().BeEmpty();
     }
 }
