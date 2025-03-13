@@ -1,4 +1,6 @@
-﻿using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
+﻿using FluentValidation.TestHelper;
+
+using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
 
 namespace Server.Application.Tests.AcademicYears.Commands.InactivateAcademicYear;
 
@@ -10,5 +12,22 @@ public class InactivateAcademicYearCommandValidatorTests : BaseTest
     public InactivateAcademicYearCommandValidatorTests()
     {
         _validator = new InactivateAcademicYearCommandValidator();
+    }
+
+    [Fact]
+    public async Task InactivateAcademicYearCommandValidator_ShouldNot_ReturnError_WhenCommandIsValid()
+    {
+        // Arrange
+        var command = new InactivateAcademicYearCommand
+        {
+            Id = Guid.NewGuid()
+        };
+
+        // Act
+        var result = await _validator.TestValidateAsync(command);
+
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
     }
 }

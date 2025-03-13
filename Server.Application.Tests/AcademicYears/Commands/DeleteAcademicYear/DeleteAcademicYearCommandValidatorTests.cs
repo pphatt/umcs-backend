@@ -1,4 +1,6 @@
-﻿using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
+﻿using FluentValidation.TestHelper;
+
+using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
 
 namespace Server.Application.Tests.AcademicYears.Commands.DeleteAcademicYear;
 
@@ -10,5 +12,22 @@ public class DeleteAcademicYearCommandValidatorTests : BaseTest
     public DeleteAcademicYearCommandValidatorTests()
     {
         _validator = new DeleteAcademicYearCommandValidator();
+    }
+
+    [Fact]
+    public async Task DeleteAcademicYearCommandValidator_ShouldNot_ReturnError_WhenCommandIsValid()
+    {
+        // Arrange
+        var command = new DeleteAcademicYearCommand
+        {
+            Id = Guid.NewGuid()
+        };
+
+        // Act
+        var result = await _validator.TestValidateAsync(command);
+
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
     }
 }
