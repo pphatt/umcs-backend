@@ -1,30 +1,30 @@
 ﻿using FluentValidation.TestHelper;
 
-using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
+using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 
-namespace Server.Application.Tests.AcademicYears.UpdateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.CreateAcademicYear;
 
-[Trait("Academic Year", "Update")]
-public class UpdateAcademicYearCommandValidatorTests : BaseTest
+[Trait("Academic Year", "Create")]
+public class CreateAcademicYearCommandValidatorTests : BaseTest
 {
-    private readonly UpdateAcademicYearCommandValidator _validator;
+    private readonly CreateAcademicYearCommandValidator _validator;
 
-    public UpdateAcademicYearCommandValidatorTests()
+    public CreateAcademicYearCommandValidatorTests()
     {
-        _validator = new UpdateAcademicYearCommandValidator();
+        _validator = new CreateAcademicYearCommandValidator();
     }
 
     [Fact]
-    public async Task UpdateAcademicYearCommandValidator_ShouldNot_ReturnError_WhenCommandIsValid()
+    public async Task CreateAcademicYearCommandValidator_ShouldNot_ReturnError_WhenCommandIsValid()
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            Id = Guid.NewGuid(),
-            AcademicYearName = "2025-2026",
+            Name = "2025-2026",
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
-            FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2),
+            FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
         };
 
         // Act
@@ -37,12 +37,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    public async Task UpdateAcademicYearCommandValidator_UpdateAcademicYear_Should_ReturnError_WhenNameIsEmpty(string? name)
+    public async Task CreateAcademicYearCommandValidator_CreateAcademicYear_Should_ReturnError_WhenNameIsEmpty(string? name)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = name,
+            Name = name,
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -52,7 +53,7 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
         var result = await _validator.TestValidateAsync(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(c => c.AcademicYearName)
+        result.ShouldHaveValidationErrorFor(c => c.Name)
             .WithErrorMessage("Academic year name is required.");
     }
 
@@ -64,12 +65,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
     [InlineData("2024-202")]
     [InlineData("ABCD-EFGH")]
     [InlineData("2024-2025-2026")]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenNameFormatIsInvalid(string name)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenNameFormatIsInvalid(string name)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = name,
+            Name = name,
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -79,7 +81,7 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
         var result = await _validator.TestValidateAsync(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(c => c.AcademicYearName)
+        result.ShouldHaveValidationErrorFor(c => c.Name)
             .WithErrorMessage("Academic year name must be in the format 'XXXX-YYYY'.");
     }
 
@@ -87,12 +89,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
     [InlineData("2024-2024")]
     [InlineData("2024-2026")]
     [InlineData("2025-2024")]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenYearsAreNotConsecutive(string name)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenYearsAreNotConsecutive(string name)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = name,
+            Name = name,
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -102,18 +105,19 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
         var result = await _validator.TestValidateAsync(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(c => c.AcademicYearName)
+        result.ShouldHaveValidationErrorFor(c => c.Name)
             .WithErrorMessage("The academic year must consist of two consecutive years (e.g., 2024-2025).");
     }
 
     [Theory]
     [InlineData(default)]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenStartClosureDateIsEmpty(DateTime startClosureDate)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenStartClosureDateIsEmpty(DateTime startClosureDate)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = "2024-2025",
+            Name = "2024-2025",
+            IsActive = true,
             StartClosureDate = startClosureDate,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -129,12 +133,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
 
     [Theory]
     [InlineData("2025-2026", "2024-12-31")]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenStartClosureDateIsOutsideAcademicYear(string name, string startClosureDate)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenStartClosureDateIsOutsideAcademicYear(string name, string startClosureDate)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = name,
+            Name = name,
+            IsActive = true,
             StartClosureDate = DateTime.Parse(startClosureDate),
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -150,12 +155,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
 
     [Theory]
     [InlineData(default)]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenEndClosureDateIsEmpty(DateTime endClosureDate)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenEndClosureDateIsEmpty(DateTime endClosureDate)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = "2025-2026",
+            Name = "2025-2026",
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = endClosureDate,
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -170,12 +176,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
     }
 
     [Fact]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenEndClosureDateIsBeforeStartClosureDate()
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenEndClosureDateIsBeforeStartClosureDate()
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = "2024-2025",
+            Name = "2024-2025",
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddDays(-1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -191,12 +198,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
 
     [Theory]
     [InlineData("2025-2026", "2024-12-31")]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenEndClosureDateIsOutsideAcademicYear(string name, string endClosureDate)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenEndClosureDateIsOutsideAcademicYear(string name, string endClosureDate)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = name,
+            Name = name,
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = DateTime.Parse(endClosureDate),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2)
@@ -212,12 +220,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
 
     [Theory]
     [InlineData(default)]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsEmpty(DateTime finalClosureDate)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsEmpty(DateTime finalClosureDate)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = "2024-2025",
+            Name = "2024-2025",
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = finalClosureDate
@@ -233,12 +242,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
 
     [Theory]
     [InlineData("2025-2026", "2024-12-31")]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsOutsideAcademicYear(string name, string finalClosureDate)
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsOutsideAcademicYear(string name, string finalClosureDate)
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = name,
+            Name = name,
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = DateTime.Parse(finalClosureDate)
@@ -253,12 +263,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
     }
 
     [Fact]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsBeforeStartClosureDate()
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsBeforeStartClosureDate()
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = "2025-2026",
+            Name = "2025-2026",
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(-2)
@@ -273,12 +284,13 @@ public class UpdateAcademicYearCommandValidatorTests : BaseTest
     }
 
     [Fact]
-    public async Task UpdateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsBeforeEndClosureDate()
+    public async Task CreateAcademicYearCommandValidator_Should_ReturnError_WhenFinalClosureDateIsBeforeEndClosureDate()
     {
         // Arrange
-        var command = new UpdateAcademicYearCommand
+        var command = new CreateAcademicYearCommand
         {
-            AcademicYearName = "2024-2025",
+            Name = "2024-2025",
+            IsActive = true,
             StartClosureDate = _dateTimeProvider.UtcNow,
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddDays(1)

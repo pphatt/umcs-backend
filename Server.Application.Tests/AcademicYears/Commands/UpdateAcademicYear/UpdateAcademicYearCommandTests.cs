@@ -3,7 +3,7 @@
 using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Contracts.AcademicYears.UpdateAcademicYear;
 
-namespace Server.Application.Tests.AcademicYears.UpdateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.UpdateAcademicYear;
 
 [Trait("Academic Year", "Update")]
 public class UpdateAcademicYearCommandTests : BaseTest

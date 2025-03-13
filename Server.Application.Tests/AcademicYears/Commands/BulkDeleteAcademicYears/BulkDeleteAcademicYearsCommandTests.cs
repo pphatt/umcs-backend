@@ -3,7 +3,7 @@
 using Server.Application.Features.AcademicYearsApp.Commands.BulkDeleteAcademicYears;
 using Server.Contracts.AcademicYears.BulkDeleteAcademicYears;
 
-namespace Server.Application.Tests.AcademicYears.BulkDeleteAcademicYears;
+namespace Server.Application.Tests.AcademicYears.Commands.BulkDeleteAcademicYears;
 
 [Trait("Academic Year", "Bulk Delete")]
 public class BulkDeleteAcademicYearsCommandTests : BaseTest

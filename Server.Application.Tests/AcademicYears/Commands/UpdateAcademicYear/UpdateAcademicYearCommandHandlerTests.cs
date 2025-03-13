@@ -6,9 +6,9 @@ using Server.Application.Features.AcademicYearsApp.Commands.UpdateAcademicYear;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
-namespace Server.Application.Tests.AcademicYears.UpdateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.UpdateAcademicYear;
 
-using AcademicYear = Server.Domain.Entity.Content.AcademicYear;
+using AcademicYear = Domain.Entity.Content.AcademicYear;
 
 [Trait("Academic Year", "Update")]
 public class UpdateAcademicYearCommandHandlerTests : BaseTest

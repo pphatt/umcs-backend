@@ -1,6 +1,6 @@
 ﻿using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
 
-namespace Server.Application.Tests.AcademicYears.InactivateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.InactivateAcademicYear;
 
 [Trait("Academic Year", "Inactivate")]
 public class InactivateAcademicYearCommandValidatorTests : BaseTest

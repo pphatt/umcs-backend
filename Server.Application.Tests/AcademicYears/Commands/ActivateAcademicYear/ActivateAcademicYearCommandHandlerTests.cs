@@ -7,7 +7,7 @@ using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 
-namespace Server.Application.Tests.AcademicYears.ActivateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.ActivateAcademicYear;
 
 [Trait("Academic Year", "Activate")]
 public class ActivateAcademicYearCommandHandlerTests : BaseTest

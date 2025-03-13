@@ -1,6 +1,6 @@
 ﻿using Server.Application.Features.AcademicYearsApp.Commands.DeleteAcademicYear;
 
-namespace Server.Application.Tests.AcademicYears.DeleteAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.DeleteAcademicYear;
 
 [Trait("Academic Year", "Delete")]
 public class DeleteAcademicYearCommandValidatorTests : BaseTest

@@ -6,9 +6,9 @@ using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 
-namespace Server.Application.Tests.AcademicYears.CreateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.CreateAcademicYear;
 
-using AcademicYear = Server.Domain.Entity.Content.AcademicYear;
+using AcademicYear = Domain.Entity.Content.AcademicYear;
 
 [Trait("Academic Year", "Create")]
 public class CreateAcademicYearCommandHandlerTests : BaseTest

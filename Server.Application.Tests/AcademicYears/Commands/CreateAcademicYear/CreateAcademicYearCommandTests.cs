@@ -3,7 +3,7 @@
 using Server.Application.Features.AcademicYearsApp.Commands.CreateAcademicYear;
 using Server.Contracts.AcademicYears.CreateAcademicYear;
 
-namespace Server.Application.Tests.AcademicYears.CreateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.CreateAcademicYear;
 
 [Trait("Academic Year", "Create")]
 public class CreateAcademicYearCommandTests : BaseTest

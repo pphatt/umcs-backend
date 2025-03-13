@@ -7,7 +7,7 @@ using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 
-namespace Server.Application.Tests.AcademicYears.BulkDeleteAcademicYears;
+namespace Server.Application.Tests.AcademicYears.Commands.BulkDeleteAcademicYears;
 
 [Trait("Academic Year", "Bulk Delete")]
 public class BulkDeleteAcademicYearsCommandHandlerTests : BaseTest

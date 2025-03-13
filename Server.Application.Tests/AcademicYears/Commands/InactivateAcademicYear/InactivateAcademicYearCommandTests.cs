@@ -3,7 +3,7 @@
 using Server.Application.Features.AcademicYearsApp.Commands.InactivateAcademicYear;
 using Server.Contracts.AcademicYears.InactivateAcademicYear;
 
-namespace Server.Application.Tests.AcademicYears.InactivateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.InactivateAcademicYear;
 
 [Trait("Academic Year", "Inactivate")]
 public class InactivateAcademicYearCommandTests : BaseTest

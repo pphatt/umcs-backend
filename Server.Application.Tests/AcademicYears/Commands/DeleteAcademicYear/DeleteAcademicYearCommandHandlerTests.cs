@@ -7,7 +7,7 @@ using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 
-namespace Server.Application.Tests.AcademicYears.DeleteAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.DeleteAcademicYear;
 
 
 [Trait("Academic Year", "Delete")]

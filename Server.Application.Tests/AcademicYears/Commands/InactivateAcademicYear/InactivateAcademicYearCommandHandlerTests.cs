@@ -7,7 +7,7 @@ using Server.Application.Wrapper;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 
-namespace Server.Application.Tests.AcademicYears.InactivateAcademicYear;
+namespace Server.Application.Tests.AcademicYears.Commands.InactivateAcademicYear;
 
 [Trait("Academic Year", "Inactivate")]
 public class InactivateAcademicYearCommandHandlerTests : BaseTest
