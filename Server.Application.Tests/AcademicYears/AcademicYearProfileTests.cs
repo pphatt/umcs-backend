@@ -8,7 +8,7 @@ namespace Server.Application.Tests.AcademicYears;
 public class AcademicYearProfileTests : BaseTest
 {
     [Fact]
-    public async Task CreateMap_FromAcademicYearToAcademicYearDto_MapsCorrectly()
+    public async Task CreateMap_FromAcademicYearToAcademicYearDto_MapCorrectly()
     {
         // Arrange
         var academicYear = new AcademicYear

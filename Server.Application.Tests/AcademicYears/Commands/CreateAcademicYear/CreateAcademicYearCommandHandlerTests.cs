@@ -1,6 +1,4 @@
-﻿using ErrorOr;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 
 using Moq;
 
@@ -49,7 +47,7 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
 
     [Theory]
     [InlineData("2025-2026")]
-    public async Task CreateAcademicYearCommandHandler_CreateAcademicYear_Should_ReturnError_WhenDuplicateAcademicYearName(string name)
+    public async Task CreateAcademicYearCommandHandler_CreateAcademicYear_Should_ReturnError_WhenAcademicYearNameIsDuplicated(string name)
     {
         // Arrange
         var command = new CreateAcademicYearCommand
@@ -60,9 +58,6 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
             EndClosureDate = _dateTimeProvider.UtcNow.AddMonths(1),
             FinalClosureDate = _dateTimeProvider.UtcNow.AddMonths(2),
         };
-
-        // Act
-        var firstResultExecution = await _commandHandler.Handle(command, CancellationToken.None);
 
         // the reason why need to check this.
         // - https://grok.com/share/bGVnYWN5_2987e7d3-c13e-41d7-a9ea-bef18ea1f35a
@@ -80,15 +75,14 @@ public class CreateAcademicYearCommandHandlerTests : BaseTest
             .Setup(repo => repo.GetAcademicYearByNameAsync(name))
             .ReturnsAsync(existingAcademicYear);
 
-        var secondResultExecution = await _commandHandler.Handle(command, CancellationToken.None);
+        // Act
+        var result = await _commandHandler.Handle(command, CancellationToken.None);
 
         // Assert
-        firstResultExecution.IsError.Should().BeFalse();
-
-        secondResultExecution.IsError.Should().BeTrue();
-        secondResultExecution.FirstError.Should().Be(Errors.AcademicYears.DuplicateName);
-        secondResultExecution.FirstError.Code.Should().Be(Errors.AcademicYears.DuplicateName.Code);
-        secondResultExecution.FirstError.Description.Should().Be(Errors.AcademicYears.DuplicateName.Description);
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(Errors.AcademicYears.DuplicateName);
+        result.FirstError.Code.Should().Be(Errors.AcademicYears.DuplicateName.Code);
+        result.FirstError.Description.Should().Be(Errors.AcademicYears.DuplicateName.Description);
     }
 
     [Fact]
