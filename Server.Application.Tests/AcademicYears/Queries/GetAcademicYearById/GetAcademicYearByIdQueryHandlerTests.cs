@@ -10,7 +10,7 @@ using Server.Domain.Entity.Content;
 
 namespace Server.Application.Tests.AcademicYears.Queries.GetAcademicYearById;
 
-[Trait("Academic Year", "GetById")]
+[Trait("Academic Year", "Get Academic Year By Id")]
 public class GetAcademicYearByIdQueryHandlerTests : BaseTest
 {
     private readonly GetAcademicYearByIdQueryHandler _queryHandler;
@@ -56,7 +56,7 @@ public class GetAcademicYearByIdQueryHandlerTests : BaseTest
     }
 
     [Fact]
-    public async Task Handle_WhenAcademicYearExists_ShouldReturnSuccessWithMappedDto()
+    public async Task GetAcademicYearByIdQueryHandler_GetAcademicYearById_ShouldQuerySuccessfully()
     {
         // Arrange
         var query = new GetAcademicYearByIdQuery

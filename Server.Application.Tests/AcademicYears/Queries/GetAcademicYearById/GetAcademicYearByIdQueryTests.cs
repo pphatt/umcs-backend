@@ -5,7 +5,7 @@ using Server.Contracts.AcademicYears.GetAcademicYearById;
 
 namespace Server.Application.Tests.AcademicYears.Queries.GetAcademicYearById;
 
-[Trait("Academic Year", "GetById")]
+[Trait("Academic Year", "Get Academic Year By Id")]
 public class GetAcademicYearByIdQueryTests : BaseTest
 {
     [Fact]
