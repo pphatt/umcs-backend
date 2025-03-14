@@ -3,6 +3,7 @@ using System.Security.Claims;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +40,9 @@ public class BaseTest
 
     internal readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     internal IUserService _userService;
+
+    internal Mock<IDataProtectionProvider> _mockDataProtectionProvider;
+    internal Mock<IDataProtector> _mockDataProtector;
 
     // Repositories
     internal Mock<ITokenRepository> _mockTokenRepository;
@@ -89,6 +93,13 @@ public class BaseTest
 
         // Initialize mock media service
         _mockMediaService = new Mock<IMediaService>();
+
+        // Initialize mock data protection provider
+        _mockDataProtectionProvider = new Mock<IDataProtectionProvider>();
+        _mockDataProtector = new Mock<IDataProtector>();
+        _mockDataProtectionProvider
+            .Setup(p => p.CreateProtector("DataProtectorTokenProvider"))
+            .Returns(_mockDataProtector.Object);
 
         // Initialize mapper
         var configuration = new MapperConfiguration(cfg =>
