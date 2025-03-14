@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 
+using Microsoft.EntityFrameworkCore;
+
 using MockQueryable;
 
 using Moq;

@@ -12,6 +12,8 @@ using Server.Api.Common.Mapper;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services;
+using Server.Application.Common.Interfaces.Services.Email;
+using Server.Application.Common.Interfaces.Services.Media;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Services;
@@ -21,9 +23,15 @@ namespace Server.Application.Tests;
 public class BaseTest
 {
     internal Mock<IUnitOfWork> _mockUnitOfWork;
+
     internal Mock<UserManager<AppUser>> _mockUserManager;
+    internal Mock<RoleManager<AppRole>> _mockRoleManager;
 
     internal IMapper _mapper;
+
+    internal Mock<IEmailService> _mockEmailService;
+    internal Mock<IMediaService> _mockMediaService;
+
     internal IDateTimeProvider _dateTimeProvider;
 
     internal readonly Mock<IHttpContextAccessor> _httpContextAccessor;
@@ -51,8 +59,18 @@ public class BaseTest
         _mockUnitOfWork = new Mock<IUnitOfWork>();
 
         // Initialize mock user manager
-        var store = new Mock<IUserStore<AppUser>>();
-        _mockUserManager = new Mock<UserManager<AppUser>>(store.Object, null, null, null, null, null, null, null, null);
+        var userStore = new Mock<IUserStore<AppUser>>();
+        _mockUserManager = new Mock<UserManager<AppUser>>(userStore.Object, null, null, null, null, null, null, null, null);
+
+        // Initialize mock role manager
+        var roleStore = new Mock<IRoleStore<AppRole>>();
+        _mockRoleManager = new Mock<RoleManager<AppRole>>(roleStore.Object, null, null, null, null);
+
+        // Initialize mock email service
+        _mockEmailService = new Mock<IEmailService>();
+
+        // Initialize mock media service
+        _mockMediaService = new Mock<IMediaService>();
 
         // Initialize mapper
         var configuration = new MapperConfiguration(cfg =>
