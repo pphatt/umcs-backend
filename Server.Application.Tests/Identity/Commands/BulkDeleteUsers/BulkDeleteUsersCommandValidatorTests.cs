@@ -5,7 +5,7 @@ using Server.Application.Features.Identity.Commands.BulkDeleteUsers;
 namespace Server.Application.Tests.Identity.Commands.BulkDeleteUsers;
 
 [Trait("Identity", "Bulk Delete")]
-public class BulkDeleteUsersCommandValidatorTests
+public class BulkDeleteUsersCommandValidatorTests : BaseTest
 {
     private readonly BulkDeleteUsersCommandValidator _validator;
 

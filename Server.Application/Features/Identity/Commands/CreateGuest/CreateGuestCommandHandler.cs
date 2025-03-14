@@ -56,12 +56,9 @@ public class CreateGuestCommandHandler : IRequestHandler<CreateGuestCommand, Err
 
         var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.FacultyId);
 
-        if (role.Name != Roles.Admin || role.Name != Roles.Manager)
+        if (faculty is null)
         {
-            if (faculty is null)
-            {
-                return Errors.Faculty.CannotFound;
-            }
+            return Errors.Faculty.CannotFound;
         }
 
         var newUser = new AppUser();
