@@ -185,7 +185,7 @@ public class CreateUserCommandHandlerTests : BaseTest
     }
 
     [Fact]
-    public async Task CreateUserCommandHandler_Should_CreateSuccessfully_WithAvatarAndFaculty()
+    public async Task CreateUserCommandHandler_CreateUser_Should_CreateSuccessfully_WithAvatarAndFaculty()
     {
         // Arrange
         var command = new CreateUserCommand
