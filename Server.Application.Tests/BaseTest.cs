@@ -5,6 +5,7 @@ using AutoMapper;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 using Moq;
 
@@ -28,6 +29,8 @@ public class BaseTest
     internal Mock<RoleManager<AppRole>> _mockRoleManager;
 
     internal IMapper _mapper;
+
+    internal Mock<IConfiguration> _mockConfiguration;
 
     internal Mock<IEmailService> _mockEmailService;
     internal Mock<IMediaService> _mockMediaService;
@@ -65,6 +68,21 @@ public class BaseTest
         // Initialize mock role manager
         var roleStore = new Mock<IRoleStore<AppRole>>();
         _mockRoleManager = new Mock<RoleManager<AppRole>>(roleStore.Object, null, null, null, null);
+
+        // Initialize mock configuration
+        _mockConfiguration = new Mock<IConfiguration>();
+
+        _mockConfiguration
+            .Setup(c => c["ApplicationSettings:FrontendUrl"])
+            .Returns("http://localhost:3000");
+
+        _mockConfiguration
+            .Setup(c => c["ApplicationSettings:ResetPasswordBaseUrl"])
+            .Returns("http://localhost:3000/reset-password");
+
+        _mockConfiguration
+            .Setup(c => c["ApplicationSettings:UngradedContribution"])
+            .Returns("http://localhost:3000/mm/ungraded-contributions");
 
         // Initialize mock email service
         _mockEmailService = new Mock<IEmailService>();
