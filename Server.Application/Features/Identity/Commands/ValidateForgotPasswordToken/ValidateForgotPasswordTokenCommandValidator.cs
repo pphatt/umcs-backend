@@ -1,6 +1,8 @@
-﻿namespace Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
+﻿using FluentValidation;
 
-public class ValidateForgotPasswordTokenCommandValidator
+namespace Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
+
+public class ValidateForgotPasswordTokenCommandValidator : AbstractValidator<ValidateForgotPasswordTokenCommand>
 {
     public ValidateForgotPasswordTokenCommandValidator()
     {

@@ -9,6 +9,8 @@ public class UpdateAcademicYearCommandValidator : AbstractValidator<UpdateAcadem
         RuleFor(x => x.AcademicYearName)
             .NotEmpty()
             .WithMessage("Academic year name is required.")
+            .NotNull()
+            .WithMessage("Academic year name is required.")
             .Matches(@"^\d{4}-\d{4}$")
             .WithMessage("Academic year name must be in the format 'XXXX-YYYY'.")
             .Must(IsConsecutive)
@@ -17,30 +19,41 @@ public class UpdateAcademicYearCommandValidator : AbstractValidator<UpdateAcadem
         RuleFor(x => x.StartClosureDate)
             .NotEmpty()
             .WithMessage("StartClosureDate is required.")
+            .NotNull()
+            .WithMessage("Academic year name is required.")
             .Must((request, date) => IsValidStartYear(date, request.AcademicYearName))
             .WithMessage("StartClosureDate must be within the academic year.");
 
         RuleFor(x => x.EndClosureDate)
             .NotEmpty()
             .WithMessage("EndClosureDate is required.")
-            .GreaterThan(x => x.StartClosureDate)
-            .WithMessage("EndClosureDate have to be after StartClosureDate.")
+            .NotNull()
+            .WithMessage("Academic year name is required.")
             .Must((request, date) => IsWithinOrAtEndOfAcademicYear(date, request.AcademicYearName))
-            .WithMessage("EndClosureDate must be within the academic year or exactly at its end.");
+            .WithMessage("EndClosureDate must be within the academic year or exactly at its end.")
+            .GreaterThan(x => x.StartClosureDate)
+            .WithMessage("EndClosureDate have to be after StartClosureDate.");
 
         RuleFor(x => x.FinalClosureDate)
             .NotEmpty()
             .WithMessage("FinalClosureDate is required.")
+            .NotNull()
+            .WithMessage("Academic year name is required.")
+            .Must((request, date) => IsWithinOrAtEndOfAcademicYear(date, request.AcademicYearName))
+            .WithMessage("FinalClosureDate must be within the academic year or exactly at its end.")
             .GreaterThan(x => x.StartClosureDate)
             .WithMessage("FinalClosureDate have to be after StartClosureDate.")
             .GreaterThan(x => x.EndClosureDate)
-            .WithMessage("FinalClosureDate have to be after EndClosureDate.")
-            .Must((request, date) => IsWithinOrAtEndOfAcademicYear(date, request.AcademicYearName))
-            .WithMessage("FinalClosureDate must be within the academic year or exactly at its end.");
+            .WithMessage("FinalClosureDate have to be after EndClosureDate.");
     }
 
-    private bool IsConsecutive(string name)
+    private bool IsConsecutive(string? name)
     {
+        if (string.IsNullOrEmpty(name))
+        {
+            return false;
+        }
+
         var years = name.Split('-');
 
         if (years.Length != 2)
@@ -56,8 +69,13 @@ public class UpdateAcademicYearCommandValidator : AbstractValidator<UpdateAcadem
         return false;
     }
 
-    private bool IsValidStartYear(DateTime date, string academicYearName)
+    private bool IsValidStartYear(DateTime date, string? academicYearName)
     {
+        if (string.IsNullOrEmpty(academicYearName))
+        {
+            return false;
+        }
+
         var years = academicYearName.Split("-");
 
         if (years.Length != 2)
@@ -75,8 +93,13 @@ public class UpdateAcademicYearCommandValidator : AbstractValidator<UpdateAcadem
         return year >= startYear && year < endYear;
     }
 
-    private bool IsWithinOrAtEndOfAcademicYear(DateTime date, string academicYearName)
+    private bool IsWithinOrAtEndOfAcademicYear(DateTime date, string? academicYearName)
     {
+        if (string.IsNullOrEmpty(academicYearName))
+        {
+            return false;
+        }
+
         var years = academicYearName.Split("-");
 
         if (years.Length != 2)
@@ -91,6 +114,6 @@ public class UpdateAcademicYearCommandValidator : AbstractValidator<UpdateAcadem
 
         var endOfTheYear = new DateTime(startYear, 12, 31);
 
-        return date <= endOfTheYear;
+        return date.Year == startYear;
     }
 }

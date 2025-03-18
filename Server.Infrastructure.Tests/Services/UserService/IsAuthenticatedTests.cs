@@ -28,7 +28,7 @@ public class IsAuthenticatedTests
     [Fact]
     public void IsAuthenticated_Authenticated_ShouldReturnTrue()
     {
-        // arrange
+        // Arrange
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, "613DA9F6-FC5A-4E7F-AB2E-7FC89258A596"),
@@ -46,17 +46,17 @@ public class IsAuthenticatedTests
             User = user
         });
 
-        // act
+        // Act
         var isAuthenticated = _userService.IsAuthenticated();
 
-        // assert
+        // Assert
         isAuthenticated.Should().BeTrue();
     }
 
     [Fact]
     public void IsAuthenticated_NotAuthenticated_ShouldReturnFalse()
     {
-        // arrange
+        // Arrange
         var user = new ClaimsPrincipal(new ClaimsIdentity());
 
         _httpContextAccessor.Setup(x => x.HttpContext).Returns(new DefaultHttpContext()
@@ -64,7 +64,7 @@ public class IsAuthenticatedTests
             User = user
         });
 
-        // act
+        // Act
         var isAuthenticated = _userService.IsAuthenticated();
 
         // assert
@@ -74,13 +74,13 @@ public class IsAuthenticatedTests
     [Fact]
     public void IsAuthenticated_NullHttpContext_ShouldReturnNull()
     {
-        // arrange
+        // Arrange
         _httpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext?)null);
 
-        // act
+        // Act
         var isAuthenticated = _userService.IsAuthenticated();
 
-        // assert
+        // Assert
         isAuthenticated.Should().BeNull();
     }
 }

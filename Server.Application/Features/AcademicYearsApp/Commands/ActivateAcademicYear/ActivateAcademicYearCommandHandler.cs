@@ -35,7 +35,7 @@ public class ActivateAcademicYearCommandHandler : IRequestHandler<ActivateAcadem
         return new ResponseWrapper
         {
             IsSuccessful = true,
-            Message = "Active academic year successfully."
+            Message = "Activate academic year successfully."
         };
     }
 }

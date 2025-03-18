@@ -63,7 +63,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Error
 
         var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync(request.FacultyId);
 
-        if (role.Name != Roles.Admin || role.Name != Roles.Manager)
+        if (role.Name != Roles.Admin && role.Name != Roles.Manager)
         {
             if (faculty is null)
             {

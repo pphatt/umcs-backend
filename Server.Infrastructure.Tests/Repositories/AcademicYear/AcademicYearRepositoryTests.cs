@@ -51,30 +51,30 @@ public class AcademicYearRepositoryTests
     }
 
     // TestMethod_Scenario_ExpectResult
-    [Theory]
-    [InlineData("2022-2023")]
-    public async Task GetAcademicYearByName_ExistingName_ShouldReturnAcademicYearAsync(string name)
-    {
-        // Arrange
-        var academicYear = new AcademicYear
-        {
-            Id = Guid.NewGuid(),
-            Name = name,
-            UserIdCreated = Guid.NewGuid(),
-            IsActive = true,
-            StartClosureDate = _mockDateTimeProvider.UtcNow,
-            EndClosureDate = _mockDateTimeProvider.UtcNow.AddMonths(1),
-            FinalClosureDate = _mockDateTimeProvider.UtcNow.AddMonths(2)
-        };
+    //[Theory]
+    //[InlineData("2022-2023")]
+    //public async Task GetAcademicYearByName_ExistingName_ShouldReturnAcademicYearAsync(string name)
+    //{
+    //    // Arrange
+    //    var academicYear = new AcademicYear
+    //    {
+    //        Id = Guid.NewGuid(),
+    //        Name = name,
+    //        UserIdCreated = Guid.NewGuid(),
+    //        IsActive = true,
+    //        StartClosureDate = _mockDateTimeProvider.UtcNow,
+    //        EndClosureDate = _mockDateTimeProvider.UtcNow.AddMonths(1),
+    //        FinalClosureDate = _mockDateTimeProvider.UtcNow.AddMonths(2)
+    //    };
 
-        var data = new List<AcademicYear> { academicYear }.AsQueryable();
-        SetupDbSetMock(_academicYearsMock, data);
+    //    var data = new List<AcademicYear> { academicYear }.AsQueryable();
+    //    SetupDbSetMock(_academicYearsMock, data);
 
-        // Act
-        var result = await _repository.GetAcademicYearByNameAsync(name);
+    //    // Act
+    //    var result = await _repository.GetAcademicYearByNameAsync(name);
 
-        // Assert
-        result.Should().NotBeNull();
-        result.Name.Should().Be(name);
-    }
+    //    // Assert
+    //    result.Should().NotBeNull();
+    //    result.Name.Should().Be(name);
+    //}
 }

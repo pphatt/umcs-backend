@@ -13,39 +13,39 @@ public class CurrentUserTests
     [InlineData(Roles.Student)]
     public void IsInRole_WithMatchingRole_ShouldReturnTrue(string role)
     {
-        // arrange
+        // Arrange
         var currentUser = new CurrentUser("1", "test@gmail.com", [Roles.Admin, Roles.Student], null, null);
 
-        // act
+        // Act
         var isInRole = currentUser.IsInRole(role);
 
-        // assert
+        // Assert
         isInRole.Should().BeTrue();
     }
 
     [Fact]
     public void IsInRole_WithNoMatchingRole_ShouldReturnFalse()
     {
-        // arrange
+        // Arrange
         var currentUser = new CurrentUser("1", "test@gmail.com", [Roles.Student], null, null);
 
-        // act
+        // Act
         var isInRole = currentUser.IsInRole(Roles.Admin);
 
-        // assert
+        // Assert
         isInRole.Should().BeFalse();
     }
 
     [Fact]
     public void IsInRole_WithNoMatchingRoleCase_ShouldReturnFalse()
     {
-        // arrange
+        // Arrange
         var currentUser = new CurrentUser("1", "test@gmail.com", [Roles.Student], null, null);
 
-        // act
+        // Act
         var isInRole = currentUser.IsInRole(Roles.Student.ToLower());
 
-        // assert
+        // Assert
         isInRole.Should().BeFalse();
     }
 }
