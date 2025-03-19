@@ -46,6 +46,7 @@ public static class DependencyInjection
 
         services.AddMemoryCache();
         services.AddScoped<AcademicYearRepository>();
+        services.AddScoped<FacultyRepository>();
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();
@@ -109,7 +110,8 @@ public static class DependencyInjection
             .Where(x => x.GetInterfaces().Any(i => i.Name == typeof(IRepository<,>).Name)
                 && !x.IsAbstract // exclude abstract class.
                 && x.IsClass // include class.
-                && !x.IsGenericType); // exclude generic type.
+                && !x.IsGenericType) // exclude generic type.
+            .OrderBy(x => x.Name.Contains("Cache") ? 1 : 0); // Non-Cache first (0), Cache last (1), to make sure mem-cache works correctly.
 
         foreach (var concreteService in concreteServices)
         {

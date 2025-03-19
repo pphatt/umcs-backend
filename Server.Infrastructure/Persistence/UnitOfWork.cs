@@ -12,19 +12,26 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IFacultyRepository _facultyRepository;
     private readonly IAcademicYearRepository _academicYearRepository;
 
-    public UnitOfWork(AppDbContext context, IMapper mapper, IDateTimeProvider dateTimeProvider, IAcademicYearRepository academicYearRepository)
+    public UnitOfWork(
+        AppDbContext context,
+        IMapper mapper,
+        IDateTimeProvider dateTimeProvider,
+        IFacultyRepository facultyRepository,
+        IAcademicYearRepository academicYearRepository)
     {
         _context = context;
         _mapper = mapper;
         _dateTimeProvider = dateTimeProvider;
+        _facultyRepository = facultyRepository;
         _academicYearRepository = academicYearRepository;
     }
 
     public ITokenRepository TokenRepository => new TokenRepository(_context);
 
-    public IFacultyRepository FacultyRepository => new FacultyRepository(_context, _mapper);
+    public IFacultyRepository FacultyRepository => _facultyRepository;
 
     public IAcademicYearRepository AcademicYearRepository => _academicYearRepository;
 
