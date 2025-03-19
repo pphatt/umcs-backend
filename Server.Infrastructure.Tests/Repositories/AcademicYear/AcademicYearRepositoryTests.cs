@@ -8,7 +8,7 @@ using Moq;
 
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Content;
-using Server.Infrastructure.Persistence.Repositories.AcademicYear;
+using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
 
 namespace Server.Infrastructure.Tests.Repositories.AcademicYear;

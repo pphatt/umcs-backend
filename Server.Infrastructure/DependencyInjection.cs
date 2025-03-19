@@ -26,10 +26,10 @@ using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
+using Server.Infrastructure.Caching;
 using Server.Infrastructure.Jobs.JobSetup;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
-using Server.Infrastructure.Persistence.Repositories.AcademicYear;
 using Server.Infrastructure.Services;
 using Server.Infrastructure.Services.Email;
 using Server.Infrastructure.Services.Media;
@@ -46,7 +46,6 @@ public static class DependencyInjection
 
         services.AddMemoryCache();
         services.AddScoped<AcademicYearRepository>();
-        services.AddScoped<IAcademicYearRepository, CacheAcademicYearRepository>();
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();
@@ -114,12 +113,21 @@ public static class DependencyInjection
 
         foreach (var concreteService in concreteServices)
         {
+            Console.WriteLine(concreteService.Name);
             // get all interfaces which inherited by repository or services.
             // Ex: TokenRepository will return here { ITokenRepository, IRepository }, FacultyRepository will return here { IFacultyRepository, IRepository }.
             // if the classes have interface that have 3, 4 or n-level, here will return an array of interfaces.
             var allInterfaces = concreteService.GetInterfaces();
 
             // select all of the second level of the inherited (which here is IRepository).
+            // explain more:
+            // - The allInterfaces will have { IRepository, IAcademicYearRepository }
+            // - First loop, x === IRepository and IRepository will return null because IRepository is a concrete interface
+            // will not return anything when IRepository.GetInterfaces()
+            // - Second loop, x == IAcademicYearRepository and IAcademicYearRepository will return IRepository
+            // because IAcademicYearRepository inherited from IRepository so IAcademicYearRepository.GetInterfaces() will return IRepository
+            // and then the allInterface will except "IRepository" and allInterfaces primarily have { IRepository, IAcademicYearRepository } now just IAcademicYearRepository
+            // so return "IAcademicYearRepository".
             var inheritedInterface = allInterfaces.SelectMany(x => x.GetInterfaces());
 
             // exclude the second level and take the first level.
@@ -133,6 +141,31 @@ public static class DependencyInjection
 
         return services;
     }
+
+    //public static IServiceCollection AddMemoryCacheRepositories(this IServiceCollection services)
+    //{
+    //    var concreteServices = typeof(TokenRepository).Assembly.GetTypes()
+    //        .Where(x => x.GetInterfaces().Any(i => i.Name == typeof(IRepository<,>).Name)
+    //            && !x.IsAbstract
+    //            && x.IsClass
+    //            && !x.IsGenericType);
+
+    //    foreach (var concreteService in concreteServices)
+    //    {
+    //        var allInterfaces = concreteService.GetInterfaces();
+
+    //        var inheritedInterface = allInterfaces.SelectMany(x => x.GetInterfaces());
+
+    //        var directInterface = allInterfaces.Except(inheritedInterface).FirstOrDefault();
+
+    //        if (directInterface != null)
+    //        {
+    //            services.Add(new ServiceDescriptor(directInterface, concreteService, ServiceLifetime.Scoped));
+    //        }
+    //    }
+
+    //    return services;
+    //}
 
     public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {

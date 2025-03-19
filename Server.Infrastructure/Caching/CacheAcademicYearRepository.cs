@@ -3,11 +3,11 @@
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
+using Server.Domain.Entity.Content;
+using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
 
-namespace Server.Infrastructure.Persistence.Repositories.AcademicYear;
-
-using AcademicYear = Server.Domain.Entity.Content.AcademicYear;
+namespace Server.Infrastructure.Caching;
 
 public class CacheAcademicYearRepository : CacheService<AcademicYear, Guid>, IAcademicYearRepository
 {
