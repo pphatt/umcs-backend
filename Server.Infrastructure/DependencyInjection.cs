@@ -1,16 +1,26 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Net;
+using System.Net.Mime;
+using System.Text;
+using System.Text.Json.Serialization;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
 using Newtonsoft.Json;
+
 using Quartz;
+
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
@@ -19,13 +29,10 @@ using Server.Infrastructure.Authentication;
 using Server.Infrastructure.Jobs.JobSetup;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
+using Server.Infrastructure.Persistence.Repositories.AcademicYear;
 using Server.Infrastructure.Services;
 using Server.Infrastructure.Services.Email;
 using Server.Infrastructure.Services.Media;
-using System.Net;
-using System.Net.Mime;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Server.Infrastructure;
 
@@ -36,6 +43,10 @@ public static class DependencyInjection
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
         services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+
+        services.AddMemoryCache();
+        services.AddScoped<AcademicYearRepository>();
+        services.AddScoped<IAcademicYearRepository, CacheAcademicYearRepository>();
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();

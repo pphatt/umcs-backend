@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services;
@@ -11,19 +12,21 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IAcademicYearRepository _academicYearRepository;
 
-    public UnitOfWork(AppDbContext context, IMapper mapper, IDateTimeProvider dateTimeProvider)
+    public UnitOfWork(AppDbContext context, IMapper mapper, IDateTimeProvider dateTimeProvider, IAcademicYearRepository academicYearRepository)
     {
         _context = context;
         _mapper = mapper;
         _dateTimeProvider = dateTimeProvider;
+        _academicYearRepository = academicYearRepository;
     }
 
     public ITokenRepository TokenRepository => new TokenRepository(_context);
 
     public IFacultyRepository FacultyRepository => new FacultyRepository(_context, _mapper);
 
-    public IAcademicYearRepository AcademicYearRepository => new AcademicYearRepository(_context, _mapper);
+    public IAcademicYearRepository AcademicYearRepository => _academicYearRepository;
 
     public IContributionRepository ContributionRepository => new ContributionRepository(_context, _mapper, _dateTimeProvider, FileRepository);
 

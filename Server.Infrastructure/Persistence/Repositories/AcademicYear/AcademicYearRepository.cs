@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
+
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Wrapper.Pagination;
-using Server.Domain.Entity.Content;
 
-namespace Server.Infrastructure.Persistence.Repositories;
+namespace Server.Infrastructure.Persistence.Repositories.AcademicYear;
+
+using AcademicYear = Server.Domain.Entity.Content.AcademicYear;
 
 public class AcademicYearRepository : RepositoryBase<AcademicYear, Guid>, IAcademicYearRepository
 {
