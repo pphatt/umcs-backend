@@ -1,0 +1,25 @@
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}serverapi
+    container_name: webapi
+    build:
+      context: .
+      dockerfile: Server.Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "sa123456!"
+    restart: always
+    ports:
+      - "14333:1433" # using 14333 port to make sure not have the same port as EXPRESS (1433)
+    volumes:
+      - sqlserver:/var/lib/mssql/data
+
+volumes:
+  sqlserver:
