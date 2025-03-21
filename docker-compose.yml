@@ -1,17 +1,19 @@
 services:
-  webapi:
+  products.webapi:
     image: ${DOCKER_REGISTRY-}serverapi
-    container_name: webapi
+    container_name: products.webapi
     build:
       context: .
       dockerfile: Server.Api/Dockerfile
     ports:
       - "8080:8080"
       - "8081:8081"
+    networks:
+      - magazine-network
 
-  db:
+  products.database:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: db
+    container_name: products.database
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "sa123456!"
@@ -19,7 +21,13 @@ services:
     ports:
       - "14333:1433" # using 14333 port to make sure not have the same port as EXPRESS (1433)
     volumes:
-      - sqlserver:/var/lib/mssql/data
+      - sqlserver:/var/opt/mssql
+    networks:
+      - magazine-network
+
+networks:
+  magazine-network:
+    driver: bridge
 
 volumes:
   sqlserver:
