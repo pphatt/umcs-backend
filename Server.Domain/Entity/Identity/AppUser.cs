@@ -32,7 +32,8 @@ public class AppUser : IdentityUser<Guid>
 
     public RefreshToken RefreshToken { get; set; } = default!;
 
-    public ICollection<ContributionPublicRating> Ratings { get; set; }
-    public ICollection<ContributionPublicReadLater> ReadLaters { get; set; }
-    public ICollection<ContributionPublicBookmark> Bookmarks { get; set; }
+    public ICollection<ContributionPublicRating> Ratings { get; set; } = default!;
+    public ICollection<ContributionPublicReadLater> ReadLaters { get; set; } = default!;
+    public ICollection<ContributionPublicBookmark> Bookmarks { get; set; } = default!;
+    public ICollection<NotificationUser> NotificationUsers { get; set; } = default!;
 }

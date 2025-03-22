@@ -35,6 +35,8 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     internal DbSet<Faculty> Faculties { get; set; }
     internal DbSet<Tag> Tags { get; set; }
     internal DbSet<File> Files { get; set; }
+    internal DbSet<Notification> Notifications { get; set; }
+    internal DbSet<NotificationUser> NotificationUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -181,6 +183,35 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithOne(ct => ct.Tag)
             .HasForeignKey(ct => ct.TagId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Notification relationships
+        modelBuilder.Entity<Notification>()
+            .HasMany(n => n.NotificationUsers)
+            .WithOne(nu => nu.Notification)
+            .HasForeignKey(nu => nu.NotificationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<NotificationUser>()
+            .HasKey(nu => new { nu.UserId, nu.NotificationId });
+
+        modelBuilder.Entity<NotificationUser>()
+            .HasOne(nu => nu.User)
+            .WithMany(u => u.NotificationUsers)
+            .HasForeignKey(nu => nu.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<NotificationUser>()
+            .HasOne(nu => nu.Notification)
+            .WithMany(n => n.NotificationUsers)
+            .HasForeignKey(nu => nu.NotificationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Sender relationship for Notification
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.Sender)
+            .WithMany()
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         #endregion Table Relationship Configuration
     }
