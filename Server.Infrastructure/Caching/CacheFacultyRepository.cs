@@ -1,48 +1,212 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Linq.Expressions;
 
 using Server.Application.Common.Dtos.Content.Faculty;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
+using Server.Application.Common.Interfaces.Services.Cache;
 using Server.Application.Wrapper.Pagination;
-using Server.Infrastructure.Services;
+using Server.Domain.Entity.Content;
+using Server.Infrastructure.Persistence.Repositories;
 
-namespace Server.Infrastructure.Persistence.Repositories;
+namespace Server.Infrastructure.Caching;
 
-using Faculty = Server.Domain.Entity.Content.Faculty;
-
-public class CacheFacultyRepository : CacheService<Faculty, Guid>, IFacultyRepository
+public class CacheFacultyRepository : IFacultyRepository
 {
-    private readonly FacultyRepository _facultyRepository;
-    private const string CacheKeyPrefix = "faculty:";
+    private readonly FacultyRepository _decorator;
+    private readonly ICacheService _cacheService;
+    private const string FACULTY = "faculty";
+    private const string FACULTY_PAGINATION = "faculty-pagination";
 
-    public CacheFacultyRepository(FacultyRepository decorator, IMemoryCache memoryCache)
-        : base(decorator, memoryCache, CacheKeyPrefix)
+    public CacheFacultyRepository(FacultyRepository decorator, ICacheService cacheService)
     {
-        _facultyRepository = decorator;
+        _decorator = decorator;
+        _cacheService = cacheService;
     }
 
-    public override Task<IEnumerable<Faculty>> GetAllAsync()
+    private async Task UpdateCacheAsync(Faculty entity)
     {
-        return GetOrCreateAsync("all", () => _facultyRepository.GetAllAsync());
+        string keyById = $"{FACULTY}:id={entity.Id}";
+        string keyByName = $"{FACULTY}:name={entity.Name}";
+        string keyByPagination = FACULTY_PAGINATION;
+
+        // Invalidate existing cache entries
+        await _cacheService.InvalidateAsync(keyById);
+        await _cacheService.InvalidateAsync(keyByName);
+        await _cacheService.InvalidateWithWildCardAsync(keyByPagination);
+
+        // Set new cache entries
+        await _cacheService.SetAsync(keyById, entity);
+        await _cacheService.SetAsync(keyByName, entity);
     }
 
-    public override Task<Faculty> GetByIdAsync(Guid id)
+    private async Task InvalidateCacheAsync(Faculty entity)
     {
-        return GetOrCreateAsync($"id-{id}", () => _facultyRepository.GetByIdAsync(id));
+        string keyById = $"{FACULTY}:id={entity.Id}";
+        string keyByName = $"{FACULTY}:name={entity.Name}";
+        string keyByPagination = FACULTY_PAGINATION;
+
+        await _cacheService.InvalidateAsync(keyById);
+        await _cacheService.InvalidateAsync(keyByName);
+        await _cacheService.InvalidateWithWildCardAsync(keyByPagination);
     }
 
-    public Task<int> Count()
+    public void Add(Faculty entity)
     {
-        return GetOrCreateAsync("count", () => _facultyRepository.Count());
+        _decorator.Add(entity);
+        UpdateCacheAsync(entity).GetAwaiter().GetResult();
     }
 
-    public Task<PaginationResult<FacultyDto>> GetAllFacultiesPagination(string? keyword, int pageIndex = 1, int pageSize = 10)
+    public void AddRange(IEnumerable<Faculty> entities)
     {
-        return GetOrCreateAsync($"pagination-{keyword ?? "all"}-{pageIndex}-{pageSize}",
-            () => _facultyRepository.GetAllFacultiesPagination(keyword, pageIndex, pageSize));
+        _decorator.AddRange(entities);
+
+        foreach (var entity in entities)
+        {
+            UpdateCacheAsync(entity).GetAwaiter().GetResult();
+        }
     }
 
-    public Task<Faculty> GetFacultyByNameAsync(string name)
+    public void Remove(Faculty entity)
     {
-        return GetOrCreateAsync($"by-name-{name}", () => _facultyRepository.GetFacultyByNameAsync(name));
+        _decorator.Remove(entity);
+        InvalidateCacheAsync(entity).GetAwaiter().GetResult();
+    }
+
+    public void RemoveRange(IEnumerable<Faculty> entities)
+    {
+        _decorator.RemoveRange(entities);
+
+        foreach (var entity in entities)
+        {
+            InvalidateCacheAsync(entity).GetAwaiter().GetResult();
+        }
+    }
+
+    public void Update(Faculty entity)
+    {
+        _decorator.Update(entity);
+        UpdateCacheAsync(entity).GetAwaiter().GetResult();
+    }
+
+    public void UpdateRange(IEnumerable<Faculty> entities)
+    {
+        _decorator.UpdateRange(entities);
+
+        foreach (var entity in entities)
+        {
+            UpdateCacheAsync(entity).GetAwaiter().GetResult();
+        }
+    }
+
+    public IEnumerable<Faculty> FindByCondition(Expression<Func<Faculty, bool>> predicate)
+    {
+        return _decorator.FindByCondition(predicate);
+    }
+
+    public async Task<IEnumerable<Faculty>> GetAllAsync()
+    {
+        string key = $"{FACULTY}:all";
+
+        var cached = await _cacheService.GetAsync<IEnumerable<Faculty>>(key);
+
+        if (cached is not null)
+        {
+            return cached;
+        }
+
+        var result = await _decorator.GetAllAsync();
+
+        if (result is not null)
+        {
+            await _cacheService.SetAsync(key, result);
+        }
+
+        return result;
+    }
+
+    public async Task<Faculty> GetByIdAsync(Guid id)
+    {
+        string key = $"{FACULTY}:id={id}";
+
+        var cached = await _cacheService.GetAsync<Faculty>(key);
+
+        if (cached is not null)
+        {
+            return cached;
+        }
+
+        var faculty = await _decorator.GetByIdAsync(id);
+
+        if (faculty is not null)
+        {
+            await _cacheService.SetAsync(key, faculty);
+        }
+
+        return faculty;
+    }
+
+    public async Task<int> Count()
+    {
+        string key = $"{FACULTY}:count";
+
+        var cached = await _cacheService.GetAsync<int>(key);
+
+        if (cached != 0)
+        {
+            return cached;
+        }
+
+        var count = await _decorator.Count();
+
+        if (count != 0)
+        {
+            await _cacheService.SetAsync(key, count);
+        }
+
+        return count;
+    }
+
+    public async Task<PaginationResult<FacultyDto>> GetAllFacultiesPagination(
+        string? keyword,
+        int pageIndex = 1,
+        int pageSize = 10)
+    {
+        string key = $"{FACULTY_PAGINATION}:limit={pageSize}:offset={pageIndex}:keyword={keyword ?? "none"}";
+
+        var cached = await _cacheService.GetAsync<PaginationResult<FacultyDto>>(key);
+
+        if (cached is not null)
+        {
+            return cached;
+        }
+
+        var result = await _decorator.GetAllFacultiesPagination(keyword, pageIndex, pageSize);
+
+        if (result.Results.Count > 0)
+        {
+            await _cacheService.SetAsync(key, result);
+        }
+
+        return result;
+    }
+
+    public async Task<Faculty> GetFacultyByNameAsync(string name)
+    {
+        string key = $"{FACULTY}:name={name}";
+
+        var cached = await _cacheService.GetAsync<Faculty>(key);
+
+        if (cached is not null)
+        {
+            return cached;
+        }
+
+        var faculty = await _decorator.GetFacultyByNameAsync(name);
+
+        if (faculty is not null)
+        {
+            await _cacheService.SetAsync(key, faculty);
+        }
+
+        return faculty;
     }
 }

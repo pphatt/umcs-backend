@@ -12,6 +12,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 
 using Newtonsoft.Json;
@@ -22,6 +23,7 @@ using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services;
+using Server.Application.Common.Interfaces.Services.Cache;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Domain.Entity.Identity;
@@ -31,8 +33,11 @@ using Server.Infrastructure.Jobs.JobSetup;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
+using Server.Infrastructure.Services.Cache;
 using Server.Infrastructure.Services.Email;
 using Server.Infrastructure.Services.Media;
+
+using StackExchange.Redis;
 
 namespace Server.Infrastructure;
 
@@ -48,17 +53,28 @@ public static class DependencyInjection
         services.AddScoped<AcademicYearRepository>();
         services.AddScoped<FacultyRepository>();
 
+        services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configuration.GetSection("RedisSettings")["RedisConnection"]!));
+        services.AddStackExchangeRedisCache(redisOptions =>
+        {
+            redisOptions.Configuration = configuration.GetSection("RedisSettings")["RedisConnection"];
+        });
+
         services.AddScoped<IUserService, UserService>();
+
+
         services.AddScoped<IEmailService, EmailService>();
+        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+
         services.AddScoped<IMediaService, MediaService>();
+        services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
+        services.AddScoped<ICacheService, CacheService>();
+        services.Configure<CacheSettings>(configuration.GetSection("RedisSettings"));
 
         services.AddHttpContextAccessor();
 
         services.AddRepositories();
-
-        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
-        services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
-        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
 
         // Serialize enum variable from number to string value.
         services.Configure<JsonOptions>(options =>
