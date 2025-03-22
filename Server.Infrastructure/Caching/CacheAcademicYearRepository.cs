@@ -29,13 +29,13 @@ public class CacheAcademicYearRepository : IAcademicYearRepository
         string keyByPagination = ACADEMIC_YEAR_PAGINATION;
 
         // Invalidate existing cache entries
-        await _cacheService.InvalidateAsync(keyById);
-        await _cacheService.InvalidateAsync(keyByName);
-        await _cacheService.InvalidateWithWildCardAsync(keyByPagination);
+        await InvalidateCacheAsync(entity);
 
         // Set new cache entries
         await _cacheService.SetAsync(keyById, entity);
         await _cacheService.SetAsync(keyByName, entity);
+
+        Console.WriteLine("Cache academic year successfully.");
     }
 
     private async Task InvalidateCacheAsync(AcademicYear entity)
@@ -47,6 +47,8 @@ public class CacheAcademicYearRepository : IAcademicYearRepository
         await _cacheService.InvalidateAsync(keyById);
         await _cacheService.InvalidateAsync(keyByName);
         await _cacheService.InvalidateWithWildCardAsync(keyByPagination);
+
+        Console.WriteLine("Invalidate academic year cache successfully.");
     }
 
     public void Add(AcademicYear entity)

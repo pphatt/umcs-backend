@@ -26,16 +26,15 @@ public class CacheFacultyRepository : IFacultyRepository
     {
         string keyById = $"{FACULTY}:id={entity.Id}";
         string keyByName = $"{FACULTY}:name={entity.Name}";
-        string keyByPagination = FACULTY_PAGINATION;
 
         // Invalidate existing cache entries
-        await _cacheService.InvalidateAsync(keyById);
-        await _cacheService.InvalidateAsync(keyByName);
-        await _cacheService.InvalidateWithWildCardAsync(keyByPagination);
+        await InvalidateCacheAsync(entity);
 
         // Set new cache entries
         await _cacheService.SetAsync(keyById, entity);
         await _cacheService.SetAsync(keyByName, entity);
+
+        Console.WriteLine("Cache faculty successfully.");
     }
 
     private async Task InvalidateCacheAsync(Faculty entity)
@@ -47,6 +46,8 @@ public class CacheFacultyRepository : IFacultyRepository
         await _cacheService.InvalidateAsync(keyById);
         await _cacheService.InvalidateAsync(keyByName);
         await _cacheService.InvalidateWithWildCardAsync(keyByPagination);
+
+        Console.WriteLine("Invalidate faculty cache successfully.");
     }
 
     public void Add(Faculty entity)
