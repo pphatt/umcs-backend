@@ -20,4 +20,6 @@ public interface IUnitOfWork
     IFileRepository FileRepository { get; }
     ILikeRepository LikeRepository { get; }
     ITagRepository TagRepository { get; }
+    INotificationRepository NotificationRepository { get; }
+    INotificationUserRepository NotificationUserRepository { get; }
 }

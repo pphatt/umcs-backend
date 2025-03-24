@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+using Server.Application.Common.Dtos.Content.PublicContribution;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services;
@@ -56,6 +57,10 @@ public class UnitOfWork : IUnitOfWork
     public ILikeRepository LikeRepository => new LikeRepository(_context);
 
     public ITagRepository TagRepository => new TagRepository(_context, _mapper);
+
+    public INotificationRepository NotificationRepository => new NotificationRepository(_context);
+
+    public INotificationUserRepository NotificationUserRepository => new NotificationUserRepository(_context);
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
