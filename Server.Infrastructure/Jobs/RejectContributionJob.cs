@@ -52,7 +52,12 @@ public class RejectContributionJob : IJob
             return;
         }
 
-        if (currentAcademicYear.IsActive && currentAcademicYear.FinalClosureDate < date)
+        if (currentAcademicYear.FinalClosureDate > date)
+        {
+            return;
+        }
+
+        if (currentAcademicYear.IsActive)
         {
             currentAcademicYear.IsActive = false;
         }

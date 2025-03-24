@@ -12,6 +12,7 @@ using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
 namespace Server.Api.Controllers.TestApi;
 
 [Authorize]
+[Tags("Test")]
 public class TestNotificationWssController : TestApiController
 {
     private readonly ISender _mediatorSender;
