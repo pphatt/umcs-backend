@@ -1,14 +1,21 @@
 ﻿using ErrorOr;
+
 using MediatR;
+
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+
+using Server.Application.Common.Dtos.Content.Notification;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
+using Server.Application.Features.Notification.Hubs;
 using Server.Application.Wrapper;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
+using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.ContributionApp.Commands.ApproveContribution;
@@ -20,19 +27,22 @@ public class ApproveContributionCommandHandler : IRequestHandler<ApproveContribu
     private readonly UserManager<AppUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IHubContext<NotificationHub> _notificationHub;
 
     public ApproveContributionCommandHandler(
         IUnitOfWork unitOfWork,
         IEmailService emailService,
         UserManager<AppUser> userManager,
         IConfiguration configuration,
-        IDateTimeProvider dateTimeProvider)
+        IDateTimeProvider dateTimeProvider,
+        IHubContext<NotificationHub> notificationHub)
     {
         _unitOfWork = unitOfWork;
         _emailService = emailService;
         _userManager = userManager;
         _configuration = configuration;
         _dateTimeProvider = dateTimeProvider;
+        _notificationHub = notificationHub;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(ApproveContributionCommand request, CancellationToken cancellationToken)
@@ -161,6 +171,48 @@ public class ApproveContributionCommandHandler : IRequestHandler<ApproveContribu
         await _emailService.SendEmailAsync(emailRequest);
 
         await _unitOfWork.CompleteAsync();
+
+        // notify student
+        var notification = new Server.Domain.Entity.Content.Notification
+        {
+            Title = "Contribution approved",
+            DateCreated = DateTime.Now,
+            Content = "Contribution has been approved",
+            UserId = student.Id,
+            Type = "Contribution-ApproveContribution",
+            Username = student.UserName ?? "somehow-null-username",
+            Avatar = student.Avatar ?? "",
+            Slug = contribution.Slug
+        };
+
+        var notificationDto = new NotificationDto
+        {
+            Title = "Contribution approved",
+            DateCreated = DateTime.Now,
+            Content = "Contribution has been approved",
+            Type = "Contribution-ApproveContribution",
+            Username = student.UserName ?? "somehow-null-username",
+            Avatar = student.Avatar ?? "",
+            HasRed = false
+        };
+
+        _unitOfWork.NotificationRepository.Add(notification);
+
+        var notificationUser = new NotificationUser
+        {
+            UserId = student.Id,
+            NotificationId = notification.Id,
+            HasRed = false,
+        };
+
+        _unitOfWork.NotificationUserRepository.Add(notificationUser);
+
+        await _unitOfWork.CompleteAsync();
+
+        await _notificationHub
+            .Clients
+            .User(student.Id.ToString())
+            .SendAsync("GetNewNotification", notificationDto);
 
         return new ResponseWrapper
         {
