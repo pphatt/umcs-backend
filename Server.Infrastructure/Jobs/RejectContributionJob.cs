@@ -204,6 +204,10 @@ public class RejectContributionJob : IJob
                 notificationUser.UserId = admin.Id;
                 notificationUser.NotificationId = notification.Id;
 
+                _unitOfWork.NotificationRepository.Add(notification);
+
+                _unitOfWork.NotificationUserRepository.Add(notificationUser);
+
                 await _unitOfWork.CompleteAsync();
 
                 await _notificationHub
