@@ -18,12 +18,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                // will not include the null value in the response.
-                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            });
+        services.AddControllers();
+            //.AddJsonOptions(options =>
+            //{
+            //    // will not include the null value in the response.
+            //    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            //});
+        services.AddSignalR();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
@@ -100,6 +101,13 @@ public static class DependencyInjection
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .WithOrigins(origins!);
+
+            // add this for my signalr-test.html file
+            builderCors
+               .WithOrigins("http://127.0.0.1:5500")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
         }));
 
         return services;

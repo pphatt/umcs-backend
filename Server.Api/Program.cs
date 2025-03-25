@@ -1,5 +1,6 @@
 using Server.Api;
 using Server.Application;
+using Server.Application.Features.Notification.Hubs;
 using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,23 +50,13 @@ if (app.Environment.IsDevelopment())
 
     app.UseHttpsRedirection();
 
-    //app.Use(async (context, next) =>
-    //{
-    //    var accessToken = context.Request.Query["access_token"];
-
-    //    if (!string.IsNullOrEmpty(accessToken))
-    //    {
-    //        context.Request.Headers["Authorization"] = "Bearer " + accessToken;
-    //    }
-
-    //    await next.Invoke().ConfigureAwait(false);
-    //});
-
     app.UseAuthentication();
 
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.MapHub<NotificationHub>("/hubs/notifications");
 
     app.Run();
 }

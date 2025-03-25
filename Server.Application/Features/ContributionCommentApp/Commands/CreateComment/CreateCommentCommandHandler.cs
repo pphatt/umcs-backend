@@ -1,8 +1,12 @@
 ﻿using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+
+using Server.Application.Common.Dtos.Content.Notification;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services.Email;
+using Server.Application.Features.Notification.Hubs;
 using Server.Application.Wrapper;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Constants.Authorization;
@@ -18,12 +22,18 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
     private readonly IEmailService _emailService;
+    private readonly IHubContext<NotificationHub> _notificationHub;
 
-    public CreateCommentCommandHandler(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IEmailService emailService)
+    public CreateCommentCommandHandler(
+        IUnitOfWork unitOfWork,
+        UserManager<AppUser> userManager,
+        IEmailService emailService,
+        IHubContext<NotificationHub> notificationHub)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _emailService = emailService;
+        _notificationHub = notificationHub;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
@@ -90,10 +100,50 @@ public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,
 
         await _unitOfWork.CompleteAsync();
 
+        var notification = new Server.Domain.Entity.Content.Notification
+        {
+            Title = "Contribution have new comment",
+            DateCreated = DateTime.Now,
+            Content = $"Contribution has been commented",
+            UserId = user.Id,
+            Type = "Contribution-Private-Comment",
+            Username = user.UserName ?? "username",
+            Avatar = user.Avatar ?? "",
+            Slug = contribution.Slug
+        };
+
+        var notificationDto = new NotificationDto
+        {
+            Title = "Contribution have new comment",
+            DateCreated = DateTime.Now,
+            Content = $"Contribution has been commented",
+            Type = "Contribution-Private-Comment",
+            Username = user.UserName ?? "username",
+            Avatar = user.Avatar ?? "",
+        };
+
+        _unitOfWork.NotificationRepository.Add(notification);
+
+        var notificationUser = new NotificationUser
+        {
+            NotificationId = notification.Id,
+            UserId = contribution.UserId,
+            HasRed = false
+        };
+
+        _unitOfWork.NotificationUserRepository.Add(notificationUser);
+
+        await _unitOfWork.CompleteAsync();
+
+        await _notificationHub
+            .Clients
+            .User(contribution.UserId.ToString())
+            .SendAsync("GetNewNotification", notificationDto);
+
         return new ResponseWrapper
         {
             IsSuccessful = true,
-            Message = "Comment successfully."
+            Message = $"Comment successfully {contribution.UserId.ToString()}."
         };
     }
 }

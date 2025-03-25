@@ -1,11 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+
 using Quartz;
+
+using Server.Application.Common.Dtos.Content.Notification;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
+using Server.Application.Features.Notification.Hubs;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Constants.Authorization;
+using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure.Jobs;
@@ -16,6 +22,7 @@ public class NotifyStudentAboutClosureDateJob : IJob
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
     private readonly IEmailService _emailService;
+    private readonly IHubContext<NotificationHub> _notificationHub;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly ILogger<NotifyStudentAboutClosureDateJob> _logger;
 
@@ -25,12 +32,14 @@ public class NotifyStudentAboutClosureDateJob : IJob
         IUnitOfWork unitOfWork,
         UserManager<AppUser> userManager,
         IEmailService emailService,
+        IHubContext<NotificationHub> notificationHub,
         IDateTimeProvider dateTimeProvider,
         ILogger<NotifyStudentAboutClosureDateJob> logger)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _emailService = emailService;
+        _notificationHub = notificationHub;
         _dateTimeProvider = dateTimeProvider;
         _logger = logger;
     }
@@ -77,6 +86,47 @@ public class NotifyStudentAboutClosureDateJob : IJob
             await _emailService.SendEmailAsync(mail);
 
             _logger.LogInformation($"Sent reminder email to {student.Email}");
+
+            var notification = new Notification
+            {
+                UserId = Guid.NewGuid(),
+                Username = "System",
+                Avatar = "",
+                Title = "Academic year day remain",
+                DateCreated = DateTime.Now,
+                Content = subject,
+                Type = "AcademicYear-ExpiredDate",
+                Slug = currentAcademicYear.Name,
+            };
+
+            var notificationDto = new NotificationDto
+            {
+                Username = "System",
+                Avatar = "",
+                Title = "Contribution rejected",
+                DateCreated = DateTime.Now,
+                Content = "Contribution has been rejected",
+                Type = "Contribution-RejectContribution",
+                HasRed = false
+            };
+
+            var notificationUser = new NotificationUser
+            {
+                UserId = student.Id,
+                NotificationId = notification.Id,
+                HasRed = false,
+            };
+
+            _unitOfWork.NotificationRepository.Add(notification);
+
+            _unitOfWork.NotificationUserRepository.Add(notificationUser);
+
+            await _unitOfWork.CompleteAsync();
+
+            await _notificationHub
+                .Clients
+                .User(student.Id.ToString())
+                .SendAsync("GetNewNotification", notificationDto);
         }
 
         _logger.LogInformation($"----- Finish notify student about academic year expiration date ----- {_dateTimeProvider.UtcNow}");

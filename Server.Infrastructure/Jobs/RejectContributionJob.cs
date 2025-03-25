@@ -1,13 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using Quartz;
+
+using Server.Application.Common.Dtos.Content.Notification;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
+using Server.Application.Features.Notification.Hubs;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Enums;
+using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure.Jobs;
@@ -19,6 +25,7 @@ public class RejectContributionJob : IJob
     private readonly UserManager<AppUser> _userManager;
     private readonly IEmailService _emailService;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IHubContext<NotificationHub> _notificationHub;
     private readonly IConfiguration _configuration;
     private readonly ILogger<RejectContributionJob> _logger;
 
@@ -27,6 +34,7 @@ public class RejectContributionJob : IJob
         UserManager<AppUser> userManager,
         IEmailService emailService,
         IDateTimeProvider dateTimeProvider,
+        IHubContext<NotificationHub> notificationHub,
         IConfiguration configuration,
         ILogger<RejectContributionJob> logger)
     {
@@ -34,6 +42,7 @@ public class RejectContributionJob : IJob
         _userManager = userManager;
         _emailService = emailService;
         _dateTimeProvider = dateTimeProvider;
+        _notificationHub = notificationHub;
         _configuration = configuration;
         _logger = logger;
     }
@@ -52,7 +61,13 @@ public class RejectContributionJob : IJob
             return;
         }
 
-        if (currentAcademicYear.IsActive && currentAcademicYear.FinalClosureDate < date)
+        // if academic year is not ended yet, skip the job.
+        if (currentAcademicYear.FinalClosureDate > date)
+        {
+            return;
+        }
+
+        if (currentAcademicYear.IsActive)
         {
             currentAcademicYear.IsActive = false;
         }
@@ -73,8 +88,34 @@ public class RejectContributionJob : IJob
 
         foreach (var contribution in pendingContributionsInCurrentYear)
         {
+            // notify student.
+            var notification = new Notification
+            {
+                Title = "Contribution rejected",
+                DateCreated = DateTime.Now,
+                Content = "Contribution has been rejected",
+                Type = "Contribution-RejectContribution",
+                Slug = contribution.Slug
+            };
+
+            var notificationDto = new NotificationDto
+            {
+                Title = "Contribution rejected",
+                DateCreated = DateTime.Now,
+                Content = "Contribution has been rejected",
+                Type = "Contribution-RejectContribution",
+                HasRed = false
+            };
+
+            var notificationUser = new NotificationUser
+            {
+                HasRed = false,
+            };
+
             foreach (var admin in admins)
             {
+                // this here sometime based on the business domain, there will be many admin.
+                // but usually there is one.
                 await _unitOfWork.ContributionRepository.RejectContribution(contribution, admin.Id, rejectReason);
 
                 var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
@@ -152,10 +193,29 @@ public class RejectContributionJob : IJob
                 };
 
                 await _emailService.SendEmailAsync(mail);
+
+                notification.UserId = admin.Id;
+                notification.Username = admin.UserName ?? "username";
+                notification.Avatar = admin.Avatar ?? "avatar";
+
+                notificationDto.Username = admin.UserName ?? "username";
+                notificationDto.Avatar = admin.Avatar ?? "";
+
+                notificationUser.UserId = admin.Id;
+                notificationUser.NotificationId = notification.Id;
+
+                _unitOfWork.NotificationRepository.Add(notification);
+
+                _unitOfWork.NotificationUserRepository.Add(notificationUser);
+
+                await _unitOfWork.CompleteAsync();
+
+                await _notificationHub
+                    .Clients
+                    .User(contribution.UserId.ToString())
+                    .SendAsync("GetNewNotification", notificationDto);
             }
         }
-
-        await _unitOfWork.CompleteAsync();
 
         _logger.LogInformation($"----- Finish checking current academic year expired and rejecting contribution in that academic year ----- {_dateTimeProvider.UtcNow}");
     }

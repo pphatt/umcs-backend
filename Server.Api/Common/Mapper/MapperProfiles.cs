@@ -47,6 +47,7 @@ using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Identity.Queries.GetUserProfile;
+using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuestWithManyContributions;
 using Server.Application.Features.PublicContributionApp.Commands.RatePublicContribution;
@@ -126,6 +127,7 @@ using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Identity.UploadUserAvatar;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
+using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
 using Server.Contracts.PublicContributionComments.CreatePublicComment;
 using Server.Contracts.PublicContributions.AllowGuest;
 using Server.Contracts.PublicContributions.AllowGuestWithManyContributions;
@@ -353,5 +355,8 @@ public class MapperProfiles : Profile
 
         // File.
         CreateMap<File, DeleteFilesRequest>();
+
+        // Notification
+        CreateMap<GetAllUserNotificationsPaginationRequest, GetAllUserNotificationsPaginationQuery>();
     }
 }

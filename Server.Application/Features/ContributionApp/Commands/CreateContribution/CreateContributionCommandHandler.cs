@@ -1,14 +1,22 @@
-﻿using ErrorOr;
+﻿using System.Collections.Immutable;
+
+using ErrorOr;
+
 using MediatR;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+
+using Server.Application.Common.Dtos.Content.Notification;
 using Server.Application.Common.Dtos.Media;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
+using Server.Application.Features.Notification.Hubs;
 using Server.Application.Wrapper;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Constants.Authorization;
@@ -17,6 +25,7 @@ using Server.Domain.Common.Enums;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+
 using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Application.Features.ContributionApp.Commands.CreateContribution;
@@ -30,6 +39,7 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
     private readonly IMediaService _mediaService;
     private readonly IEmailService _emailService;
     private readonly IConfiguration _configuration;
+    private readonly IHubContext<NotificationHub> _notificationHub;
 
     public CreateContributionCommandHandler(
         IUnitOfWork unitOfWork,
@@ -38,7 +48,8 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
         RoleManager<AppRole> roleManager,
         IMediaService mediaService,
         IEmailService emailService,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHubContext<NotificationHub> notificationHub)
     {
         _unitOfWork = unitOfWork;
         _dateTimeProvider = dateTimeProvider;
@@ -47,6 +58,7 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
         _mediaService = mediaService;
         _emailService = emailService;
         _configuration = configuration;
+        _notificationHub = notificationHub;
     }
 
     public async Task<ErrorOr<ResponseWrapper>> Handle(CreateContributionCommand request, CancellationToken cancellationToken)
@@ -251,6 +263,48 @@ public class CreateContributionCommandHandler : IRequestHandler<CreateContributi
             await _unitOfWork.ContributionRepository.SendToApproved(contribution.Id, user.Id);
 
             await _unitOfWork.CompleteAsync();
+
+            // notify coordinator.
+            var notification = new Server.Domain.Entity.Content.Notification
+            {
+                Title = "Contribution created",
+                DateCreated = DateTime.Now,
+                Content = "Contribution has been created",
+                UserId = user.Id,
+                Type = "Contribution-CreateContribution",
+                Username = user.UserName ?? "somehow-null-username",
+                Avatar = user.Avatar ?? "",
+                Slug = contribution.Slug
+            };
+
+            var notificationDto = new NotificationDto
+            {
+                Title = "Contribution created",
+                DateCreated = DateTime.Now,
+                Content = "Contribution has been created",
+                Type = "Contribution-CreateContribution",
+                Username = user.UserName,
+                Avatar = user.Avatar,
+                HasRed = false,
+            };
+
+            _unitOfWork.NotificationRepository.Add(notification);
+
+            var notificationCoordinators = coordinators.Select(x => new NotificationUser
+            {
+                UserId = x.Id,
+                NotificationId = notification.Id,
+                HasRed = false,
+            }).ToList();
+
+            await _unitOfWork.NotificationUserRepository.AddUsersNotification(notificationCoordinators);
+
+            await _unitOfWork.CompleteAsync();
+
+            await _notificationHub
+                .Clients
+                .Users(coordinators.Select(x => x.Id.ToString()).ToImmutableList())
+                .SendAsync("GetNewNotification", notificationDto);
         }
 
         return new ResponseWrapper
