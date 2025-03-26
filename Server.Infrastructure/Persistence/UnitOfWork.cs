@@ -62,6 +62,8 @@ public class UnitOfWork : IUnitOfWork
 
     public INotificationUserRepository NotificationUserRepository => new NotificationUserRepository(_context);
 
+    public IPrivateChatRoomRepository PrivateChatRoomRepository => new PrivateChatRoomRepository(_context);
+
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
     public void Dispose() => _context.Dispose();

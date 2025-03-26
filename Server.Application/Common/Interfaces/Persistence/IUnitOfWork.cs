@@ -22,4 +22,5 @@ public interface IUnitOfWork
     ITagRepository TagRepository { get; }
     INotificationRepository NotificationRepository { get; }
     INotificationUserRepository NotificationUserRepository { get; }
+    IPrivateChatRoomRepository PrivateChatRoomRepository { get; }
 }

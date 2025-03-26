@@ -1,6 +1,7 @@
 using Server.Api;
 using Server.Application;
 using Server.Application.Features.Notification.Hubs;
+using Server.Application.Features.PrivateChatApp.Hubs;
 using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +58,7 @@ if (app.Environment.IsDevelopment())
     app.MapControllers();
 
     app.MapHub<NotificationHub>("/hubs/notifications");
+    app.MapHub<PrivateChatHub>("/hubs/chat");
 
     app.Run();
 }
