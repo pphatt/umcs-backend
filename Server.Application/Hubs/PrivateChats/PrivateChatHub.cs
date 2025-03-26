@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Concurrent;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
@@ -27,23 +29,22 @@ public class PrivateChatHub : Hub
         if (!string.IsNullOrEmpty(currentUserId))
         {
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
             if (currentUser != null)
             {
+                HubConnection.AddUserConnection(currentUserId, Context.ConnectionId);
+
                 if (!currentUser.IsOnline)
                 {
                     currentUser.IsOnline = true;
                     await _userManager.UpdateAsync(currentUser);
 
-                    // Notify all clients of the new online user
-                    await Clients.All.SendAsync("NewUserConnected", new NewUserConnectedDto
+                    await Clients.Users(HubConnection.GetAllOnlineUsers()).SendAsync("NewUserConnected", new NewUserConnectedDto
                     {
                         UserId = currentUserId,
                         Username = currentUser.UserName,
                     });
                 }
-
-                // Add user to a group for their own ID (for targeting messages)
-                await Groups.AddToGroupAsync(Context.ConnectionId, currentUserId);
             }
         }
 
@@ -57,26 +58,31 @@ public class PrivateChatHub : Hub
         if (!string.IsNullOrEmpty(currentUserId))
         {
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
-            if (currentUser != null)
+
+            var connections = HubConnection.GetUserConnections(currentUserId);
+
+            if (currentUser != null && connections is not null)
             {
-                // Remove the connection from the user's group
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, currentUserId);
-
-                // Check if the user has any remaining connections
-                var connections = Clients.Group(currentUserId);
-                var hasConnections = await Task.Run(() => connections != null); // Simplified check
-
-                if (!hasConnections && currentUser.IsOnline)
+                lock (connections)
                 {
-                    currentUser.IsOnline = false;
-                    await _userManager.UpdateAsync(currentUser);
+                    connections.Remove(Context.ConnectionId);
+                }
 
-                    // Notify all clients of the disconnection
-                    await Clients.All.SendAsync("NewUserDisconnected", new NewUserDisconnectedDto
+                if (connections.Count == 0)
+                {
+                    HubConnection._userConnections.TryRemove(currentUserId, out _);
+
+                    if (currentUser.IsOnline)
                     {
-                        UserId = currentUserId,
-                        Username = currentUser.UserName,
-                    });
+                        currentUser.IsOnline = false;
+                        await _userManager.UpdateAsync(currentUser);
+
+                        await Clients.All.SendAsync("NewUserDisconnected", new NewUserDisconnectedDto
+                        {
+                            UserId = currentUserId,
+                            Username = currentUser.UserName,
+                        });
+                    }
                 }
             }
         }
@@ -93,11 +99,22 @@ public class PrivateChatHub : Hub
     {
         var userId = _userService.GetUserId().ToString();
         var currentUser = await _userManager.FindByIdAsync(userId);
-        await Clients.Group(receiverId).SendAsync("ReceiverIsTyping", true, currentUser?.Avatar);
+
+        var receiverConnections = HubConnection.GetUserConnections(receiverId);
+
+        if (receiverConnections is not null)
+        {
+            await Clients.Clients(receiverConnections.ToList()).SendAsync("ReceiverIsTyping", true, currentUser?.Avatar);
+        }
     }
 
     public async Task StopTyping(string receiverId)
     {
-        await Clients.Group(receiverId).SendAsync("ReceiverStopTyping", false);
+        var receiverConnections = HubConnection.GetUserConnections(receiverId);
+
+        if (receiverConnections is not null)
+        {
+            await Clients.Clients(receiverConnections.ToList()).SendAsync("ReceiverStopTyping", false);
+        }
     }
 }
