@@ -77,7 +77,7 @@ public class PrivateChatHub : Hub
                         currentUser.IsOnline = false;
                         await _userManager.UpdateAsync(currentUser);
 
-                        await Clients.All.SendAsync("NewUserDisconnected", new NewUserDisconnectedDto
+                        await Clients.Users(HubConnection.GetAllOnlineUsers()).SendAsync("NewUserDisconnected", new NewUserDisconnectedDto
                         {
                             UserId = currentUserId,
                             Username = currentUser.UserName,
