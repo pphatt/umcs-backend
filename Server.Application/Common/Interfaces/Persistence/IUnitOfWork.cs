@@ -23,4 +23,5 @@ public interface IUnitOfWork
     INotificationRepository NotificationRepository { get; }
     INotificationUserRepository NotificationUserRepository { get; }
     IPrivateChatRoomRepository PrivateChatRoomRepository { get; }
+    IPrivateChatMessageRepository PrivateChatMessageRepository { get; }
 }

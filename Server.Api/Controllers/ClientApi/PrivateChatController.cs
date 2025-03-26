@@ -5,8 +5,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using Server.Application.Common.Extensions;
+using Server.Application.Features.PrivateChatApp.Commands.SendChatMessage;
 using Server.Application.Features.PrivateChatApp.Queries.GetAllRoomsPagination;
-using Server.Contracts.PrivateChatRooms.GetAllChatRoomsPagination;
+using Server.Contracts.PrivateChats.GetAllChatRoomsPagination;
+using Server.Contracts.PrivateChats.SendChatMessage;
+
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -17,6 +21,21 @@ public class PrivateChatController : ClientApiController
     public PrivateChatController(IMapper mapper, ISender mediatorSender) : base(mediatorSender)
     {
         _mapper = mapper;
+    }
+
+    [HttpPost("send-message")]
+    public async Task<IActionResult> SendMessage([FromBody] SendChatMessageRequest request)
+    {
+        var mapper = _mapper.Map<SendChatMessageCommand>(request);
+
+        mapper.SenderId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            sendResult => Ok(sendResult),
+            errors => Problem(errors)
+        );
     }
 
     [HttpGet("get-all-chat-rooms-pagination")]

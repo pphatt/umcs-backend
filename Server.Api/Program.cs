@@ -1,7 +1,7 @@
 using Server.Api;
 using Server.Application;
-using Server.Application.Features.Notification.Hubs;
-using Server.Application.Features.PrivateChatApp.Hubs;
+using Server.Application.Hubs.Notifications;
+using Server.Application.Hubs.PrivateChats;
 using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);

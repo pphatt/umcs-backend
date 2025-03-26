@@ -12,7 +12,7 @@ public class PrivateChatRoomDto
 
     public string LastMessageFromWho { get; set; } = default!;
 
-    public DateTime LastMessage { get; set; }
+    public string LastMessage { get; set; }
 
     public DateTime LastTimeTexting { get; set; }
 }

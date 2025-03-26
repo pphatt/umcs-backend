@@ -7,6 +7,7 @@ public class PrivateChatMessage : BaseEntity
 {
     public Guid SenderId { get; set; }
     public Guid ReceiverId { get; set; }
-    public string Message { get; set; } = default!;
+    public Guid ChatRoomId { get; set; }
+    public string Content { get; set; } = default!;
     public bool HasRed { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿using Server.Contracts.Common;
 
-namespace Server.Contracts.PrivateChatRooms.GetAllChatRoomsPagination;
+namespace Server.Contracts.PrivateChats.GetAllChatRoomsPagination;
 
 public class GetAllChatRoomsPaginationRequest : PaginationRequest
 {
