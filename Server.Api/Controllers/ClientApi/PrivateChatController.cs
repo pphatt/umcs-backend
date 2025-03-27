@@ -5,11 +5,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using Server.Application.Common.Extensions;
+using Server.Application.Features.PrivateChatApp.Commands.MarkMessageAsRed;
 using Server.Application.Features.PrivateChatApp.Commands.SendChatMessage;
 using Server.Application.Features.PrivateChatApp.Queries.GetAllRoomsPagination;
 using Server.Application.Features.PrivateChatApp.Queries.GetUserChatMessagesPagination;
 using Server.Contracts.PrivateChats.GetAllChatRoomsPagination;
 using Server.Contracts.PrivateChats.GetUserChatMessagesPagination;
+using Server.Contracts.PrivateChats.MarkMessageAsRed;
 using Server.Contracts.PrivateChats.SendChatMessage;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -64,6 +66,21 @@ public class PrivateChatController : ClientApiController
 
         return result.Match(
             paginationResult => Ok(paginationResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("mark-as-red")]
+    public async Task<IActionResult> MarkMessageAsRed([FromQuery] MarkMessageAsRedRequest request)
+    {
+        var mapper = _mapper.Map<MarkMessageAsRedCommand>(request);
+
+        mapper.CurrentUserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            redResult => Ok(redResult),
             errors => Problem(errors)
         );
     }

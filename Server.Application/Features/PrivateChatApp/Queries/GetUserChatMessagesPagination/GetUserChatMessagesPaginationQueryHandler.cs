@@ -1,5 +1,4 @@
-﻿
-using ErrorOr;
+﻿using ErrorOr;
 
 using MediatR;
 
@@ -21,7 +20,7 @@ public class GetUserChatMessagesPaginationQueryHandler : IRequestHandler<GetUser
 
     public async Task<ErrorOr<ResponseWrapper<PaginationResult<PrivateChatMessageDto>>>> Handle(GetUserChatMessagesPaginationQuery request, CancellationToken cancellationToken)
     {
-        var result = await _unitOfWork.PrivateChatRoomRepository.GetUserChatMessages(
+        var result = await _unitOfWork.PrivateChatMessageRepository.GetUserChatMessages(
             chatId: request.ChatId,
             currentUserId: request.CurrentUserId,
             pageIndex: request.PageIndex,
