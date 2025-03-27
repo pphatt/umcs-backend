@@ -47,6 +47,7 @@ using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Identity.Queries.GetUserProfile;
+using Server.Application.Features.Notification.Commands.MarkAllNotificationsAsRed;
 using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Application.Features.PrivateChatApp.Commands.MarkMessageAsRed;
@@ -133,6 +134,7 @@ using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Identity.UploadUserAvatar;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
+using Server.Contracts.Notifications.MarkAllNotificationsAsRed;
 using Server.Contracts.Notifications.MarkNotificationAsRed;
 using Server.Contracts.PrivateChats.GetAllChatRoomsPagination;
 using Server.Contracts.PrivateChats.GetUserChatMessagesPagination;
@@ -369,6 +371,7 @@ public class MapperProfiles : Profile
         // Notification
         CreateMap<GetAllUserNotificationsPaginationRequest, GetAllUserNotificationsPaginationQuery>();
         CreateMap<MarkNotificationAsRedRequest, MarkNotificationAsRedCommand>();
+        CreateMap<MarkAllNotificationsAsRedRequest, MarkAllNotificationsAsRedCommand>();
 
         // Private Chat
         CreateMap<GetAllChatRoomsPaginationRequest, GetAllChatRoomsPaginationQuery>();
