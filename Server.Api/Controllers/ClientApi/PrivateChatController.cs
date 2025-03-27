@@ -10,8 +10,6 @@ using Server.Application.Features.PrivateChatApp.Queries.GetAllRoomsPagination;
 using Server.Contracts.PrivateChats.GetAllChatRoomsPagination;
 using Server.Contracts.PrivateChats.SendChatMessage;
 
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
 namespace Server.Api.Controllers.ClientApi;
 
 public class PrivateChatController : ClientApiController
@@ -43,7 +41,7 @@ public class PrivateChatController : ClientApiController
     {
         var mapper = _mapper.Map<GetAllChatRoomsPaginationQuery>(request);
 
-        mapper.UserId = User.GetUserId();
+        mapper.CurrentUserId = User.GetUserId();
 
         var result = await _mediatorSender.Send(mapper);
 

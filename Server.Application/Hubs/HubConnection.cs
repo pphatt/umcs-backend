@@ -10,7 +10,7 @@ public static class HubConnection
 
     public static HashSet<string>? GetUserConnections(string userId)
     {
-        _userConnections.TryGetValue(userId, out var connections);
+        _userConnections.TryGetValue(userId.ToLower(), out var connections);
         return connections;
     }
 

@@ -12,5 +12,5 @@ namespace Server.Application.Features.PrivateChatApp.Queries.GetAllRoomsPaginati
 
 public class GetAllChatRoomsPaginationQuery : PaginationDto, IRequest<ErrorOr<ResponseWrapper<PaginationResult<PrivateChatRoomDto>>>>
 {
-    public Guid UserId { get; set; }
+    public Guid CurrentUserId { get; set; }
 }

@@ -17,12 +17,13 @@ public class PrivateChatRoomRepository : RepositoryBase<PrivateChatRoom, Guid>, 
         _context = context;
     }
 
-    public async Task<PaginationResult<PrivateChatRoomDto>> GetAllChatRoomsPagination(Guid userId, string? keyword, int pageIndex = 1, int pageSize = 10)
+    public async Task<PaginationResult<PrivateChatRoomDto>> GetAllChatRoomsPagination(Guid currentUserId, string? keyword, int pageIndex = 1, int pageSize = 10)
     {
         var query = from cr in _context.PrivateChatRooms
-                    where cr.DateDeleted == null
-                    join u in _context.Users on cr.User2Id equals u.Id
-                    select new { cr, u };
+                    where cr.DateDeleted == null && (cr.User1Id == currentUserId || cr.User2Id == currentUserId)
+                    join u in _context.Users on (cr.User1Id == currentUserId ? cr.User2Id : cr.User1Id) equals u.Id
+                    join r in _context.UserRoles on u.Id equals r.UserId
+                    select new { cr, u, r };
 
         if (!string.IsNullOrWhiteSpace(keyword))
         {
@@ -42,11 +43,15 @@ public class PrivateChatRoomRepository : RepositoryBase<PrivateChatRoom, Guid>, 
 
         var result = await query.Select(x => new PrivateChatRoomDto
         {
-            UserId = x.cr.User2Id,
+            ChatId = x.cr.Id,
+            CurrentUserId = currentUserId,
+            ReceiverId = x.u.Id,
             Username = x.u.UserName,
             Avatar = x.u.Avatar,
             LastActivity = x.cr.User2LastActivity,
-            LastTimeTexting = x.cr.LastTimeTexting
+            LastTimeTexting = x.cr.LastTimeTexting,
+            IsOnline = x.u.IsOnline,
+            Role = x.r.RoleId.ToString(),
         }).ToListAsync();
 
         return new PaginationResult<PrivateChatRoomDto>
