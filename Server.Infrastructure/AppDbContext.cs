@@ -37,6 +37,8 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     internal DbSet<File> Files { get; set; }
     internal DbSet<Notification> Notifications { get; set; }
     internal DbSet<NotificationUser> NotificationUsers { get; set; }
+    internal DbSet<PrivateChatRoom> PrivateChatRooms { get; set; }
+    internal DbSet<PrivateChatMessage> PrivateChatMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

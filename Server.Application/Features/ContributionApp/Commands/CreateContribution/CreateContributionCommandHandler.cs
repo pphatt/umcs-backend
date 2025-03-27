@@ -16,7 +16,7 @@ using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
-using Server.Application.Features.Notification.Hubs;
+using Server.Application.Hubs.Notifications;
 using Server.Application.Wrapper;
 using Server.Contracts.Common.Email;
 using Server.Domain.Common.Constants.Authorization;
