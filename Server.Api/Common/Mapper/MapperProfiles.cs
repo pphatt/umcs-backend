@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using Server.Application.Common.Dtos.Content.AcademicYear;
 using Server.Application.Common.Dtos.Content.Contribution;
 using Server.Application.Common.Dtos.Content.Faculty;
@@ -47,6 +48,8 @@ using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Identity.Queries.GetUserProfile;
+using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
+using Server.Application.Features.Notification.Commands.UnreadNotification;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Application.Features.PrivateChatApp.Commands.MarkMessageAsRed;
 using Server.Application.Features.PrivateChatApp.Commands.SendChatMessage;
@@ -132,6 +135,8 @@ using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Identity.UploadUserAvatar;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
+using Server.Contracts.Notifications.MarkNotificationAsRed;
+using Server.Contracts.Notifications.UnreadNotification;
 using Server.Contracts.PrivateChats.GetAllChatRoomsPagination;
 using Server.Contracts.PrivateChats.GetUserChatMessagesPagination;
 using Server.Contracts.PrivateChats.MarkMessageAsRed;
@@ -366,6 +371,8 @@ public class MapperProfiles : Profile
 
         // Notification
         CreateMap<GetAllUserNotificationsPaginationRequest, GetAllUserNotificationsPaginationQuery>();
+        CreateMap<MarkNotificationAsRedRequest, MarkNotificationAsRedCommand>();
+        CreateMap<UnreadNotificationRequest, UnreadNotificationCommand>();
 
         // Private Chat
         CreateMap<GetAllChatRoomsPaginationRequest, GetAllChatRoomsPaginationQuery>();
