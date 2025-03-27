@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.Notification.Commands.MarkAllNotificationsAsRed;
 using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
+using Server.Application.Features.Notification.Commands.UnreadAllNotifications;
 using Server.Application.Features.Notification.Commands.UnreadNotification;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.MarkAllNotificationsAsRed;
 using Server.Contracts.Notifications.MarkNotificationAsRed;
+using Server.Contracts.Notifications.UnreadAllNotifications;
 using Server.Contracts.Notifications.UnreadNotification;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -76,6 +78,19 @@ public class NotificationsController : ClientApiController
         var mapper = _mapper.Map<UnreadNotificationCommand>(request);
 
         mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            unreadResult => Ok(unreadResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("un-read-all")]
+    public async Task<IActionResult> UnreadAllNotifications()
+    {
+        var mapper = new UnreadAllNotificationsCommand { UserId = User.GetUserId() };
 
         var result = await _mediatorSender.Send(mapper);
 
