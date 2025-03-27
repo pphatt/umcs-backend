@@ -11,9 +11,7 @@ using Server.Application.Features.Notification.Commands.UnreadAllNotifications;
 using Server.Application.Features.Notification.Commands.UnreadNotification;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
-using Server.Contracts.Notifications.MarkAllNotificationsAsRed;
 using Server.Contracts.Notifications.MarkNotificationAsRed;
-using Server.Contracts.Notifications.UnreadAllNotifications;
 using Server.Contracts.Notifications.UnreadNotification;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -58,11 +56,9 @@ public class NotificationsController : ClientApiController
     }
 
     [HttpPost("has-red-all")]
-    public async Task<IActionResult> HasRedAllNotifications(MarkAllNotificationsAsRedRequest request)
+    public async Task<IActionResult> HasRedAllNotifications()
     {
-        var mapper = _mapper.Map<MarkAllNotificationsAsRedCommand>(request);
-
-        mapper.UserId = User.GetUserId();
+        var mapper = new MarkAllNotificationsAsRedCommand { UserId = User.GetUserId() };
 
         var result = await _mediatorSender.Send(mapper);
 
