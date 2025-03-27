@@ -42,6 +42,7 @@ public class NotificationRepository : RepositoryBase<Notification, Guid>, INotif
 
         var result = await query.Select(x => new NotificationDto
         {
+            Id = x.n.Id,
             Title = x.n.Title,
             Content = x.n.Content,
             Type = x.n.Type,

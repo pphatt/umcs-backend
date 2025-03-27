@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.Notification.Commands.MarkAllNotificationsAsRed;
 using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
+using Server.Application.Features.Notification.Commands.UnreadNotification;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.MarkAllNotificationsAsRed;
 using Server.Contracts.Notifications.MarkNotificationAsRed;
+using Server.Contracts.Notifications.UnreadNotification;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -39,7 +41,7 @@ public class NotificationsController : ClientApiController
     }
 
     [HttpPost("has-red")]
-    public async Task<IActionResult> HasRedNotification([FromQuery] MarkNotificationAsRedRequest request)
+    public async Task<IActionResult> HasRedNotification(MarkNotificationAsRedRequest request)
     {
         var mapper = _mapper.Map<MarkNotificationAsRedCommand>(request);
 
@@ -54,7 +56,7 @@ public class NotificationsController : ClientApiController
     }
 
     [HttpPost("has-red-all")]
-    public async Task<IActionResult> HasRedAllNotifications([FromQuery] MarkAllNotificationsAsRedRequest request)
+    public async Task<IActionResult> HasRedAllNotifications(MarkAllNotificationsAsRedRequest request)
     {
         var mapper = _mapper.Map<MarkAllNotificationsAsRedCommand>(request);
 
@@ -64,6 +66,21 @@ public class NotificationsController : ClientApiController
 
         return result.Match(
             redResult => Ok(redResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("un-read")]
+    public async Task<IActionResult> UnreadNotification(UnreadNotificationRequest request)
+    {
+        var mapper = _mapper.Map<UnreadNotificationCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            unreadResult => Ok(unreadResult),
             errors => Problem(errors)
         );
     }
