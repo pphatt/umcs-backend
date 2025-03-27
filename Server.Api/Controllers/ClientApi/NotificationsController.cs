@@ -5,8 +5,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using Server.Application.Common.Extensions;
+using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
+using Server.Contracts.Notifications.MarkNotificationAsRed;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -30,6 +32,21 @@ public class NotificationsController : ClientApiController
 
         return result.Match(
             paginationResult => Ok(paginationResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpPost("has-red")]
+    public async Task<IActionResult> HasRedNotification([FromQuery] MarkNotificationAsRedRequest request)
+    {
+        var mapper = _mapper.Map<MarkNotificationAsRedCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            redResult => Ok(redResult),
             errors => Problem(errors)
         );
     }
