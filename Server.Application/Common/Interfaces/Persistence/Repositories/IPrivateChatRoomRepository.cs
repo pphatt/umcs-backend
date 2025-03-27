@@ -7,4 +7,6 @@ namespace Server.Application.Common.Interfaces.Persistence.Repositories;
 public interface IPrivateChatRoomRepository : IRepository<PrivateChatRoom, Guid>
 {
     Task<PaginationResult<PrivateChatRoomDto>> GetAllChatRoomsPagination(Guid currentUserId, string? keyword, int pageIndex = 1, int pageSize = 10);
+
+    Task<PaginationResult<PrivateChatMessageDto>> GetUserChatMessages(Guid chatId, Guid currentUserId, int pageIndex = 1, int pageSize = 10);
 }

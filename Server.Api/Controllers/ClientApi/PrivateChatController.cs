@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.PrivateChatApp.Commands.SendChatMessage;
 using Server.Application.Features.PrivateChatApp.Queries.GetAllRoomsPagination;
+using Server.Application.Features.PrivateChatApp.Queries.GetUserChatMessagesPagination;
 using Server.Contracts.PrivateChats.GetAllChatRoomsPagination;
+using Server.Contracts.PrivateChats.GetUserChatMessagesPagination;
 using Server.Contracts.PrivateChats.SendChatMessage;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -40,6 +42,21 @@ public class PrivateChatController : ClientApiController
     public async Task<IActionResult> GetAllChatRoomsPagination([FromQuery] GetAllChatRoomsPaginationRequest request)
     {
         var mapper = _mapper.Map<GetAllChatRoomsPaginationQuery>(request);
+
+        mapper.CurrentUserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            paginationResult => Ok(paginationResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("get-user-message-pagination")]
+    public async Task<IActionResult> GetUserMessagesPagination([FromQuery] GetUserChatMessagesPaginationRequest request)
+    {
+        var mapper = _mapper.Map<GetUserChatMessagesPaginationQuery>(request);
 
         mapper.CurrentUserId = User.GetUserId();
 
