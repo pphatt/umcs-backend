@@ -49,6 +49,7 @@ using Server.Application.Features.Identity.Commands.ValidateForgotPasswordToken;
 using Server.Application.Features.Identity.Queries.GetAllUsersPagination;
 using Server.Application.Features.Identity.Queries.GetUserById;
 using Server.Application.Features.Identity.Queries.GetUserProfile;
+using Server.Application.Features.Notification.Commands.BulkDeleteNotifications;
 using Server.Application.Features.Notification.Commands.DeleteNotification;
 using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
 using Server.Application.Features.Notification.Commands.UnreadNotification;
@@ -137,6 +138,7 @@ using Server.Contracts.Identity.ResetPassword;
 using Server.Contracts.Identity.UpdateUser;
 using Server.Contracts.Identity.UploadUserAvatar;
 using Server.Contracts.Identity.ValidateForgotPasswordToken;
+using Server.Contracts.Notifications.BulkDeleteNotifications;
 using Server.Contracts.Notifications.DeleteNotification;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.GetNotificationById;
@@ -381,6 +383,7 @@ public class MapperProfiles : Profile
         CreateMap<MarkNotificationAsRedRequest, MarkNotificationAsRedCommand>();
         CreateMap<UnreadNotificationRequest, UnreadNotificationCommand>();
         CreateMap<DeleteNotificationRequest, DeleteNotificationCommand>();
+        CreateMap<BulkDeleteNotificationsRequest, BulkDeleteNotificationsCommand>();
         CreateMap<GetNotificationByIdRequest, GetNotificationByIdQuery>();
 
         // Private Chat

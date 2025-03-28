@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using Server.Application.Common.Extensions;
+using Server.Application.Features.Notification.Commands.BulkDeleteNotifications;
 using Server.Application.Features.Notification.Commands.DeleteNotification;
 using Server.Application.Features.Notification.Commands.MarkAllNotificationsAsRed;
 using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
@@ -12,6 +13,7 @@ using Server.Application.Features.Notification.Commands.UnreadAllNotifications;
 using Server.Application.Features.Notification.Commands.UnreadNotification;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
 using Server.Application.Features.Notification.Queries.GetNotificationById;
+using Server.Contracts.Notifications.BulkDeleteNotifications;
 using Server.Contracts.Notifications.DeleteNotification;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
 using Server.Contracts.Notifications.GetNotificationById;
@@ -104,6 +106,21 @@ public class NotificationsController : ClientApiController
     public async Task<IActionResult> DeleteNotification([FromRoute] DeleteNotificationRequest request)
     {
         var mapper = _mapper.Map<DeleteNotificationCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("bulk-delete")]
+    public async Task<IActionResult> BulkDeleteNotifications([FromQuery] BulkDeleteNotificationsRequest request)
+    {
+        var mapper = _mapper.Map<BulkDeleteNotificationsCommand>(request);
 
         mapper.UserId = User.GetUserId();
 
