@@ -5,12 +5,18 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 using Server.Application.Common.Extensions;
+using Server.Application.Features.Notification.Commands.BulkDeleteNotifications;
+using Server.Application.Features.Notification.Commands.DeleteNotification;
 using Server.Application.Features.Notification.Commands.MarkAllNotificationsAsRed;
 using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
 using Server.Application.Features.Notification.Commands.UnreadAllNotifications;
 using Server.Application.Features.Notification.Commands.UnreadNotification;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
+using Server.Application.Features.Notification.Queries.GetNotificationById;
+using Server.Contracts.Notifications.BulkDeleteNotifications;
+using Server.Contracts.Notifications.DeleteNotification;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
+using Server.Contracts.Notifications.GetNotificationById;
 using Server.Contracts.Notifications.MarkNotificationAsRed;
 using Server.Contracts.Notifications.UnreadNotification;
 
@@ -92,6 +98,49 @@ public class NotificationsController : ClientApiController
 
         return result.Match(
             unreadResult => Ok(unreadResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("{Id}")]
+    public async Task<IActionResult> DeleteNotification([FromRoute] DeleteNotificationRequest request)
+    {
+        var mapper = _mapper.Map<DeleteNotificationCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpDelete("bulk-delete")]
+    public async Task<IActionResult> BulkDeleteNotifications([FromQuery] BulkDeleteNotificationsRequest request)
+    {
+        var mapper = _mapper.Map<BulkDeleteNotificationsCommand>(request);
+
+        mapper.UserId = User.GetUserId();
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            deleteResult => Ok(deleteResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("{Id}")]
+    public async Task<IActionResult> GetNotificationById([FromRoute] GetNotificationByIdRequest request)
+    {
+        var mapper = _mapper.Map<GetNotificationByIdQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            getByIdResult => Ok(getByIdResult),
             errors => Problem(errors)
         );
     }

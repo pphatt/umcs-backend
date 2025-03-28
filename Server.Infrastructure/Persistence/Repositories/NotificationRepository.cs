@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+
+using Microsoft.EntityFrameworkCore;
 
 using Server.Application.Common.Dtos.Content.Notification;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
@@ -36,6 +38,7 @@ public class NotificationRepository : RepositoryBase<Notification, Guid>, INotif
         var skipPage = (pageIndex - 1) * pageSize;
 
         query = query
+            .Where(x => x.nu.DateDeleted == null)
             .OrderByDescending(x => x.n.DateCreated)
             .Skip(skipPage)
             .Take(pageSize);
