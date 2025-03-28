@@ -10,7 +10,9 @@ using Server.Application.Features.Notification.Commands.MarkNotificationAsRed;
 using Server.Application.Features.Notification.Commands.UnreadAllNotifications;
 using Server.Application.Features.Notification.Commands.UnreadNotification;
 using Server.Application.Features.Notification.Queries.GetAllUserNotificationsPagination;
+using Server.Application.Features.Notification.Queries.GetNotificationById;
 using Server.Contracts.Notifications.GetAllUserNotificationsPagination;
+using Server.Contracts.Notifications.GetNotificationById;
 using Server.Contracts.Notifications.MarkNotificationAsRed;
 using Server.Contracts.Notifications.UnreadNotification;
 
@@ -92,6 +94,19 @@ public class NotificationsController : ClientApiController
 
         return result.Match(
             unreadResult => Ok(unreadResult),
+            errors => Problem(errors)
+        );
+    }
+
+    [HttpGet("{Id}")]
+    public async Task<IActionResult> GetNotificationById([FromRoute] GetNotificationByIdRequest request)
+    {
+        var mapper = _mapper.Map<GetNotificationByIdQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
+
+        return result.Match(
+            getByIdResult => Ok(getByIdResult),
             errors => Problem(errors)
         );
     }
