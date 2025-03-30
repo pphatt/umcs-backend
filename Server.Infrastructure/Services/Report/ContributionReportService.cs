@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization.Formatters;
-
-using Dapper;
+﻿using Dapper;
 
 using Server.Application.Common.Dtos.Content.Report.Contributions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
@@ -251,6 +249,58 @@ public class ContributionReportService : IContributionReportService
 
             result.Response.Add(academicYearDto);
         }
+
+        return result;
+    }
+
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsInEachFacultyInEachAcademicYearReportDto>>> GetTotalContributorsInEachFacultyInEachAcademicYear()
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var sql =
+            """
+            SELECT ay.Name as AcademicYear,
+            f.Name as Faculty,
+            COALESCE(COUNT(distinct c.UserId), 0) AS Contributors
+            FROM AcademicYears ay
+            CROSS JOIN Faculties f
+            LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id AND c.FacultyId = f.Id
+            WHERE f.DateDeleted is null
+            GROUP BY ay.Name, f.Name
+            ORDER BY ay.Name, f.Name;
+            """;
+
+        var query = await connection.QueryAsync<GetTotalContributorsInEachFacultyInEachAcademicYearDto>(sql: sql);
+
+        var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsInEachFacultyInEachAcademicYearReportDto>>();
+
+        var data = query.AsList();
+
+        var count = data.Count;
+        var facultyCount = await _facultyRepository.CountAsync();
+
+        for (var i = 0; i < count; i += facultyCount)
+        {
+            var academicYearResult = new AcademicYearReportResponseWrapper<GetTotalContributorsInEachFacultyInEachAcademicYearReportDto>();
+
+            academicYearResult.AcademicYear = data[i].AcademicYear;
+
+            for (var j = i; j < i + facultyCount; j++)
+            {
+                var facultyResult = new GetTotalContributorsInEachFacultyInEachAcademicYearReportDto();
+
+                facultyResult.Faculty = data[j].Faculty;
+                facultyResult.Contributors = data[j].Contributors;
+
+                academicYearResult.DataSets.Add(facultyResult);
+            }
+
+            result.Response.Add(academicYearResult);
+        }
+
+        result.Response = result.Response
+            .OrderByDescending(x => x.AcademicYear)
+            .ToList();
 
         return result;
     }
