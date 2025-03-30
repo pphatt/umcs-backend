@@ -82,6 +82,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetTopMostViewed
 using Server.Application.Features.PublicContributionApp.Queries.GetTopRatedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
+using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributionsInEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
@@ -174,6 +175,7 @@ using Server.Contracts.PublicContributions.ToggleBookmarkContribution;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.PublicContributions.ToggleReadLater;
 using Server.Contracts.Report.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
+using Server.Contracts.Report.GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Contracts.Report.GetTotalContributionsInEachFacultyForAnyAcademicYear;
 using Server.Contracts.Report.GetTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Contracts.Roles.BulkDeleteRoles;
@@ -402,5 +404,6 @@ public class MapperProfiles : Profile
         CreateMap<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearRequest, GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery>();
         CreateMap<GetTotalContributionsInEachFacultyForAnyAcademicYearRequest, GetTotalContributionsInEachFacultyForAnyAcademicYearQuery>();
         CreateMap<GetTotalContributorsByEachFacultyForAnyAcademicYearRequest, GetTotalContributorsByEachFacultyForAnyAcademicYearQuery>();
+        CreateMap<GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYearRequest, GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYearQuery>();
     }
 }

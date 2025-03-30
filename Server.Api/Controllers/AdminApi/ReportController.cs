@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYear;
+using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributionsInEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributionsInEachFacultyInEachAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributorsInEachFacultyInEachAcademicYear;
 using Server.Contracts.Report.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
+using Server.Contracts.Report.GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Contracts.Report.GetTotalContributionsInEachFacultyForAnyAcademicYear;
 using Server.Contracts.Report.GetTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Domain.Common.Constants.Authorization;
@@ -102,6 +104,17 @@ public class ReportController : AdminApiController
         var command = new GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearQuery();
 
         var result = await _mediatorSender.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpGet("get-percentage-of-total-contributors-by-each-faculty-for-any-academic-year/{AcademicYearName}")]
+    [Authorize(Permissions.Dashboards.View)]
+    public async Task<IActionResult> GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYear([FromRoute] GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYearRequest request)
+    {
+        var mapper = _mapper.Map<GetPercentageOfTotalContributorsByEachFacultyForAnyAcademicYearQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
 
         return Ok(result);
     }
