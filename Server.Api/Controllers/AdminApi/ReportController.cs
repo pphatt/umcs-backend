@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYear;
+using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributionsInEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributionsInEachFacultyInEachAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributorsByEachFacultyForAnyAcademicYear;
@@ -90,6 +91,17 @@ public class ReportController : AdminApiController
         var mapper = _mapper.Map<GetTotalContributorsByEachFacultyForAnyAcademicYearQuery>(request);
 
         var result = await _mediatorSender.Send(mapper);
+
+        return Ok(result);
+    }
+
+    [HttpGet("get-percentage-of-total-contributors-in-each-faculty-in-each-academic-year")]
+    [Authorize(Permissions.Dashboards.View)]
+    public async Task<IActionResult> GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYear()
+    {
+        var command = new GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearQuery();
+
+        var result = await _mediatorSender.Send(command);
 
         return Ok(result);
     }

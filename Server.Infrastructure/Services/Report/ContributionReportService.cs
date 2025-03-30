@@ -352,4 +352,77 @@ public class ContributionReportService : IContributionReportService
 
         return result;
     }
+
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearReportDto>>> GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearReport()
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var sql =
+            """
+            SELECT
+                ay.Name AS AcademicYear,
+                cc.Faculty AS Faculty,
+                COALESCE(CAST((cc.ContributionCount * 1.0 / tc.TotalCount) * 100 AS INT), 0) AS Percentage
+            FROM AcademicYears ay
+            CROSS JOIN (
+                SELECT
+                    ay.Name AS AcademicYear,
+                    f.Name AS Faculty,
+                    COUNT(distinct c.UserId) AS ContributionCount
+                FROM AcademicYears ay
+                CROSS JOIN Faculties f
+                LEFT JOIN Contributions c ON f.Id = c.FacultyId
+                    AND c.AcademicYearId = ay.Id
+                    AND c.DateDeleted IS NULL
+                WHERE f.DateDeleted IS NULL
+                GROUP BY ay.Name, f.Name
+            ) AS cc
+            LEFT JOIN (
+                SELECT
+                    ay.Name AS AcademicYear,
+                    COUNT(distinct c.UserId) AS TotalCount
+                FROM Contributions c
+                JOIN AcademicYears ay ON c.AcademicYearId = ay.Id
+                JOIN Faculties f ON c.FacultyId = f.Id
+                WHERE c.DateDeleted IS NULL AND f.DateDeleted IS NULL
+                GROUP BY ay.Name
+            ) AS tc ON ay.Name = tc.AcademicYear
+            WHERE ay.Name = cc.AcademicYear
+            ORDER BY ay.Name, cc.Faculty;
+            """;
+
+        var query = await connection.QueryAsync<GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearDto>(sql: sql);
+
+        var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearReportDto>>();
+
+        var data = query.AsList();
+
+        var count = data.Count;
+        var facultyCount = await _facultyRepository.CountAsync();
+
+        for (var i = 0; i < count; i += facultyCount)
+        {
+            var academicYearResult = new AcademicYearReportResponseWrapper<GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearReportDto>();
+
+            academicYearResult.AcademicYear = data[i].AcademicYear;
+
+            for (var j = i; j < i + facultyCount; j++)
+            {
+                var facultyResult = new GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearReportDto();
+
+                facultyResult.Faculty = data[j].Faculty;
+                facultyResult.Percentage = data[j].Percentage;
+
+                academicYearResult.DataSets.Add(facultyResult);
+            }
+
+            result.Response.Add(academicYearResult);
+        }
+
+        result.Response = result.Response
+            .OrderByDescending(x => x.AcademicYear)
+            .ToList();
+
+        return result;
+    }
 }
