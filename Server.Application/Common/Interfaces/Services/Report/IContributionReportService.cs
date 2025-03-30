@@ -6,5 +6,5 @@ namespace Server.Application.Common.Interfaces.Services.Report;
 public interface IContributionReportService
 {
     Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<TotalContributionsInEachFacultyInEachAcademicYearReportDto>>> GetTotalContributionsInEachFacultyInEachAcademicYearReport();
-    Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>>> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear(string academicYear);
+    Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>>> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear(string academicYear);
 }

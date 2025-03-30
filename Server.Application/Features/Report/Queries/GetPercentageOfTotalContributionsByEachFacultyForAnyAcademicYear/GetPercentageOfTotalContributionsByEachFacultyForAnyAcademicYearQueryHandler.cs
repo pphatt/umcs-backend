@@ -6,7 +6,7 @@ using Server.Application.Wrapper.Report;
 
 namespace Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 
-public class GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQueryHandler : IRequestHandler<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery, ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>>>
+public class GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQueryHandler : IRequestHandler<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery, ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>>>
 {
     private readonly IContributionReportService _contributionReportService;
 
@@ -15,7 +15,7 @@ public class GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQue
         _contributionReportService = contributionReportService;
     }
 
-    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>>> Handle(GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery request, CancellationToken cancellationToken)
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>>> Handle(GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery request, CancellationToken cancellationToken)
     {
         var result = await _contributionReportService.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear(request.AcademicYearName);
 

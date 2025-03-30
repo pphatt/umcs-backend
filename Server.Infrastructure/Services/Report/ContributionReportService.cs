@@ -69,7 +69,7 @@ public class ContributionReportService : IContributionReportService
         return result;
     }
 
-    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>>> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear(string academicYearName)
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>>> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear(string academicYearName)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -103,15 +103,15 @@ public class ContributionReportService : IContributionReportService
             ORDER BY cc.FacultyName;
             """;
 
-        var query = await connection.QueryAsync<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearMapDto>(sql: sql, param: new
+        var query = await connection.QueryAsync<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearDto>(sql: sql, param: new
         {
             academicYearName
         });
 
         var data = query.AsList();
-        var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>>();
+        var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>>();
 
-        var academicYearDto = new AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>();
+        var academicYearDto = new AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>();
 
         if (data.Count > 0)
         {
@@ -119,7 +119,7 @@ public class ContributionReportService : IContributionReportService
 
             for (var i = 0; i < data.Count; i++)
             {
-                var percentage = new PercentageTotalContributionsPerFacultyPerAcademicYearData();
+                var percentage = new PercentageTotalContributionsPerFacultyPerAcademicYearReportDto();
 
                 percentage.Faculty = data[i].Faculty;
                 percentage.Percentage = data[i].Percentage;

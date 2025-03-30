@@ -6,3 +6,9 @@ public class GetTotalContributionsInEachFacultyInEachAcademicYearDto
     public string Faculty { get; set; }
     public int TotalContributions { get; set; }
 }
+
+public class TotalContributionsInEachFacultyInEachAcademicYearReportDto
+{
+    public String Faculty { get; set; }
+    public int TotalContributions { get; set; }
+}
