@@ -304,4 +304,52 @@ public class ContributionReportService : IContributionReportService
 
         return result;
     }
+
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsByEachFacultyForAnyAcademicYearReportDto>>> GetTotalContributorsByEachFacultyForAnyAcademicYear(string academicYearName)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var sql =
+            """
+            SELECT ay.Name as AcademicYear,
+                   f.Name as Faculty,
+                   COALESCE(COUNT(distinct c.UserId), 0) AS Contributors
+            FROM AcademicYears ay
+            CROSS JOIN Faculties f
+            LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id AND c.FacultyId = f.Id
+            WHERE f.DateDeleted is null AND ay.Name = @academicYearName
+            GROUP BY ay.Name, f.Name
+            ORDER BY ay.Name, f.Name;
+            """;
+
+        var query = await connection.QueryAsync<GetTotalContributorsByEachFacultyForAnyAcademicYearDto>(sql: sql, param: new
+        {
+            academicYearName,
+        });
+
+        var data = query.AsList();
+
+        var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsByEachFacultyForAnyAcademicYearReportDto>>();
+
+        var academicYearDto = new AcademicYearReportResponseWrapper<GetTotalContributorsByEachFacultyForAnyAcademicYearReportDto>();
+
+        if (data.Count > 0)
+        {
+            academicYearDto.AcademicYear = data[0].AcademicYear;
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                var percentage = new GetTotalContributorsByEachFacultyForAnyAcademicYearReportDto();
+
+                percentage.Faculty = data[i].Faculty;
+                percentage.Contributors = data[i].Contributors;
+
+                academicYearDto.DataSets.Add(percentage);
+            }
+
+            result.Response.Add(academicYearDto);
+        }
+
+        return result;
+    }
 }

@@ -83,6 +83,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetTopRatedPubli
 using Server.Application.Features.PublicContributionCommentApp.Commands;
 using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributionsInEachFacultyForAnyAcademicYear;
+using Server.Application.Features.Report.Queries.GetTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
@@ -174,6 +175,7 @@ using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.PublicContributions.ToggleReadLater;
 using Server.Contracts.Report.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Contracts.Report.GetTotalContributionsInEachFacultyForAnyAcademicYear;
+using Server.Contracts.Report.GetTotalContributorsByEachFacultyForAnyAcademicYear;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
@@ -399,5 +401,6 @@ public class MapperProfiles : Profile
         // Report
         CreateMap<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearRequest, GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery>();
         CreateMap<GetTotalContributionsInEachFacultyForAnyAcademicYearRequest, GetTotalContributionsInEachFacultyForAnyAcademicYearQuery>();
+        CreateMap<GetTotalContributorsByEachFacultyForAnyAcademicYearRequest, GetTotalContributorsByEachFacultyForAnyAcademicYearQuery>();
     }
 }
