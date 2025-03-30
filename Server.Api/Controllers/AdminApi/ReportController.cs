@@ -5,7 +5,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Report.Queries.GetTotalContributionsInEachFacultyInEachAcademicYear;
+using Server.Contracts.Report.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Domain.Common.Constants.Authorization;
 
 namespace Server.Api.Controllers.AdminApi;
@@ -27,6 +29,17 @@ public class ReportController : AdminApiController
         var command = new GetTotalContributionsInEachFacultyInEachAcademicYearQuery();
 
         var result = await _mediatorSender.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpGet("get-percentage-of-total-contributions-by-each-faculty-for-any-academic-year/{AcademicYearName}")]
+    [Authorize(Permissions.Dashboards.View)]
+    public async Task<IActionResult> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear([FromRoute] GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearRequest request)
+    {
+        var mapper = _mapper.Map<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery>(request);
+
+        var result = await _mediatorSender.Send(mapper);
 
         return Ok(result);
     }

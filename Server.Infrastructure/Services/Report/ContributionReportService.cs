@@ -4,11 +4,7 @@ using Server.Application.Common.Dtos.Content.Report.Contributions;
 using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services.Report;
 using Server.Application.Wrapper.Report;
-using Server.Domain.Entity.Content;
-using Server.Infrastructure.Migrations;
 using Server.Infrastructure.Persistence.AppDbConnection;
-
-using static Server.Domain.Common.Errors.Errors;
 
 namespace Server.Infrastructure.Services.Report;
 
@@ -69,6 +65,70 @@ public class ContributionReportService : IContributionReportService
         result.Response = result.Response
             .OrderByDescending(x => x.AcademicYear)
             .ToList();
+
+        return result;
+    }
+
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>>> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear(string academicYearName)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var sql =
+            """
+            SELECT
+                ay.Name AS AcademicYear,
+                cc.FacultyName AS Faculty,
+                CAST((cc.ContributionCount * 1.0 / COALESCE(tc.TotalCount, 0)) * 100 AS INT) AS Percentage
+            FROM AcademicYears ay
+            CROSS JOIN (
+                SELECT
+                    f.Name AS FacultyName,
+                    COUNT(c.Id) AS ContributionCount
+                FROM Faculties f
+                LEFT JOIN Contributions c ON f.Id = c.FacultyId
+                    AND c.AcademicYearId = (SELECT Id FROM AcademicYears WHERE Name = @academicYearName)
+                    AND c.DateDeleted IS NULL
+                WHERE f.DateDeleted IS NULL
+                GROUP BY f.Name
+            ) AS cc
+            CROSS JOIN (
+                SELECT
+                    COUNT(*) AS TotalCount
+                FROM Contributions c
+                JOIN AcademicYears ay ON c.AcademicYearId = ay.Id
+                JOIN Faculties f ON c.FacultyId = f.Id
+                WHERE ay.Name = @academicYearName AND c.DateDeleted IS NULL AND f.DateDeleted IS NULL
+            ) AS tc
+            WHERE ay.Name = @academicYearName
+            ORDER BY cc.FacultyName;
+            """;
+
+        var query = await connection.QueryAsync<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearMapDto>(sql: sql, param: new
+        {
+            academicYearName
+        });
+
+        var data = query.AsList();
+        var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>>();
+
+        var academicYearDto = new AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearData>();
+
+        if (data.Count > 0)
+        {
+            academicYearDto.AcademicYear = data[0].AcademicYear;
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                var percentage = new PercentageTotalContributionsPerFacultyPerAcademicYearData();
+
+                percentage.Faculty = data[i].Faculty;
+                percentage.Percentage = data[i].Percentage;
+
+                academicYearDto.DataSets.Add(percentage);
+            }
+
+            result.Response.Add(academicYearDto);
+        }
 
         return result;
     }

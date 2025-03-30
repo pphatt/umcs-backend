@@ -81,6 +81,7 @@ using Server.Application.Features.PublicContributionApp.Queries.GetTopMostLikedP
 using Server.Application.Features.PublicContributionApp.Queries.GetTopMostViewedPublicContributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopRatedPublicContributions;
 using Server.Application.Features.PublicContributionCommentApp.Commands;
+using Server.Application.Features.Report.Queries.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Application.Features.Role.Commands.BulkDeleteRoles;
 using Server.Application.Features.Role.Commands.CreateRole;
 using Server.Application.Features.Role.Commands.DeleteRole;
@@ -170,6 +171,7 @@ using Server.Contracts.PublicContributions.RevokeAllowGuestWithManyContributions
 using Server.Contracts.PublicContributions.ToggleBookmarkContribution;
 using Server.Contracts.PublicContributions.ToggleLikeContribution;
 using Server.Contracts.PublicContributions.ToggleReadLater;
+using Server.Contracts.Report.GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear;
 using Server.Contracts.Roles.BulkDeleteRoles;
 using Server.Contracts.Roles.CreateRole;
 using Server.Contracts.Roles.DeleteRole;
@@ -391,5 +393,8 @@ public class MapperProfiles : Profile
         CreateMap<SendChatMessageRequest, SendChatMessageCommand>();
         CreateMap<GetUserChatMessagesPaginationRequest, GetUserChatMessagesPaginationQuery>();
         CreateMap<MarkMessageAsRedRequest, MarkMessageAsRedCommand>();
+
+        // Report
+        CreateMap<GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearRequest, GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearQuery>();
     }
 }
