@@ -26,16 +26,19 @@ using Server.Application.Common.Interfaces.Services;
 using Server.Application.Common.Interfaces.Services.Cache;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
+using Server.Application.Common.Interfaces.Services.Report;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
 using Server.Infrastructure.Caching;
 using Server.Infrastructure.Jobs.JobSetup;
 using Server.Infrastructure.Persistence;
+using Server.Infrastructure.Persistence.AppDbConnection;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
 using Server.Infrastructure.Services.Cache;
 using Server.Infrastructure.Services.Email;
 using Server.Infrastructure.Services.Media;
+using Server.Infrastructure.Services.Report;
 
 using StackExchange.Redis;
 
@@ -61,7 +64,6 @@ public static class DependencyInjection
 
         services.AddScoped<IUserService, UserService>();
 
-
         services.AddScoped<IEmailService, EmailService>();
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
@@ -71,6 +73,9 @@ public static class DependencyInjection
 
         services.AddScoped<ICacheService, CacheService>();
         services.Configure<CacheSettings>(configuration.GetSection("RedisSettings"));
+
+        services.AddSingleton<IAppDbConnectionFactory, AppDbConnectionFactory>();
+        services.AddScoped<IContributionReportService, ContributionReportService>();
 
         services.AddHttpContextAccessor();
 
