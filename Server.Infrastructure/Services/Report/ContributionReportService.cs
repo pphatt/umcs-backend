@@ -1,20 +1,26 @@
 ﻿using Dapper;
 
 using Server.Application.Common.Dtos.Content.Report.Contributions;
+using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Application.Common.Interfaces.Services.Report;
 using Server.Application.Wrapper.Report;
+using Server.Domain.Entity.Content;
 using Server.Infrastructure.Migrations;
 using Server.Infrastructure.Persistence.AppDbConnection;
+
+using static Server.Domain.Common.Errors.Errors;
 
 namespace Server.Infrastructure.Services.Report;
 
 public class ContributionReportService : IContributionReportService
 {
     private readonly IAppDbConnectionFactory _connectionFactory;
+    private readonly IFacultyRepository _facultyRepository;
 
-    public ContributionReportService(IAppDbConnectionFactory connectionFactory)
+    public ContributionReportService(IAppDbConnectionFactory connectionFactory, IFacultyRepository facultyRepository)
     {
         _connectionFactory = connectionFactory;
+        _facultyRepository = facultyRepository;
     }
 
     public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<TotalContributionsInEachFacultyInEachAcademicYearReportDto>>> GetTotalContributionsInEachFacultyInEachAcademicYearReport()
@@ -34,36 +40,31 @@ public class ContributionReportService : IContributionReportService
             ORDER BY ay.Name, f.Name;
             """;
 
-        var query = await connection.QueryAsync<GetTotalContributionsInEachFacultyInEachAcademicYearDto>(sql: sql);
+        var query = (await connection.QueryAsync<GetTotalContributionsInEachFacultyInEachAcademicYearDto>(sql: sql)).AsList();
 
-        var setOfAcademicYears = query.Select(x => x.AcademicYear).ToHashSet();
-        var setOfFaculties = query.Select(x => x.Faculty).ToHashSet();
+        var count = query.Count();
+        var facultyCount = await _facultyRepository.CountAsync();
 
         var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<TotalContributionsInEachFacultyInEachAcademicYearReportDto>>();
 
-        Parallel.ForEach(setOfAcademicYears, academicYear =>
+        for (var i = 0; i < count; i += facultyCount)
         {
             var academicYearResult = new AcademicYearReportResponseWrapper<TotalContributionsInEachFacultyInEachAcademicYearReportDto>();
 
-            academicYearResult.AcademicYear = academicYear;
+            academicYearResult.AcademicYear = query[i].AcademicYear;
 
-            Parallel.ForEach(setOfFaculties, faculty =>
+            for (var j = i; j < i + facultyCount; j++)
             {
                 var facultyResult = new TotalContributionsInEachFacultyInEachAcademicYearReportDto();
 
-                var contributionCount = query
-                    .Where(x => x.AcademicYear == academicYear && x.Faculty == faculty)
-                    .FirstOrDefault()!
-                    .TotalContributions;
-
-                facultyResult.Faculty = faculty;
-                facultyResult.TotalContributions = contributionCount;
+                facultyResult.Faculty = query[j].Faculty;
+                facultyResult.TotalContributions = query[j].TotalContributions;
 
                 academicYearResult.DataSets.Add(facultyResult);
-            });
+            }
 
             result.Response.Add(academicYearResult);
-        });
+        }
 
         result.Response = result.Response
             .OrderByDescending(x => x.AcademicYear)

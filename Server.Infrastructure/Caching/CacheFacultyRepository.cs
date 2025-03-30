@@ -145,7 +145,7 @@ public class CacheFacultyRepository : IFacultyRepository
         return faculty;
     }
 
-    public async Task<int> Count()
+    public async Task<int> CountAsync()
     {
         string key = $"{FACULTY}:count";
 
@@ -156,7 +156,7 @@ public class CacheFacultyRepository : IFacultyRepository
             return cached;
         }
 
-        var count = await _decorator.Count();
+        var count = await _decorator.CountAsync();
 
         if (count != 0)
         {
