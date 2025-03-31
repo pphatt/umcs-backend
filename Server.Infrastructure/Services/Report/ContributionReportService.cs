@@ -504,8 +504,8 @@ public class ContributionReportService : IContributionReportService
             SELECT
                 ay.Name AS AcademicYear,
                 f.Name AS Faculty,
-                COUNT(CASE WHEN c.Status = 0 THEN 1 END) AS AcceptedContributions,
-                COUNT(CASE WHEN c.Status = 1 THEN 1 END) AS RejectedContributions,
+                COUNT(CASE WHEN c.Status = 1 THEN 1 END) AS AcceptedContributions,
+                COUNT(CASE WHEN c.Status = 2 THEN 1 END) AS RejectedContributions,
                 COUNT(c.Id) AS TotalContributions
             FROM AcademicYears ay
             CROSS JOIN Faculties f
