@@ -494,4 +494,59 @@ public class ContributionReportService : IContributionReportService
 
         return result;
     }
+
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalAcceptRejectContributionsInEachFacultyForAnyAcademicYearReportDto>>> GetTotalAcceptRejectContributionsInEachFacultyForAnyAcademicYearReport(string academicYearName)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var sql =
+            """
+            SELECT
+                ay.Name AS AcademicYear,
+                f.Name AS Faculty,
+                COUNT(CASE WHEN c.Status = 0 THEN 1 END) AS AcceptedContributions,
+                COUNT(CASE WHEN c.Status = 1 THEN 1 END) AS RejectedContributions,
+                COUNT(c.Id) AS TotalContributions
+            FROM AcademicYears ay
+            CROSS JOIN Faculties f
+            LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id
+                AND c.FacultyId = f.Id
+                AND c.DateDeleted IS NULL
+            WHERE ay.Name = @academicYearName
+                AND f.DateDeleted IS NULL
+            GROUP BY ay.Name, f.Name;
+            """;
+
+        var query = await connection.QueryAsync<GetTotalAcceptRejectContributionsInEachFacultyForAnyAcademicYearDto>(sql: sql, param: new
+        {
+            academicYearName
+        });
+
+        var data = query.AsList();
+
+        var result = new ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalAcceptRejectContributionsInEachFacultyForAnyAcademicYearReportDto>>();
+
+        var academicYearDto = new AcademicYearReportResponseWrapper<GetTotalAcceptRejectContributionsInEachFacultyForAnyAcademicYearReportDto>();
+
+        if (data.Any())
+        {
+            academicYearDto.AcademicYear = data[0].AcademicYear;
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                var total = new GetTotalAcceptRejectContributionsInEachFacultyForAnyAcademicYearReportDto();
+
+                total.Faculty = data[i].Faculty;
+                total.AcceptedContributions = data[i].AcceptedContributions;
+                total.RejectedContributions = data[i].RejectedContributions;
+                total.TotalContributions = data[i].TotalContributions;
+
+                academicYearDto.DataSets.Add(total);
+            }
+
+            result.Response.Add(academicYearDto);
+        }
+
+        return result;
+    }
 }
