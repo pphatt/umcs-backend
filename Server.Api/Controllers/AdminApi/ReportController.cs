@@ -35,9 +35,9 @@ public class ReportController : AdminApiController
     [Authorize(Permissions.Dashboards.View)]
     public async Task<IActionResult> GetTotalContributionsInEachFacultyInEachAcademicYear()
     {
-        var command = new GetTotalContributionsInEachFacultyInEachAcademicYearQuery();
+        var query = new GetTotalContributionsInEachFacultyInEachAcademicYearQuery();
 
-        var result = await _mediatorSender.Send(command);
+        var result = await _mediatorSender.Send(query);
 
         return Ok(result);
     }
@@ -57,9 +57,9 @@ public class ReportController : AdminApiController
     [Authorize(Permissions.Dashboards.View)]
     public async Task<IActionResult> GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYear()
     {
-        var command = new GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearQuery();
+        var query = new GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearQuery();
 
-        var result = await _mediatorSender.Send(command);
+        var result = await _mediatorSender.Send(query);
 
         return Ok(result);
     }
@@ -79,9 +79,9 @@ public class ReportController : AdminApiController
     [Authorize(Permissions.Dashboards.View)]
     public async Task<IActionResult> GetTotalContributorsInEachFacultyInEachAcademicYear()
     {
-        var command = new GetTotalContributorsInEachFacultyInEachAcademicYearQuery();
+        var query = new GetTotalContributorsInEachFacultyInEachAcademicYearQuery();
 
-        var result = await _mediatorSender.Send(command);
+        var result = await _mediatorSender.Send(query);
 
         return Ok(result);
     }
@@ -101,9 +101,9 @@ public class ReportController : AdminApiController
     [Authorize(Permissions.Dashboards.View)]
     public async Task<IActionResult> GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYear()
     {
-        var command = new GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearQuery();
+        var query = new GetPercentageOfTotalContributorsInEachFacultyInEachAcademicYearQuery();
 
-        var result = await _mediatorSender.Send(command);
+        var result = await _mediatorSender.Send(query);
 
         return Ok(result);
     }
