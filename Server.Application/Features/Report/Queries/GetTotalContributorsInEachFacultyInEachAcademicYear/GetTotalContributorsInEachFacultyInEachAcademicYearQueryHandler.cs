@@ -17,7 +17,7 @@ public class GetTotalContributorsInEachFacultyInEachAcademicYearQueryHandler : I
 
     public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsInEachFacultyInEachAcademicYearReportDto>>> Handle(GetTotalContributorsInEachFacultyInEachAcademicYearQuery request, CancellationToken cancellationToken)
     {
-        var result = await _contributionReportService.GetTotalContributorsInEachFacultyInEachAcademicYear();
+        var result = await _contributionReportService.GetTotalContributorsInEachFacultyInEachAcademicYearReport();
 
         return result;
     }

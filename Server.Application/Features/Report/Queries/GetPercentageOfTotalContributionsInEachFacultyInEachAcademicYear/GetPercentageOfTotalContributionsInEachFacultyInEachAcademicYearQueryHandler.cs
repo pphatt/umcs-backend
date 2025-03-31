@@ -17,7 +17,7 @@ public class GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearQue
 
     public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearReportDto>>> Handle(GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearQuery request, CancellationToken cancellationToken)
     {
-        var result = await _contributionReportService.GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYear();
+        var result = await _contributionReportService.GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearReport();
 
         return result;
     }

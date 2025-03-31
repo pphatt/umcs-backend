@@ -69,7 +69,7 @@ public class ContributionReportService : IContributionReportService
         return result;
     }
 
-    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributionsInEachFacultyForAnyAcademicYearReportDto>>> GetTotalContributionsInEachFacultyForAnyAcademicYear(string academicYearName)
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributionsInEachFacultyForAnyAcademicYearReportDto>>> GetTotalContributionsInEachFacultyForAnyAcademicYearReport(string academicYearName)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -116,7 +116,7 @@ public class ContributionReportService : IContributionReportService
         return result;
     }
 
-    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearReportDto>>> GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYear()
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearReportDto>>> GetPercentageOfTotalContributionsInEachFacultyInEachAcademicYearReport()
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -189,7 +189,7 @@ public class ContributionReportService : IContributionReportService
         return result;
     }
 
-    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>>> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYear(string academicYearName)
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<PercentageTotalContributionsPerFacultyPerAcademicYearReportDto>>> GetPercentageOfTotalContributionsByEachFacultyForAnyAcademicYearReport(string academicYearName)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -253,7 +253,7 @@ public class ContributionReportService : IContributionReportService
         return result;
     }
 
-    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsInEachFacultyInEachAcademicYearReportDto>>> GetTotalContributorsInEachFacultyInEachAcademicYear()
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsInEachFacultyInEachAcademicYearReportDto>>> GetTotalContributorsInEachFacultyInEachAcademicYearReport()
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -305,7 +305,7 @@ public class ContributionReportService : IContributionReportService
         return result;
     }
 
-    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsByEachFacultyForAnyAcademicYearReportDto>>> GetTotalContributorsByEachFacultyForAnyAcademicYear(string academicYearName)
+    public async Task<ReportResponseWrapper<AcademicYearReportResponseWrapper<GetTotalContributorsByEachFacultyForAnyAcademicYearReportDto>>> GetTotalContributorsByEachFacultyForAnyAcademicYearReport(string academicYearName)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
