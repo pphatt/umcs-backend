@@ -6,7 +6,7 @@ namespace Server.Application.Common.Interfaces.Persistence.Repositories;
 
 public interface IFacultyRepository : IRepository<Faculty, Guid>
 {
-    Task<int> Count();
+    Task<int> CountAsync();
 
     Task<PaginationResult<FacultyDto>> GetAllFacultiesPagination(string? keyword, int pageIndex = 1, int pageSize = 10);
 

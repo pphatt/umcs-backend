@@ -18,7 +18,7 @@ public class FacultyRepository : RepositoryBase<Faculty, Guid>, IFacultyReposito
         _mapper = mapper;
     }
 
-    public async Task<int> Count()
+    public async Task<int> CountAsync()
     {
         return await _context.Faculties.CountAsync();
     }
