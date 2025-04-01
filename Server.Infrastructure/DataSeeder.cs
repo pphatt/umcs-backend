@@ -294,6 +294,35 @@ public partial class DataSeeder
 
             await context.SaveChangesAsync();
         }
+
+        if (!context.Likes.Any())
+        {
+            for (var i = 0; i <= 250; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.Likes.AddAsync(new Like
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                    });
+                }
+            }
+
+            for (var i = 301; i <= 500; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.Likes.AddAsync(new Like
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                    });
+                }
+            }
+
+            await context.SaveChangesAsync();
+        }
     }
 
     private static async Task<List<Faculty>> FacultyList(AppDbContext context)
