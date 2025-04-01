@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Extensions;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+
 using System.Security.Claims;
 
 namespace Server.Infrastructure;
@@ -30,6 +32,7 @@ public partial class DataSeeder
 
         var studentList = StudentList(faculties);
         var coordinatorList = CoordinatorList(faculties);
+        var guestList = GuestList(faculties);
 
         if (!await context.Users.AnyAsync())
         {
@@ -67,7 +70,7 @@ public partial class DataSeeder
             // create student accounts.
             foreach (var user in studentList)
             {
-                user.PasswordHash = passwordHasher.HashPassword(user, "Student@123");
+                user.PasswordHash = passwordHasher.HashPassword(user, "Admin@123");
 
                 await context.Users.AddAsync(user);
                 await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
@@ -87,6 +90,19 @@ public partial class DataSeeder
                 {
                     RoleId = roles[2].Id,
                     UserId = user.Id,
+                });
+            }
+
+            // create guest account.
+            foreach (var guest in guestList)
+            {
+                guest.PasswordHash = passwordHasher.HashPassword(guest, "Admin@123");
+
+                await context.Users.AddAsync(guest);
+                await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+                {
+                    RoleId = roles[4].Id,
+                    UserId = guest.Id,
                 });
             }
 
@@ -122,6 +138,16 @@ public partial class DataSeeder
                     new()
                     {
                         Selected = true,
+                        Value = "Permissions.StudentDashboard.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
                         Value = "Permissions.Contributions.Create"
                     },
                     new()
@@ -152,17 +178,7 @@ public partial class DataSeeder
                     new()
                     {
                         Selected = true,
-                        Value = "Permissions.ManageContributions.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Approve"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Reject"
+                        Value = "Permissions.Dashboards.View"
                     },
                     new()
                     {
@@ -172,13 +188,48 @@ public partial class DataSeeder
                     new()
                     {
                         Selected = true,
-                        Value = "Permissions.SettingGAC.Manage"
-                    }
+                        Value = "Permissions.Contributions.Approve"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.ManageContributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.SettingGAC.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Download"
+                    },
                 };
 
                 foreach (var coordinatorPermission in coordinatorPermissionList)
                 {
                     await roleManager.AddClaimAsync(roles[2], new Claim(UserClaims.Permissions, coordinatorPermission.Value!));
+                }
+            }
+
+            // seed guest role claims permissions.
+            var guestPermissions = await roleManager.GetClaimsAsync(roles[4]);
+
+            if (!coordinatorPermissions.Any())
+            {
+                var guestPermissionList = new List<RoleClaimsDto>
+                {
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.StudentDashboard.View"
+                    },
+                };
+
+                foreach (var guestPermission in guestPermissionList)
+                {
+                    await roleManager.AddClaimAsync(roles[4], new Claim(UserClaims.Permissions, guestPermission.Value!));
                 }
             }
         }
@@ -256,8 +307,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Meryl",
-                LastName = "Streep",
+                FirstName = "student2",
+                LastName = "student2",
                 Email = "jettlaststand@gmail.com",
                 NormalizedEmail = "jettlaststand@gmail.com".ToUpperInvariant(),
                 UserName = "student2",
@@ -271,8 +322,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Cate",
-                LastName = "Blanchett",
+                FirstName = "student3",
+                LastName = "student3",
                 Email = "student3@gmail.com",
                 NormalizedEmail = "student3@gmail.com".ToUpperInvariant(),
                 UserName = "student3",
@@ -286,8 +337,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Viola",
-                LastName = "Davis",
+                FirstName = "student4",
+                LastName = "student4",
                 Email = "student4@gmail.com",
                 NormalizedEmail = "student4@gmail.com".ToUpperInvariant(),
                 UserName = "student4",
@@ -301,8 +352,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Scarlett",
-                LastName = "Johansson",
+                FirstName = "student5",
+                LastName = "student5",
                 Email = "student5@gmail.com",
                 NormalizedEmail = "student5@gmail.com".ToUpperInvariant(),
                 UserName = "student5",
@@ -316,8 +367,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Angelina",
-                LastName = "Jolie",
+                FirstName = "student6",
+                LastName = "student6",
                 Email = "student6@gmail.com",
                 NormalizedEmail = "student6@gmail.com".ToUpperInvariant(),
                 UserName = "student6",
@@ -331,8 +382,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Jennifer",
-                LastName = "Lawrence",
+                FirstName = "student7",
+                LastName = "student7",
                 Email = "student7@gmail.com",
                 NormalizedEmail = "student7@gmail.com".ToUpperInvariant(),
                 UserName = "student7",
@@ -346,8 +397,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Nicole",
-                LastName = "Kidman",
+                FirstName = "student8",
+                LastName = "student8",
                 Email = "student8@gmail.com",
                 NormalizedEmail = "student8@gmail.com".ToUpperInvariant(),
                 UserName = "student8",
@@ -361,8 +412,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Emma",
-                LastName = "Stone",
+                FirstName = "student9",
+                LastName = "student9",
                 Email = "student9@gmail.com",
                 NormalizedEmail = "student9@gmail.com".ToUpperInvariant(),
                 UserName = "student9",
@@ -376,8 +427,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Charlize",
-                LastName = "Theron",
+                FirstName = "student10",
+                LastName = "student10",
                 Email = "student10@gmail.com",
                 NormalizedEmail = "student10@gmail.com".ToUpperInvariant(),
                 UserName = "student10",
@@ -481,6 +532,104 @@ public partial class DataSeeder
         return list;
 
         #endregion Cooridnator List
+    }
+
+    private static List<AppUser> GuestList(List<Faculty> faculties)
+    {
+        #region Guest List
+
+        var list = new List<AppUser>()
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Phat",
+                LastName = "Vu",
+                Email = "guest@gmail.com",
+                NormalizedEmail = "guest@gmail.com".ToUpperInvariant(),
+                UserName = "guest",
+                NormalizedUserName = "guest".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[0].Id,
+                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472745/133858407972414310_tmpggi.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Vu",
+                LastName = "Nguyen",
+                Email = "guest1@gmail.com",
+                NormalizedEmail = "guest1@gmail.com".ToUpperInvariant(),
+                UserName = "guest1",
+                NormalizedUserName = "guest1".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[1].Id,
+                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472724/DALLE2024-04-0507.40_ebloch.webp",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Duong",
+                LastName = "Anh",
+                Email = "guest2@gmail.com",
+                NormalizedEmail = "guest2@gmail.com".ToUpperInvariant(),
+                UserName = "guest2",
+                NormalizedUserName = "guest2".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[2].Id,
+                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472714/CustomBlogCover_oevxl3.avif",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Tri",
+                LastName = "Sieu",
+                Email = "guest3@gmail.com",
+                NormalizedEmail = "guest3@gmail.com".ToUpperInvariant(),
+                UserName = "guest3",
+                NormalizedUserName = "guest3".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[3].Id,
+                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472705/ab67616d0000b2731841e5f0a180d90a17e38c89_dxkaxs.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Bao",
+                LastName = "Gia",
+                Email = "guest4@gmail.com",
+                NormalizedEmail = "guest4@gmail.com".ToUpperInvariant(),
+                UserName = "guest4",
+                NormalizedUserName = "guest4".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[4].Id,
+                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472697/sora-no-game-no-life_fjvodi.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            }
+        };
+
+        return list;
+
+        #endregion Guest List
     }
 
     private static async Task<List<AcademicYear>> AcademicYearList(AppDbContext context, Guid userId)
