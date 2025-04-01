@@ -30,6 +30,7 @@ public partial class DataSeeder
         // seed users.
         var passwordHasher = new PasswordHasher<AppUser>();
 
+        var managerId = Guid.NewGuid();
         var studentList = StudentList(faculties);
         var coordinatorList = CoordinatorList(faculties);
         var guestList = GuestList(faculties);
@@ -65,6 +66,36 @@ public partial class DataSeeder
             {
                 RoleId = roles[0].Id,
                 UserId = admin.Id,
+            });
+
+            // create manager account.
+            var managerEmail = "snotright5@gmail.com";
+            var managerUsername = "manager";
+
+            var manager = new AppUser()
+            {
+                Id = managerId,
+                FirstName = "Tien Phat",
+                LastName = "Vu",
+                Email = managerEmail,
+                NormalizedEmail = managerEmail.ToUpperInvariant(),
+                UserName = managerUsername,
+                NormalizedUserName = managerUsername.ToUpperInvariant(),
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                IsActive = true,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[0].Id,
+            };
+
+            manager.PasswordHash = passwordHasher.HashPassword(manager, "Admin@123");
+
+            await context.Users.AddAsync(manager);
+
+            await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+            {
+                RoleId = roles[3].Id,
+                UserId = manager.Id,
             });
 
             // create student accounts.
