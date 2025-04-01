@@ -362,13 +362,13 @@ public class ContributionReportService : IContributionReportService
             SELECT
                 ay.Name AS AcademicYear,
                 cc.Faculty AS Faculty,
-                COALESCE(CAST((cc.ContributionCount * 1.0 / tc.TotalCount) * 100 AS INT), 0) AS Percentage
+                COALESCE(CAST((cc.ContributorsCount * 1.0 / tc.TotalCount) * 100 AS INT), 0) AS Percentage
             FROM AcademicYears ay
             CROSS JOIN (
                 SELECT
                     ay.Name AS AcademicYear,
                     f.Name AS Faculty,
-                    COUNT(distinct c.UserId) AS ContributionCount
+                    COUNT(distinct c.UserId) AS ContributorsCount
                 FROM AcademicYears ay
                 CROSS JOIN Faculties f
                 LEFT JOIN Contributions c ON f.Id = c.FacultyId
@@ -380,7 +380,7 @@ public class ContributionReportService : IContributionReportService
             LEFT JOIN (
                 SELECT
                     ay.Name AS AcademicYear,
-                    COUNT(distinct c.UserId) AS TotalCount
+                    COUNT(c.UserId) AS TotalCount
                 FROM Contributions c
                 JOIN AcademicYears ay ON c.AcademicYearId = ay.Id
                 JOIN Faculties f ON c.FacultyId = f.Id
@@ -435,13 +435,13 @@ public class ContributionReportService : IContributionReportService
             SELECT
                 ay.Name AS AcademicYear,
                 cc.Faculty AS Faculty,
-                COALESCE(CAST((cc.ContributionCount * 1.0 / tc.TotalCount) * 100 AS INT), 0) AS Percentage
+                COALESCE(CAST((cc.ContributorsCount * 1.0 / tc.TotalCount) * 100 AS INT), 0) AS Percentage
             FROM AcademicYears ay
             CROSS JOIN (
                 SELECT
                     ay.Name AS AcademicYear,
                     f.Name AS Faculty,
-                    COUNT(distinct c.UserId) AS ContributionCount
+                    COUNT(distinct c.UserId) AS ContributorsCount
                 FROM AcademicYears ay
                 CROSS JOIN Faculties f
                 LEFT JOIN Contributions c ON f.Id = c.FacultyId
@@ -453,7 +453,7 @@ public class ContributionReportService : IContributionReportService
             LEFT JOIN (
                 SELECT
                     ay.Name AS AcademicYear,
-                    COUNT(distinct c.UserId) AS TotalCount
+                    COUNT(c.UserId) AS TotalCount
                 FROM Contributions c
                 JOIN AcademicYears ay ON c.AcademicYearId = ay.Id AND ay.Name = @academicYearName
                 JOIN Faculties f ON c.FacultyId = f.Id

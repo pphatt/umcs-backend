@@ -1,22 +1,32 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
+using System.Security.Cryptography;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Extensions;
+using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
+using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
-using System.Security.Claims;
 
 namespace Server.Infrastructure;
 
+using File = Server.Domain.Entity.Content.File;
+
 public partial class DataSeeder
 {
-    public async static Task SeedAsync(AppDbContext context, RoleManager<AppRole> roleManager)
+    public async static Task SeedAsync(
+        AppDbContext context,
+        RoleManager<AppRole> roleManager,
+        IContributionRepository contributionRepository)
     {
         var adminId = Guid.NewGuid();
 
-        // seed faculies.
+        // seed faculties.
         var faculties = await FacultyList(context);
 
         // seed academic years.
@@ -28,8 +38,10 @@ public partial class DataSeeder
         // seed users.
         var passwordHasher = new PasswordHasher<AppUser>();
 
+        var managerId = Guid.NewGuid();
         var studentList = StudentList(faculties);
         var coordinatorList = CoordinatorList(faculties);
+        var guestList = GuestList(faculties);
 
         if (!await context.Users.AnyAsync())
         {
@@ -58,22 +70,43 @@ public partial class DataSeeder
 
             await context.Users.AddAsync(admin);
 
-            await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+            await context.UserRoles.AddAsync(new IdentityUserRole<Guid> { RoleId = roles[0].Id, UserId = admin.Id, });
+
+            // create manager account.
+            var managerEmail = "snotright5@gmail.com";
+            var managerUsername = "manager";
+
+            var manager = new AppUser()
             {
-                RoleId = roles[0].Id,
-                UserId = admin.Id,
-            });
+                Id = managerId,
+                FirstName = "Tien Phat",
+                LastName = "Vu",
+                Email = managerEmail,
+                NormalizedEmail = managerEmail.ToUpperInvariant(),
+                UserName = managerUsername,
+                NormalizedUserName = managerUsername.ToUpperInvariant(),
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                IsActive = true,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[0].Id,
+            };
+
+            manager.PasswordHash = passwordHasher.HashPassword(manager, "Admin@123");
+
+            await context.Users.AddAsync(manager);
+
+            await context.UserRoles.AddAsync(new IdentityUserRole<Guid> { RoleId = roles[3].Id, UserId = manager.Id, });
 
             // create student accounts.
             foreach (var user in studentList)
             {
-                user.PasswordHash = passwordHasher.HashPassword(user, "Student@123");
+                user.PasswordHash = passwordHasher.HashPassword(user, "Admin@123");
 
                 await context.Users.AddAsync(user);
                 await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
                 {
-                    RoleId = roles[1].Id,
-                    UserId = user.Id,
+                    RoleId = roles[1].Id, UserId = user.Id,
                 });
             }
 
@@ -85,9 +118,18 @@ public partial class DataSeeder
                 await context.Users.AddAsync(user);
                 await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
                 {
-                    RoleId = roles[2].Id,
-                    UserId = user.Id,
+                    RoleId = roles[2].Id, UserId = user.Id,
                 });
+            }
+
+            // create guest account.
+            foreach (var guest in guestList)
+            {
+                guest.PasswordHash = passwordHasher.HashPassword(guest, "Admin@123");
+
+                await context.Users.AddAsync(guest);
+                await context.UserRoles.AddAsync(
+                    new IdentityUserRole<Guid> { RoleId = roles[4].Id, UserId = guest.Id, });
             }
 
             await context.SaveChangesAsync();
@@ -108,7 +150,8 @@ public partial class DataSeeder
 
                 foreach (var adminPermission in adminPermissionList)
                 {
-                    await roleManager.AddClaimAsync(roles[0], new Claim(UserClaims.Permissions, adminPermission.Value!));
+                    await roleManager.AddClaimAsync(roles[0],
+                        new Claim(UserClaims.Permissions, adminPermission.Value!));
                 }
             }
 
@@ -119,26 +162,17 @@ public partial class DataSeeder
             {
                 var studentPermissionList = new List<RoleClaimsDto>
                 {
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Create"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Edit"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Download"
-                    }
+                    new() { Selected = true, Value = "Permissions.StudentDashboard.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Create" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Edit" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Download" }
                 };
 
                 foreach (var studentPermission in studentPermissionList)
                 {
-                    await roleManager.AddClaimAsync(roles[1], new Claim(UserClaims.Permissions, studentPermission.Value!));
+                    await roleManager.AddClaimAsync(roles[1],
+                        new Claim(UserClaims.Permissions, studentPermission.Value!));
                 }
             }
 
@@ -149,38 +183,176 @@ public partial class DataSeeder
             {
                 var coordinatorPermissionList = new List<RoleClaimsDto>
                 {
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.ManageContributions.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Approve"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Reject"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.SettingGAC.Manage"
-                    }
+                    new() { Selected = true, Value = "Permissions.Dashboards.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Approve" },
+                    new() { Selected = true, Value = "Permissions.ManageContributions.View" },
+                    new() { Selected = true, Value = "Permissions.SettingGAC.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Download" },
                 };
 
                 foreach (var coordinatorPermission in coordinatorPermissionList)
                 {
-                    await roleManager.AddClaimAsync(roles[2], new Claim(UserClaims.Permissions, coordinatorPermission.Value!));
+                    await roleManager.AddClaimAsync(roles[2],
+                        new Claim(UserClaims.Permissions, coordinatorPermission.Value!));
                 }
             }
+
+            // seed guest role claims permissions.
+            var guestPermissions = await roleManager.GetClaimsAsync(roles[4]);
+
+            if (!coordinatorPermissions.Any())
+            {
+                var guestPermissionList = new List<RoleClaimsDto>
+                {
+                    new() { Selected = true, Value = "Permissions.StudentDashboard.View" },
+                };
+
+                foreach (var guestPermission in guestPermissionList)
+                {
+                    await roleManager.AddClaimAsync(roles[4],
+                        new Claim(UserClaims.Permissions, guestPermission.Value!));
+                }
+            }
+        }
+
+        var contributions = ContributionsList(academicYears, faculties, studentList);
+
+        if (!context.Contributions.Any())
+        {
+            foreach (var contribution in contributions)
+            {
+                await context.Contributions.AddAsync(contribution);
+            }
+
+            await context.SaveChangesAsync();
+
+            foreach (var contribution in contributions)
+            {
+                await contributionRepository.SendToApproved(contribution.Id, adminId);
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        var files = ContributionFilesList(contributions);
+
+        if (!context.Files.Any())
+        {
+            await context.Files.AddRangeAsync(files);
+
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.ContributionPublics.Any())
+        {
+            for (var i = 0; i <= 250; i++)
+            {
+                await contributionRepository.ApproveContribution(contributions[i], adminId);
+            }
+
+            for (var i = 251; i <= 300; i++)
+            {
+                await contributionRepository.RejectContribution(contributions[i], adminId, "default reject reason");
+            }
+
+            for (var i = 301; i <= 500; i++)
+            {
+                await contributionRepository.ApproveContribution(contributions[i], adminId);
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.ContributionPublicComments.Any())
+        {
+            for (var i = 0; i <= 250; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.ContributionPublicComments.AddAsync(new ContributionPublicComment
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                        Content = $"test comment {i}",
+                    });
+                }
+            }
+
+            for (var i = 301; i <= 500; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.ContributionPublicComments.AddAsync(new ContributionPublicComment
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                        Content = $"test comment {i}",
+                    });
+                }
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.Likes.Any())
+        {
+            for (var i = 0; i <= 250; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.Likes.AddAsync(new Like
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                    });
+                }
+            }
+
+            for (var i = 301; i <= 500; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.Likes.AddAsync(new Like
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                    });
+                }
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.ContributionPublicRatings.Any())
+        {
+            for (var i = 0; i <= 250; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.ContributionPublicRatings.AddAsync(new ContributionPublicRating
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                        Rating = 5
+                    });
+                }
+            }
+
+            for (var i = 301; i <= 500; i++)
+            {
+                for (var j = 0; j < 10; j++)
+                {
+                    await context.ContributionPublicRatings.AddAsync(new ContributionPublicRating
+                    {
+                        UserId = studentList[j].Id,
+                        ContributionId = contributions[i].Id,
+                        Rating = 4
+                    });
+                }
+            }
+
+            await context.SaveChangesAsync();
         }
     }
 
@@ -214,11 +386,41 @@ public partial class DataSeeder
 
         var roles = new List<AppRole>
         {
-            new() { Id = Guid.NewGuid(), Name = Roles.Admin, NormalizedName = Roles.Admin.ToUpperInvariant(), DisplayName = "Administrator", },
-            new() { Id = Guid.NewGuid(), Name = Roles.Student, NormalizedName = Roles.Student.ToUpperInvariant(), DisplayName = "Student" },
-            new() { Id = Guid.NewGuid(), Name = Roles.Coordinator, NormalizedName = Roles.Coordinator.ToUpperInvariant(), DisplayName = "Marketing Coordinator" },
-            new() { Id = Guid.NewGuid(), Name = Roles.Manager, NormalizedName = Roles.Manager.ToUpperInvariant(), DisplayName = "Manager" },
-            new() { Id = Guid.NewGuid(), Name = Roles.Guest, NormalizedName = Roles.Guest.ToUpperInvariant(), DisplayName = "Guest" },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Admin,
+                NormalizedName = Roles.Admin.ToUpperInvariant(),
+                DisplayName = "Administrator",
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Student,
+                NormalizedName = Roles.Student.ToUpperInvariant(),
+                DisplayName = "Student"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Coordinator,
+                NormalizedName = Roles.Coordinator.ToUpperInvariant(),
+                DisplayName = "Marketing Coordinator"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Manager,
+                NormalizedName = Roles.Manager.ToUpperInvariant(),
+                DisplayName = "Manager"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Guest,
+                NormalizedName = Roles.Guest.ToUpperInvariant(),
+                DisplayName = "Guest"
+            },
         };
 
         if (!await context.Roles.AnyAsync())
@@ -256,8 +458,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Meryl",
-                LastName = "Streep",
+                FirstName = "student2",
+                LastName = "student2",
                 Email = "jettlaststand@gmail.com",
                 NormalizedEmail = "jettlaststand@gmail.com".ToUpperInvariant(),
                 UserName = "student2",
@@ -271,8 +473,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Cate",
-                LastName = "Blanchett",
+                FirstName = "student3",
+                LastName = "student3",
                 Email = "student3@gmail.com",
                 NormalizedEmail = "student3@gmail.com".ToUpperInvariant(),
                 UserName = "student3",
@@ -286,8 +488,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Viola",
-                LastName = "Davis",
+                FirstName = "student4",
+                LastName = "student4",
                 Email = "student4@gmail.com",
                 NormalizedEmail = "student4@gmail.com".ToUpperInvariant(),
                 UserName = "student4",
@@ -301,8 +503,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Scarlett",
-                LastName = "Johansson",
+                FirstName = "student5",
+                LastName = "student5",
                 Email = "student5@gmail.com",
                 NormalizedEmail = "student5@gmail.com".ToUpperInvariant(),
                 UserName = "student5",
@@ -316,8 +518,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Angelina",
-                LastName = "Jolie",
+                FirstName = "student6",
+                LastName = "student6",
                 Email = "student6@gmail.com",
                 NormalizedEmail = "student6@gmail.com".ToUpperInvariant(),
                 UserName = "student6",
@@ -331,8 +533,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Jennifer",
-                LastName = "Lawrence",
+                FirstName = "student7",
+                LastName = "student7",
                 Email = "student7@gmail.com",
                 NormalizedEmail = "student7@gmail.com".ToUpperInvariant(),
                 UserName = "student7",
@@ -346,8 +548,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Nicole",
-                LastName = "Kidman",
+                FirstName = "student8",
+                LastName = "student8",
                 Email = "student8@gmail.com",
                 NormalizedEmail = "student8@gmail.com".ToUpperInvariant(),
                 UserName = "student8",
@@ -361,8 +563,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Emma",
-                LastName = "Stone",
+                FirstName = "student9",
+                LastName = "student9",
                 Email = "student9@gmail.com",
                 NormalizedEmail = "student9@gmail.com".ToUpperInvariant(),
                 UserName = "student9",
@@ -376,8 +578,8 @@ public partial class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                FirstName = "Charlize",
-                LastName = "Theron",
+                FirstName = "student10",
+                LastName = "student10",
                 Email = "student10@gmail.com",
                 NormalizedEmail = "student10@gmail.com".ToUpperInvariant(),
                 UserName = "student10",
@@ -481,6 +683,109 @@ public partial class DataSeeder
         return list;
 
         #endregion Cooridnator List
+    }
+
+    private static List<AppUser> GuestList(List<Faculty> faculties)
+    {
+        #region Guest List
+
+        var list = new List<AppUser>()
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Phat",
+                LastName = "Vu",
+                Email = "guest@gmail.com",
+                NormalizedEmail = "guest@gmail.com".ToUpperInvariant(),
+                UserName = "guest",
+                NormalizedUserName = "guest".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[0].Id,
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472745/133858407972414310_tmpggi.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Vu",
+                LastName = "Nguyen",
+                Email = "guest1@gmail.com",
+                NormalizedEmail = "guest1@gmail.com".ToUpperInvariant(),
+                UserName = "guest1",
+                NormalizedUserName = "guest1".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[1].Id,
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472724/DALLE2024-04-0507.40_ebloch.webp",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Duong",
+                LastName = "Anh",
+                Email = "guest2@gmail.com",
+                NormalizedEmail = "guest2@gmail.com".ToUpperInvariant(),
+                UserName = "guest2",
+                NormalizedUserName = "guest2".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[2].Id,
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472714/CustomBlogCover_oevxl3.avif",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Tri",
+                LastName = "Sieu",
+                Email = "guest3@gmail.com",
+                NormalizedEmail = "guest3@gmail.com".ToUpperInvariant(),
+                UserName = "guest3",
+                NormalizedUserName = "guest3".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[3].Id,
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472705/ab67616d0000b2731841e5f0a180d90a17e38c89_dxkaxs.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Bao",
+                LastName = "Gia",
+                Email = "guest4@gmail.com",
+                NormalizedEmail = "guest4@gmail.com".ToUpperInvariant(),
+                UserName = "guest4",
+                NormalizedUserName = "guest4".ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = faculties[4].Id,
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472697/sora-no-game-no-life_fjvodi.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+            }
+        };
+
+        return list;
+
+        #endregion Guest List
     }
 
     private static async Task<List<AcademicYear>> AcademicYearList(AppDbContext context, Guid userId)
@@ -700,5 +1005,221 @@ public partial class DataSeeder
         return academicYears;
 
         #endregion Academic Year List
+    }
+
+    public static List<Contribution> ContributionsList(List<AcademicYear> academicYears, List<Faculty> faculties,
+        List<AppUser> studentList)
+    {
+        #region Contribution List
+
+        var contributions = new List<Contribution>();
+        int contributionCount = 1;
+
+        for (int studentIndex = 0; studentIndex < studentList.Count; studentIndex++) // 10 students
+        {
+            for (int facultyIndex = 0; facultyIndex < faculties.Count; facultyIndex++) // 5 faculties
+            {
+                for (int yearIndex = 0; yearIndex < academicYears.Count; yearIndex++) // 20 academic years
+                {
+                    var contribution = new Contribution
+                    {
+                        AcademicYearId = academicYears[yearIndex].Id,
+                        FacultyId = faculties[facultyIndex].Id,
+                        UserId = studentList[studentIndex].Id,
+                        Id = Guid.NewGuid(),
+                        IsConfirmed = true,
+                        DateCreated = DateTime.Now,
+                        Title = $"test {contributionCount}",
+                        Slug = $"test-{contributionCount}",
+                        SubmissionDate = DateTime.Now,
+                        Status = ContributionStatus.Pending,
+                        Content =
+                            "<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span><br><br><span style=\"white-space:pre-wrap;\">Juicy meatballs brisket slammin' baked shoulder. Juicy smoker soy sauce burgers brisket. polenta mustard hunk greens. Wine technique snack skewers chuck excess. Oil heat slowly. slices natural delicious, set aside magic tbsp skillet, bay leaves brown centerpiece. fruit soften edges frond slices onion snack pork steem on wines excess technique cup; Cover smoker soy sauce fruit snack. Sweet one-dozen scrape delicious, non sheet raw crunch mustard. Minutes clever slotted tongs scrape, brown steem undisturbed rice.</span><br><br><span style=\"white-space:pre-wrap;\">Food qualities braise chicken cuts bowl through slices butternut snack. Tender meat juicy dinners. One-pot low heat plenty of time adobo fat raw soften fruit. sweet renders bone-in marrow richness kitchen, fricassee basted pork shoulder. Delicious butternut squash hunk. Flavor centerpiece plate, delicious ribs bone-in meat, excess chef end. sweet effortlessly pork, low heat smoker soy sauce flavor meat, rice fruit fruit. Romantic fall-off-the-bone butternut chuck rice burgers.</span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n  </strong><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n</p>\r\n<p><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span></p>",
+                        ShortDescription =
+                            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat similique at molestias deleniti tempore consectetur commodi ab, beatae soluta dolorem nemo, quo totam repudiandae corporis distinctio voluptatibus accusamus sint ad.\r\n          Magni culpa quia quis asperiores ipsum molestias aspernatur, laboriosam possimus? Mollitia laudantium iste autem placeat aspernatur. Ducimus aperiam, adipisci excepturi quo officiis nisi et rem in, animi quod, eaque nihil.\r\n"
+                    };
+
+                    contributions.Add(contribution);
+                    contributionCount++;
+                }
+            }
+        }
+
+        return contributions;
+
+        #endregion Contribution List
+    }
+
+    public static List<File> ContributionFilesList(List<Contribution> contributions)
+    {
+        #region Contribution Files List
+
+        var files = new List<File>();
+
+        for (var i = 0; i < 150; i++)
+        {
+            files.AddRange(new List<File>
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path = "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514391/Elon_Musk_fvuxcu.jpg",
+                    Name = "Elon_Musk_fvuxcu.jpg",
+                    Type = FileType.Thumbnail,
+                    PublicId = "Elon_Musk_fvuxcu",
+                    Extension = ".jpg"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514900/COMP786_CW1_Logbook_gd4i3q.docx",
+                    Name = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514899/COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Name = "1_UnitCOMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514900/Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Name = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Type = FileType.File,
+                    PublicId = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Extension = ".pdf"
+                },
+            });
+        }
+        
+        for (var i = 250; i < 400; i++)
+        {
+            files.AddRange(new List<File>
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path = "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514391/Elon_Musk_fvuxcu.jpg",
+                    Name = "Elon_Musk_fvuxcu.jpg",
+                    Type = FileType.Thumbnail,
+                    PublicId = "Elon_Musk_fvuxcu",
+                    Extension = ".jpg"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514900/COMP786_CW1_Logbook_gd4i3q.docx",
+                    Name = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514899/COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Name = "1_UnitCOMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514900/Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Name = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Type = FileType.File,
+                    PublicId = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Extension = ".pdf"
+                },
+            });
+        }
+        
+        for (var i = 500; i < 650; i++)
+        {
+            files.AddRange(new List<File>
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path = "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514391/Elon_Musk_fvuxcu.jpg",
+                    Name = "Elon_Musk_fvuxcu.jpg",
+                    Type = FileType.Thumbnail,
+                    PublicId = "Elon_Musk_fvuxcu",
+                    Extension = ".jpg"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514900/COMP786_CW1_Logbook_gd4i3q.docx",
+                    Name = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514899/COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Name = "1_UnitCOMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514900/Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Name = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Type = FileType.File,
+                    PublicId = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Extension = ".pdf"
+                },
+            });
+        }
+
+        return files;
+
+        #endregion Contribution Files List
     }
 }
