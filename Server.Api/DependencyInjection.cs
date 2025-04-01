@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Reflection;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+
 using Serilog;
+
 using Server.Api.Authorization;
 using Server.Api.Common.Errors;
 using Server.Api.Common.Filters;
+using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
-using System.Reflection;
-using System.Text.Json.Serialization;
+using Server.Infrastructure.Persistence.Repositories;
 
 namespace Server.Api;
 
@@ -19,11 +23,11 @@ public static class DependencyInjection
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers();
-            //.AddJsonOptions(options =>
-            //{
-            //    // will not include the null value in the response.
-            //    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            //});
+        //.AddJsonOptions(options =>
+        //{
+        //    // will not include the null value in the response.
+        //    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        //});
         services.AddSignalR();
 
         services.AddEndpointsApiExplorer();
@@ -120,11 +124,12 @@ public static class MigrationManager
     {
         using var scope = app.Services.CreateScope();
         using var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+        var contributionRepository = scope.ServiceProvider.GetRequiredService<IContributionRepository>();
 
         // apply update-database command here.
         appDbContext.Database.Migrate();
-        DataSeeder.SeedAsync(appDbContext, roleManager).GetAwaiter().GetResult();
+        DataSeeder.SeedAsync(appDbContext, roleManager, contributionRepository).GetAwaiter().GetResult();
 
         return app;
     }

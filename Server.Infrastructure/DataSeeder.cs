@@ -1,24 +1,29 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using Server.Application.Common.Dtos.Identity.Role;
 using Server.Application.Common.Extensions;
+using Server.Application.Common.Interfaces.Persistence.Repositories;
 using Server.Domain.Common.Constants.Authorization;
 using Server.Domain.Common.Constants.Content;
+using Server.Domain.Common.Enums;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
-
-using System.Security.Claims;
 
 namespace Server.Infrastructure;
 
 public partial class DataSeeder
 {
-    public async static Task SeedAsync(AppDbContext context, RoleManager<AppRole> roleManager)
+    public async static Task SeedAsync(
+        AppDbContext context,
+        RoleManager<AppRole> roleManager,
+        IContributionRepository contributionRepository)
     {
         var adminId = Guid.NewGuid();
 
-        // seed faculies.
+        // seed faculties.
         var faculties = await FacultyList(context);
 
         // seed academic years.
@@ -62,11 +67,7 @@ public partial class DataSeeder
 
             await context.Users.AddAsync(admin);
 
-            await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
-            {
-                RoleId = roles[0].Id,
-                UserId = admin.Id,
-            });
+            await context.UserRoles.AddAsync(new IdentityUserRole<Guid> { RoleId = roles[0].Id, UserId = admin.Id, });
 
             // create manager account.
             var managerEmail = "snotright5@gmail.com";
@@ -92,11 +93,7 @@ public partial class DataSeeder
 
             await context.Users.AddAsync(manager);
 
-            await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
-            {
-                RoleId = roles[3].Id,
-                UserId = manager.Id,
-            });
+            await context.UserRoles.AddAsync(new IdentityUserRole<Guid> { RoleId = roles[3].Id, UserId = manager.Id, });
 
             // create student accounts.
             foreach (var user in studentList)
@@ -106,8 +103,7 @@ public partial class DataSeeder
                 await context.Users.AddAsync(user);
                 await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
                 {
-                    RoleId = roles[1].Id,
-                    UserId = user.Id,
+                    RoleId = roles[1].Id, UserId = user.Id,
                 });
             }
 
@@ -119,8 +115,7 @@ public partial class DataSeeder
                 await context.Users.AddAsync(user);
                 await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
                 {
-                    RoleId = roles[2].Id,
-                    UserId = user.Id,
+                    RoleId = roles[2].Id, UserId = user.Id,
                 });
             }
 
@@ -130,11 +125,8 @@ public partial class DataSeeder
                 guest.PasswordHash = passwordHasher.HashPassword(guest, "Admin@123");
 
                 await context.Users.AddAsync(guest);
-                await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
-                {
-                    RoleId = roles[4].Id,
-                    UserId = guest.Id,
-                });
+                await context.UserRoles.AddAsync(
+                    new IdentityUserRole<Guid> { RoleId = roles[4].Id, UserId = guest.Id, });
             }
 
             await context.SaveChangesAsync();
@@ -155,7 +147,8 @@ public partial class DataSeeder
 
                 foreach (var adminPermission in adminPermissionList)
                 {
-                    await roleManager.AddClaimAsync(roles[0], new Claim(UserClaims.Permissions, adminPermission.Value!));
+                    await roleManager.AddClaimAsync(roles[0],
+                        new Claim(UserClaims.Permissions, adminPermission.Value!));
                 }
             }
 
@@ -166,36 +159,17 @@ public partial class DataSeeder
             {
                 var studentPermissionList = new List<RoleClaimsDto>
                 {
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.StudentDashboard.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Create"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Edit"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Download"
-                    }
+                    new() { Selected = true, Value = "Permissions.StudentDashboard.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Create" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Edit" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Download" }
                 };
 
                 foreach (var studentPermission in studentPermissionList)
                 {
-                    await roleManager.AddClaimAsync(roles[1], new Claim(UserClaims.Permissions, studentPermission.Value!));
+                    await roleManager.AddClaimAsync(roles[1],
+                        new Claim(UserClaims.Permissions, studentPermission.Value!));
                 }
             }
 
@@ -206,41 +180,18 @@ public partial class DataSeeder
             {
                 var coordinatorPermissionList = new List<RoleClaimsDto>
                 {
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Dashboards.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Approve"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.ManageContributions.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.SettingGAC.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.Contributions.Download"
-                    },
+                    new() { Selected = true, Value = "Permissions.Dashboards.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Approve" },
+                    new() { Selected = true, Value = "Permissions.ManageContributions.View" },
+                    new() { Selected = true, Value = "Permissions.SettingGAC.View" },
+                    new() { Selected = true, Value = "Permissions.Contributions.Download" },
                 };
 
                 foreach (var coordinatorPermission in coordinatorPermissionList)
                 {
-                    await roleManager.AddClaimAsync(roles[2], new Claim(UserClaims.Permissions, coordinatorPermission.Value!));
+                    await roleManager.AddClaimAsync(roles[2],
+                        new Claim(UserClaims.Permissions, coordinatorPermission.Value!));
                 }
             }
 
@@ -251,18 +202,34 @@ public partial class DataSeeder
             {
                 var guestPermissionList = new List<RoleClaimsDto>
                 {
-                    new()
-                    {
-                        Selected = true,
-                        Value = "Permissions.StudentDashboard.View"
-                    },
+                    new() { Selected = true, Value = "Permissions.StudentDashboard.View" },
                 };
 
                 foreach (var guestPermission in guestPermissionList)
                 {
-                    await roleManager.AddClaimAsync(roles[4], new Claim(UserClaims.Permissions, guestPermission.Value!));
+                    await roleManager.AddClaimAsync(roles[4],
+                        new Claim(UserClaims.Permissions, guestPermission.Value!));
                 }
             }
+        }
+
+        var contributions = ContributionsList(academicYears, faculties, studentList);
+
+        if (!context.Contributions.Any())
+        {
+            foreach (var contribution in contributions)
+            {
+                await context.Contributions.AddAsync(contribution);
+            }
+
+            await context.SaveChangesAsync();
+
+            foreach (var contribution in contributions)
+            {
+                await contributionRepository.SendToApproved(contribution.Id, adminId);
+            }
+
+            await context.SaveChangesAsync();
         }
     }
 
@@ -296,11 +263,41 @@ public partial class DataSeeder
 
         var roles = new List<AppRole>
         {
-            new() { Id = Guid.NewGuid(), Name = Roles.Admin, NormalizedName = Roles.Admin.ToUpperInvariant(), DisplayName = "Administrator", },
-            new() { Id = Guid.NewGuid(), Name = Roles.Student, NormalizedName = Roles.Student.ToUpperInvariant(), DisplayName = "Student" },
-            new() { Id = Guid.NewGuid(), Name = Roles.Coordinator, NormalizedName = Roles.Coordinator.ToUpperInvariant(), DisplayName = "Marketing Coordinator" },
-            new() { Id = Guid.NewGuid(), Name = Roles.Manager, NormalizedName = Roles.Manager.ToUpperInvariant(), DisplayName = "Manager" },
-            new() { Id = Guid.NewGuid(), Name = Roles.Guest, NormalizedName = Roles.Guest.ToUpperInvariant(), DisplayName = "Guest" },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Admin,
+                NormalizedName = Roles.Admin.ToUpperInvariant(),
+                DisplayName = "Administrator",
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Student,
+                NormalizedName = Roles.Student.ToUpperInvariant(),
+                DisplayName = "Student"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Coordinator,
+                NormalizedName = Roles.Coordinator.ToUpperInvariant(),
+                DisplayName = "Marketing Coordinator"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Manager,
+                NormalizedName = Roles.Manager.ToUpperInvariant(),
+                DisplayName = "Manager"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = Roles.Guest,
+                NormalizedName = Roles.Guest.ToUpperInvariant(),
+                DisplayName = "Guest"
+            },
         };
 
         if (!await context.Roles.AnyAsync())
@@ -585,7 +582,8 @@ public partial class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = faculties[0].Id,
-                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472745/133858407972414310_tmpggi.jpg",
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472745/133858407972414310_tmpggi.jpg",
                 AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
             },
             new()
@@ -602,7 +600,8 @@ public partial class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = faculties[1].Id,
-                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472724/DALLE2024-04-0507.40_ebloch.webp",
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472724/DALLE2024-04-0507.40_ebloch.webp",
                 AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
             },
             new()
@@ -619,7 +618,8 @@ public partial class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = faculties[2].Id,
-                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472714/CustomBlogCover_oevxl3.avif",
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472714/CustomBlogCover_oevxl3.avif",
                 AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
             },
             new()
@@ -636,7 +636,8 @@ public partial class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = faculties[3].Id,
-                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472705/ab67616d0000b2731841e5f0a180d90a17e38c89_dxkaxs.jpg",
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472705/ab67616d0000b2731841e5f0a180d90a17e38c89_dxkaxs.jpg",
                 AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
             },
             new()
@@ -653,7 +654,8 @@ public partial class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = faculties[4].Id,
-                Avatar = "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472697/sora-no-game-no-life_fjvodi.jpg",
+                Avatar =
+                    "https://res.cloudinary.com/dus70fkd3/image/upload/c_thumb,w_200,g_face/v1743472697/sora-no-game-no-life_fjvodi.jpg",
                 AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
             }
         };
@@ -880,5 +882,45 @@ public partial class DataSeeder
         return academicYears;
 
         #endregion Academic Year List
+    }
+
+    public static List<Contribution> ContributionsList(List<AcademicYear> academicYears, List<Faculty> faculties, List<AppUser> studentList)
+    {
+        #region Contribution List
+
+        var contributions = new List<Contribution>();
+        int contributionCount = 1;
+
+        for (int studentIndex = 0; studentIndex < studentList.Count; studentIndex++) // 10 students
+        {
+            for (int facultyIndex = 0; facultyIndex < faculties.Count; facultyIndex++) // 5 faculties
+            {
+                for (int yearIndex = 0; yearIndex < academicYears.Count; yearIndex++) // 20 academic years
+                {
+                    var contribution = new Contribution
+                    {
+                        AcademicYearId = academicYears[yearIndex].Id,
+                        FacultyId = faculties[facultyIndex].Id,
+                        UserId = studentList[studentIndex].Id,
+                        Id = Guid.NewGuid(),
+                        IsConfirmed = true,
+                        DateCreated = DateTime.Now,
+                        Title = $"test {contributionCount}",
+                        Slug = $"test-{contributionCount}",
+                        SubmissionDate = DateTime.Now,
+                        Status = ContributionStatus.Pending,
+                        Content = "<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span><br><br><span style=\"white-space:pre-wrap;\">Juicy meatballs brisket slammin' baked shoulder. Juicy smoker soy sauce burgers brisket. polenta mustard hunk greens. Wine technique snack skewers chuck excess. Oil heat slowly. slices natural delicious, set aside magic tbsp skillet, bay leaves brown centerpiece. fruit soften edges frond slices onion snack pork steem on wines excess technique cup; Cover smoker soy sauce fruit snack. Sweet one-dozen scrape delicious, non sheet raw crunch mustard. Minutes clever slotted tongs scrape, brown steem undisturbed rice.</span><br><br><span style=\"white-space:pre-wrap;\">Food qualities braise chicken cuts bowl through slices butternut snack. Tender meat juicy dinners. One-pot low heat plenty of time adobo fat raw soften fruit. sweet renders bone-in marrow richness kitchen, fricassee basted pork shoulder. Delicious butternut squash hunk. Flavor centerpiece plate, delicious ribs bone-in meat, excess chef end. sweet effortlessly pork, low heat smoker soy sauce flavor meat, rice fruit fruit. Romantic fall-off-the-bone butternut chuck rice burgers.</span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n  </strong><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n</p>\r\n<p><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span></p>",
+                        ShortDescription = "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat similique at molestias deleniti tempore consectetur commodi ab, beatae soluta dolorem nemo, quo totam repudiandae corporis distinctio voluptatibus accusamus sint ad.\r\n          Magni culpa quia quis asperiores ipsum molestias aspernatur, laboriosam possimus? Mollitia laudantium iste autem placeat aspernatur. Ducimus aperiam, adipisci excepturi quo officiis nisi et rem in, animi quod, eaque nihil.\r\n"
+                    };
+
+                    contributions.Add(contribution);
+                    contributionCount++;
+                }
+            }
+        }
+
+        return contributions;
+
+        #endregion Contribution List
     }
 }
