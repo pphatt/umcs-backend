@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Security.Cryptography;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure;
+
+using File = Server.Domain.Entity.Content.File;
 
 public partial class DataSeeder
 {
@@ -228,6 +231,15 @@ public partial class DataSeeder
             {
                 await contributionRepository.SendToApproved(contribution.Id, adminId);
             }
+
+            await context.SaveChangesAsync();
+        }
+
+        var files = ContributionFilesList(contributions);
+
+        if (!context.Files.Any())
+        {
+            await context.Files.AddRangeAsync(files);
 
             await context.SaveChangesAsync();
         }
@@ -884,7 +896,8 @@ public partial class DataSeeder
         #endregion Academic Year List
     }
 
-    public static List<Contribution> ContributionsList(List<AcademicYear> academicYears, List<Faculty> faculties, List<AppUser> studentList)
+    public static List<Contribution> ContributionsList(List<AcademicYear> academicYears, List<Faculty> faculties,
+        List<AppUser> studentList)
     {
         #region Contribution List
 
@@ -909,8 +922,10 @@ public partial class DataSeeder
                         Slug = $"test-{contributionCount}",
                         SubmissionDate = DateTime.Now,
                         Status = ContributionStatus.Pending,
-                        Content = "<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span><br><br><span style=\"white-space:pre-wrap;\">Juicy meatballs brisket slammin' baked shoulder. Juicy smoker soy sauce burgers brisket. polenta mustard hunk greens. Wine technique snack skewers chuck excess. Oil heat slowly. slices natural delicious, set aside magic tbsp skillet, bay leaves brown centerpiece. fruit soften edges frond slices onion snack pork steem on wines excess technique cup; Cover smoker soy sauce fruit snack. Sweet one-dozen scrape delicious, non sheet raw crunch mustard. Minutes clever slotted tongs scrape, brown steem undisturbed rice.</span><br><br><span style=\"white-space:pre-wrap;\">Food qualities braise chicken cuts bowl through slices butternut snack. Tender meat juicy dinners. One-pot low heat plenty of time adobo fat raw soften fruit. sweet renders bone-in marrow richness kitchen, fricassee basted pork shoulder. Delicious butternut squash hunk. Flavor centerpiece plate, delicious ribs bone-in meat, excess chef end. sweet effortlessly pork, low heat smoker soy sauce flavor meat, rice fruit fruit. Romantic fall-off-the-bone butternut chuck rice burgers.</span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n  </strong><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n</p>\r\n<p><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span></p>",
-                        ShortDescription = "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat similique at molestias deleniti tempore consectetur commodi ab, beatae soluta dolorem nemo, quo totam repudiandae corporis distinctio voluptatibus accusamus sint ad.\r\n          Magni culpa quia quis asperiores ipsum molestias aspernatur, laboriosam possimus? Mollitia laudantium iste autem placeat aspernatur. Ducimus aperiam, adipisci excepturi quo officiis nisi et rem in, animi quod, eaque nihil.\r\n"
+                        Content =
+                            "<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span><br><br><span style=\"white-space:pre-wrap;\">Juicy meatballs brisket slammin' baked shoulder. Juicy smoker soy sauce burgers brisket. polenta mustard hunk greens. Wine technique snack skewers chuck excess. Oil heat slowly. slices natural delicious, set aside magic tbsp skillet, bay leaves brown centerpiece. fruit soften edges frond slices onion snack pork steem on wines excess technique cup; Cover smoker soy sauce fruit snack. Sweet one-dozen scrape delicious, non sheet raw crunch mustard. Minutes clever slotted tongs scrape, brown steem undisturbed rice.</span><br><br><span style=\"white-space:pre-wrap;\">Food qualities braise chicken cuts bowl through slices butternut snack. Tender meat juicy dinners. One-pot low heat plenty of time adobo fat raw soften fruit. sweet renders bone-in marrow richness kitchen, fricassee basted pork shoulder. Delicious butternut squash hunk. Flavor centerpiece plate, delicious ribs bone-in meat, excess chef end. sweet effortlessly pork, low heat smoker soy sauce flavor meat, rice fruit fruit. Romantic fall-off-the-bone butternut chuck rice burgers.</span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n  </strong><span style=\"white-space:pre-wrap;\"><strong></strong></span>\r\n</p>\r\n<p>\r\n  <meta charset=\"utf-8\"><span data-metadata=\"\"></span><span data-buffer=\"\"></span>\r\n</p>\r\n<p><span style=\"white-space:pre-wrap;\">Gastronomy atmosphere set aside. Slice butternut cooking home. Delicious romantic undisturbed raw platter will meld. Thick Skewers skillet natural, smoker soy sauce wait roux. slices rosette bone-in simmer precision alongside baby leeks. Crafting renders aromatic enjoyment, then slices taco. Minutes undisturbed cuisine lunch magnificent mustard curry. Juicy share baking sheet pork. Meals ramen rarities selection, raw pastries richness magnificent atmosphere. Sweet soften dinners, cover mustard infused skillet, Skewers on culinary experience.</span></p>",
+                        ShortDescription =
+                            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat similique at molestias deleniti tempore consectetur commodi ab, beatae soluta dolorem nemo, quo totam repudiandae corporis distinctio voluptatibus accusamus sint ad.\r\n          Magni culpa quia quis asperiores ipsum molestias aspernatur, laboriosam possimus? Mollitia laudantium iste autem placeat aspernatur. Ducimus aperiam, adipisci excepturi quo officiis nisi et rem in, animi quod, eaque nihil.\r\n"
                     };
 
                     contributions.Add(contribution);
@@ -922,5 +937,178 @@ public partial class DataSeeder
         return contributions;
 
         #endregion Contribution List
+    }
+
+    public static List<File> ContributionFilesList(List<Contribution> contributions)
+    {
+        #region Contribution Files List
+
+        var files = new List<File>();
+
+        for (var i = 0; i < 150; i++)
+        {
+            files.AddRange(new List<File>
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path = "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514391/Elon_Musk_fvuxcu.jpg",
+                    Name = "Elon_Musk_fvuxcu.jpg",
+                    Type = FileType.Thumbnail,
+                    PublicId = "Elon_Musk_fvuxcu",
+                    Extension = ".jpg"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514900/COMP786_CW1_Logbook_gd4i3q.docx",
+                    Name = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514899/COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Name = "1_UnitCOMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514900/Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Name = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Type = FileType.File,
+                    PublicId = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Extension = ".pdf"
+                },
+            });
+        }
+        
+        for (var i = 250; i < 400; i++)
+        {
+            files.AddRange(new List<File>
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path = "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514391/Elon_Musk_fvuxcu.jpg",
+                    Name = "Elon_Musk_fvuxcu.jpg",
+                    Type = FileType.Thumbnail,
+                    PublicId = "Elon_Musk_fvuxcu",
+                    Extension = ".jpg"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514900/COMP786_CW1_Logbook_gd4i3q.docx",
+                    Name = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514899/COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Name = "1_UnitCOMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514900/Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Name = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Type = FileType.File,
+                    PublicId = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Extension = ".pdf"
+                },
+            });
+        }
+        
+        for (var i = 500; i < 650; i++)
+        {
+            files.AddRange(new List<File>
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path = "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514391/Elon_Musk_fvuxcu.jpg",
+                    Name = "Elon_Musk_fvuxcu.jpg",
+                    Type = FileType.Thumbnail,
+                    PublicId = "Elon_Musk_fvuxcu",
+                    Extension = ".jpg"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514900/COMP786_CW1_Logbook_gd4i3q.docx",
+                    Name = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP786_CW1_Logbook_gd4i3q.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/raw/upload/v1743514899/COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Name = "1_UnitCOMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Type = FileType.File,
+                    PublicId = "COMP1786_CW1_REPORT_Logbook_Template_f3odic.docx",
+                    Extension = ".docx"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    ContributionId = contributions[i].Id,
+                    DateCreated = DateTime.UtcNow,
+                    Path =
+                        "https://res.cloudinary.com/dus70fkd3/image/upload/v1743514900/Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Name = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Type = FileType.File,
+                    PublicId = "Final_COMP1787_Submission_layout_wuiwzm.pdf",
+                    Extension = ".pdf"
+                },
+            });
+        }
+
+        return files;
+
+        #endregion Contribution Files List
     }
 }
