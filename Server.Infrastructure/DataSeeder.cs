@@ -243,6 +243,26 @@ public partial class DataSeeder
 
             await context.SaveChangesAsync();
         }
+
+        if (!context.ContributionPublics.Any())
+        {
+            for (var i = 0; i <= 250; i++)
+            {
+                await contributionRepository.ApproveContribution(contributions[i], adminId);
+            }
+
+            for (var i = 251; i <= 300; i++)
+            {
+                await contributionRepository.RejectContribution(contributions[i], adminId, "default reject reason");
+            }
+
+            for (var i = 301; i <= 500; i++)
+            {
+                await contributionRepository.ApproveContribution(contributions[i], adminId);
+            }
+
+            await context.SaveChangesAsync();
+        }
     }
 
     private static async Task<List<Faculty>> FacultyList(AppDbContext context)
