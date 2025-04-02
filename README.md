@@ -80,7 +80,7 @@ The **University Magazine Contribution System (UMCS)** streamlines the submissio
 
 ## 🤝 Contributors
 
-A huge thanks to our agile scrum team for making UMCS a reality!
+A huge thanks to our developer for making UMCS a reality!
 
 | Name         | GitHub Username                     | Role                               |
 |--------------|-------------------------------------|------------------------------------|
