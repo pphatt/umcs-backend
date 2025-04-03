@@ -1,4 +1,4 @@
-name: restaurats-api-ci
+name: umcs-api-ci
 
 on:
   pull_request:
