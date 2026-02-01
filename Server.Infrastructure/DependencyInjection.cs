@@ -20,6 +20,7 @@ using Quartz;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
+using Server.Application.Common.Interfaces.Services.AzureBlobStorage;
 using Server.Application.Common.Interfaces.Services.Email;
 using Server.Application.Common.Interfaces.Services.Media;
 using Server.Application.Common.Interfaces.Services.Report;
@@ -30,9 +31,11 @@ using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.AppDbConnection;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
+using Server.Infrastructure.Services.AzureBlobStorage;
 using Server.Infrastructure.Services.Email;
 using Server.Infrastructure.Services.Media;
 using Server.Infrastructure.Services.Report;
+using Server.Infrastructure.Services.Storage;
 
 namespace Server.Infrastructure;
 
@@ -55,6 +58,9 @@ public static class DependencyInjection
         services.AddScoped<IMediaService, MediaService>();
         services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
         services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
+        services.Configure<AzureBlobStorageOptions>(configuration.GetSection("AzureBlobStorageOptions"));
+        services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 
         services.AddSingleton<IAppDbConnectionFactory, AppDbConnectionFactory>();
         services.AddScoped<IContributionReportService, ContributionReportService>();
