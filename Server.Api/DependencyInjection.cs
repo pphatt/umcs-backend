@@ -128,8 +128,8 @@ public static class MigrationManager
         var contributionRepository = scope.ServiceProvider.GetRequiredService<IContributionRepository>();
 
         // apply update-database command here.
-        appDbContext.Database.Migrate();
-        DataSeeder.SeedAsync(appDbContext, roleManager, contributionRepository).GetAwaiter().GetResult();
+        //appDbContext.Database.Migrate();
+        //DataSeeder.SeedAsync(appDbContext, roleManager, contributionRepository).GetAwaiter().GetResult();
 
         return app;
     }

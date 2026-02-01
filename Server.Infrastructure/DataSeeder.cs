@@ -24,6 +24,11 @@ public partial class DataSeeder
         RoleManager<AppRole> roleManager,
         IContributionRepository contributionRepository)
     {
+        if ((await context.Database.GetPendingMigrationsAsync()).Any())
+        {
+            await context.Database.MigrateAsync();
+        }
+
         var adminId = Guid.NewGuid();
 
         // seed faculties.
