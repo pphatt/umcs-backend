@@ -5,11 +5,11 @@ using Server.Application.Common.Interfaces.Services.AzureBlobStorage;
 namespace Server.Api.Controllers.TestApi;
 
 [Tags("Test")]
-public class TestFileUploadController : TestApiController
+public class TestAzureBlobStorageController : TestApiController
 {
     private readonly IAzureBlobStorageService _azureBlobStorageService;
 
-    public TestFileUploadController(IAzureBlobStorageService azureBlobStorageService)
+    public TestAzureBlobStorageController(IAzureBlobStorageService azureBlobStorageService)
     {
         _azureBlobStorageService = azureBlobStorageService;
     }
@@ -22,5 +22,12 @@ public class TestFileUploadController : TestApiController
         var blobUrl = await _azureBlobStorageService.UploadFileToBlobStorage(stream, file.FileName);
 
         return Ok(blobUrl);
+    }
+
+    [HttpPost("generate-sas-url")]
+    public async Task<IActionResult> GetGeneratedSasURL(string? blobUrl)
+    {
+        var blobSasUrl = _azureBlobStorageService.GetBlobSasUrl(blobUrl);
+        return Ok(blobSasUrl);
     }
 }
