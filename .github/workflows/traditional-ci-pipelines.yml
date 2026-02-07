@@ -63,7 +63,7 @@ jobs:
       #   - Requires that project.assets.json already exists (created by previous dotnet restore)
       #   - If the assets file is missing → build fails fast with a clear message
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build Server.sln --no-restore 
       
       - name: Test
-        run: dotnet test
+        run: dotnet test Server.sln --no-restore --no-build
