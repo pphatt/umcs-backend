@@ -1,0 +1,69 @@
+name: umcs-ci-pipelines
+description: ci pipeline for umcs api
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+
+    steps:
+      # latter in the other runs.
+      # Configures git so later git commands work nicely
+      # Clone your repository (the one where the workflow is running)
+      # Check out the commit/ref that triggered the workflow
+      #   push to master → commit SHA that was pushed to master
+      #   pull_request → merge commit of the PR into master (detached HEAD)
+      # By default does NOT give you the branch name checked out — you're usually in detached HEAD state
+      ### The uses of actions/checkout@v6.0.2 library here is just a github action - git wrapper which will install git to the PATH as binary and git can be used
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        id: checkout-step
+
+      # Test around
+      - name: Test Git checkout
+        run: |
+          echo git status
+
+      # Locates or downloads the requested .NET SDK version
+      #   It checks the tools cache on the runner first (fastest path — most common versions are pre-cached).
+      #   If not found → downloads the exact SDK from the official dotnet.microsoft.com feeds.
+      #   Uses the semantic version range you specified: 8.0.x
+      #     → means the latest patch version of 8.0 that is currently available (e.g., 8.0.100, 8.0.403, 8.0.405, … whichever is newest at build time).
+      # Extracts and installs it into a version-specific folder in the runner's tools directory.
+      # Adds the dotnet CLI to PATH
+      #   → After this step finishes, every subsequent run: command in the job can simply call dotnet without needing full paths.
+      # Registers problem matchers (optional but very useful)
+      #   → Parses dotnet build / dotnet test output and turns compiler warnings/errors into clickable annotations directly in the GitHub UI (next to the failing line of code).
+      # - run: dotnet restore
+      # - run: dotnet build --configuration Release --no-restore
+      # - run: dotnet test --no-build --logger "console;verbosity=detailed"
+      # - run: dotnet publish -c Release -o ./publish
+      ### It installs and configures the .NET SDK (specifically version 8.0.x) so that all following run steps in the same job can use commands like dotnet build, dotnet test, dotnet restore, dotnet publish, etc.
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v5.1.0
+        id: setup-dotnet-sdk-version
+        with:
+          dotnet-version: | 
+            8.0.x
+            9.0.x
+          # using globabl-json-file of the project instead of dotnet-version specification.
+          # global-json-file: global.json 
+      
+      # Downloads NuGet packages -> Creates project.assets.json -> Resolves dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Compiles code -> Uses already-restored packages
+      # --no-restore flag tells dotnet (dotnet build, dotnet test, dotnet publish, ...) not to run restore
+      #   - Requires that project.assets.json already exists (created by previous dotnet restore)
+      #   - If the assets file is missing → build fails fast with a clear message
+      - name: Build
+        run: dotnet build --no-restore
+      
+      - name: Test
+        run: dotnet test
