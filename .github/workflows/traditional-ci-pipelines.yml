@@ -27,7 +27,7 @@ jobs:
       # Test around
       - name: Test Git checkout
         run: |
-          echo git status
+          git status
 
       # Locates or downloads the requested .NET SDK version
       #   It checks the tools cache on the runner first (fastest path — most common versions are pre-cached).
@@ -56,7 +56,7 @@ jobs:
       
       # Downloads NuGet packages -> Creates project.assets.json -> Resolves dependencies
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore Server.sln
 
       # Compiles code -> Uses already-restored packages
       # --no-restore flag tells dotnet (dotnet build, dotnet test, dotnet publish, ...) not to run restore
