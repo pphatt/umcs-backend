@@ -85,3 +85,4 @@ A huge thanks to our developer for making UMCS a reality!
 | Name         | GitHub Username                     | Role                               |
 |--------------|-------------------------------------|------------------------------------|
 | Vu Tien Phat | [pphatt](https://github.com/pphatt) | Project Lead, FullStack  Developer |
+
