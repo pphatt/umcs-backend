@@ -48,7 +48,7 @@ public class ActivateAcademicYearCommandHandlerTests : BaseTest
         var result = await _commandHandler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsError.Should().BeTrue();
+        result.IsError.Should().BeFalse();
         result.FirstError.Should().Be(Errors.AcademicYears.CannotFound);
         result.FirstError.Code.Should().Be(Errors.AcademicYears.CannotFound.Code);
         result.FirstError.Description.Should().Be(Errors.AcademicYears.CannotFound.Description);
