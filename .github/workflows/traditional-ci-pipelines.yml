@@ -67,4 +67,3 @@ jobs:
       
       - name: Test
         run: dotnet test Server.sln --no-restore --no-build
-
