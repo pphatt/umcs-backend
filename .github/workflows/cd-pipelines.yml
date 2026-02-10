@@ -61,10 +61,10 @@ jobs:
 
     environment: 
       name: Dev
-      url: ${{ needs.build-and-deploy-dev.outputs.webapp-url }}
+      url: ${{ steps.deploy.outputs.webapp-url }}/swagger/index.html
 
     outputs:
-      webapp-url: ${{ steps.deploy.outputs.webapp-url }}
+      webapp-url: ${{ steps.deploy.outputs.webapp-url }}/swagger/index.html
 
     steps:
       - name: Download a Build Artifact
