@@ -63,6 +63,7 @@ jobs:
       name: Dev
       url: ${{ steps.deploy.outputs.webapp-url }}/swagger/index.html
 
+    # ${{ needs.builds-and-deploy-dev.outputs.webapp-url }}
     outputs:
       webapp-url: ${{ steps.deploy.outputs.webapp-url }}/swagger/index.html
 
