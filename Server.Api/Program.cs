@@ -32,7 +32,7 @@ if (app.Environment.IsDevelopment())
         c.DisplayRequestDuration();
     });
 
-    app.AddMigration();
+    await app.AddMigration();
 }
 
 // Add web application to the container.

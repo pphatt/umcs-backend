@@ -120,7 +120,7 @@ public static class DependencyInjection
 
 public static class MigrationManager
 {
-    public static WebApplication AddMigration(this WebApplication app)
+    public static async Task<WebApplication> AddMigration(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
         using var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -128,8 +128,15 @@ public static class MigrationManager
         var contributionRepository = scope.ServiceProvider.GetRequiredService<IContributionRepository>();
 
         // apply update-database command here.
-        //appDbContext.Database.Migrate();
-        //DataSeeder.SeedAsync(appDbContext, roleManager, contributionRepository).GetAwaiter().GetResult();
+        if ((await appDbContext.Database.GetPendingMigrationsAsync()).Any())
+        {
+            await appDbContext.Database.MigrateAsync();
+        }
+
+        if (await appDbContext.Database.CanConnectAsync())
+        {
+            await DataSeeder.SeedAsync(appDbContext, roleManager, contributionRepository);
+        }
 
         return app;
     }
