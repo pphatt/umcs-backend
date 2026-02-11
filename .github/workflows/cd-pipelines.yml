@@ -110,10 +110,10 @@ jobs:
         id: deploy
         uses: Azure/webapps-deploy@v3.0.6
         with:
-          app-name: umcs-api-dev
+          app-name: umcs-api-prod
           publish-profile: ${{ secrets.PUBLISH_PROFILE_PROD }}
           package: ./deploy-webapp
       
-      - name: Showo deployed URL
+      - name: Show deployed URL
         run: |
           echo "Deployed to prod: ${{ steps.deploy.outputs.webapp-url }}/swagger/index.html"
