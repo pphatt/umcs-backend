@@ -4,6 +4,7 @@ description: cd pipeline for umcs api
 on:
   push: 
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   builds:
