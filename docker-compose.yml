@@ -21,7 +21,7 @@ services:
       SA_PASSWORD: "sa123456!"
     restart: always
     ports:
-      - "14333:1433" # using 14333 port to make sure not have the same port as EXPRESS (1433)
+      - "1433:1433"
     volumes:
       - sqlserver:/var/opt/mssql
     networks:
