@@ -4,7 +4,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:8080;https://0.0.0.0:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dev-cert.pfx
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=tienphat@123
 
     ports:
       - "8080"
