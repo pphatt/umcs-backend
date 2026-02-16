@@ -2,13 +2,7 @@ services:
   products.webapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://0.0.0.0:8080;https://0.0.0.0:8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dev-cert.pfx
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=tienphat@123
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
 
     ports:
       - "8080"
-      - "8081"
-
-    volumes:
-      - ~/certs/https:/https:ro # https cerf for ubuntu
