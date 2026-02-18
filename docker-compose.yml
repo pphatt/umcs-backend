@@ -35,22 +35,18 @@ services:
       - magazine-network
     ports:
       - "6379:6379"
-    command: >
-      redis-server
-      --user default off nopass nocommands
-      --user products-api on >TienPhat08092003 ~* +@all
+    volumes:
+    - ./docker/redis/redis.acl:/etc/redis/users.acl:ro
+    command: redis-server --aclfile /etc/redis/users.acl
 
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: redis-commander
-    environment:
-      - REDIS_HOSTS=redis:6379
-      - REDIS_USERNAME=products-api               
-      - REDIS_PASSWORD=TienPhat08092003
-      - HTTP_USER=dev
-      - HTTP_PASSWORD=TienPhat08092003
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight
+    restart: always
     ports:
-      - "8088:8081"
+      - "5540:5540"
+    volumes:
+      - redisinsight-data:/data
     networks:
       - magazine-network
     depends_on:
@@ -62,3 +58,4 @@ networks:
 
 volumes:
   sqlserver:
+  redisinsight-data:
