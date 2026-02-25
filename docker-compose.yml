@@ -1,6 +1,5 @@
 services:
   products.webapi:
-    image: ${DOCKER_REGISTRY-}serverapi
     container_name: products.webapi
     build:
       context: .
